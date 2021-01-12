@@ -143,7 +143,7 @@ Usage
 Example 1: setup gerrit client::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(gerrit_url="https://yourgerrit", username='******', password='xxxxx')
+    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
 Example 2: operate gerrit project::
 

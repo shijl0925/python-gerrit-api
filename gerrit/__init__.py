@@ -9,7 +9,6 @@ from gerrit.accounts.accounts import GerritAccounts
 from gerrit.groups.groups import GerritGroups
 from gerrit.plugins.plugins import GerritPlugins
 from gerrit.changes.changes import GerritChanges
-from gerrit.utils.common import logger
 
 
 class GerritClient(object):

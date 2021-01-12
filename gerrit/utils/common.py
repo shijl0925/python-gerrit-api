@@ -50,6 +50,7 @@ def check(fn):
 # create logger
 logger = logging.getLogger("gerrit")
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.root.setLevel(logging.NOTSET)
 console = logging.StreamHandler()
 console.setLevel(logging.INFO)
 console.setFormatter(formatter)
