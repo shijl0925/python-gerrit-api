@@ -26,6 +26,7 @@ class GerritChange(BaseModel):
             "mergeable",
             "insertions",
             "deletions",
+            "current_revision",
             "_number",
             "owner",
             "gerrit",
