@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.projects.project import GerritProject
-
 try:
     from urllib.parse import quote_plus
 except ImportError:
     from urllib import quote_plus
+from gerrit.projects.project import GerritProject
+
 
 class GerritProjects(object):
     def __init__(self, gerrit):
@@ -76,7 +76,7 @@ class GerritProjects(object):
 
         :return:
         """
-        endpoint = "/projects/%s" % quote(project_name)
+        endpoint = "/projects/%s" % quote_plus(project_name)
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -91,5 +91,5 @@ class GerritProjects(object):
         :param project_name: project name
         :return:
         """
-        endpoint = "/projects/%s/delete-project~delete" % quote(project_name)
+        endpoint = "/projects/%s/delete-project~delete" % quote_plus(project_name)
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
