@@ -14,7 +14,7 @@ class GerritChanges(object):
 
         :return:
         """
-        endpoint = "/changes/?%s" % query
+        endpoint = "/changes/?q=%s" % query
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChange.parse_list(result, gerrit=self.gerrit)
