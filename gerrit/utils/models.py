@@ -39,6 +39,16 @@ class BaseModel(object):
                 results.append(cls.parse(obj, **kwargs))
         return results
 
+    @classmethod
+    def parse_dict(cls, data, **kwargs):
+        """Parse a dict of JSON objects into a result set of model instances."""
+        results = ResultSet()
+        data = data or []
+        for obj in data.keys():
+            if obj:
+                results.append(cls.parse(data[obj], **kwargs))
+        return results
+
     def __repr__(self):
         key = self.attributes[0]
         value = getattr(self, key)
