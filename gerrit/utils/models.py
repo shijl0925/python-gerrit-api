@@ -41,7 +41,7 @@ class BaseModel(object):
 
     @classmethod
     def parse_dict(cls, data, **kwargs):
-        """Parse a dict of JSON objects into a result set of model instances."""
+        """Parse a list of JSON objects into a result set of model instances."""
         results = ResultSet()
         data = data or []
         for obj in data.keys():

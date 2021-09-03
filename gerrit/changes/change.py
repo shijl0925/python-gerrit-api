@@ -363,6 +363,40 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return self.gerrit.changes.get(result.get("id"))
 
+    def stage(self):
+        """
+        Stages a change in the Qt CI.
+
+        If the change cannot be staged because the QtStage rule doesn't allow staging the change,
+        the response is 409 Conflict and the error message is contained in the response body.
+
+        .. code-block:: python
+            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            result = change.stage()
+        """
+        endpoint = "/changes/%s/revisions/current/gerrit-plugin-qt-workflow~stage" % self.id
+        base_url = self.gerrit.get_endpoint_url(endpoint)
+        response = self.gerrit.requester.post(
+            base_url
+        )
+        result = self.gerrit.decode_response(response)
+        return not result
+
+    def unstage(self):
+        """
+        Unstages a change in the Qt CI.
+
+        If the change cannot be unstaged because the change is not currently staged,
+        the response is 409 Conflict and the error message is contained in the response body.
+        """
+        endpoint = "/changes/%s/revisions/current/gerrit-plugin-qt-workflow~unstage" % self.id
+        base_url = self.gerrit.get_endpoint_url(endpoint)
+        response = self.gerrit.requester.post(
+            base_url
+        )
+        result = self.gerrit.decode_response(response)
+        return not result
+
     def delete(self):
         """
         Deletes a change.

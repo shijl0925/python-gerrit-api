@@ -45,15 +45,15 @@ class GerritProjects(object):
 
     def regex(self, query):
         """
-        Regex queries projects visible to the caller.
-        The query string must be provided by the query parameter.
+        Queries projects visible to the caller. The query string must be provided by the query parameter.
         The start and limit parameters can be used to skip/limit results.
 
         query parameter
-         * Boundary matchers '^' and '$' are implicit.
-         * For example: the regex 'test.*' will match any projects that start with 'test' and regex
-           '.*test' will match any project that end with 'test'.
-         * The match is case sensitive.
+          * name:'NAME' Matches projects that have exactly the name 'NAME'.
+          * parent:'PARENT' Matches projects that have 'PARENT' as parent project.
+          * inname:'NAME' Matches projects that a name part that starts with 'NAME' (case insensitive).
+          * description:'DESCRIPTION' Matches projects whose description contains 'DESCRIPTION', using a full-text search.
+          * state:'STATE' Matches project’s state. Can be either 'active' or 'read-only'.
 
         :param query:
         :return:
