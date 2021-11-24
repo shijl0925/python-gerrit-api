@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from copy import deepcopy
 
 
 class ResultSet(list):
@@ -10,6 +11,7 @@ class ResultSet(list):
 class BaseModel(object):
     def __init__(self, **kwargs):
         self.attributes = ["id"]
+        self.content = None
 
     def __getattr__(self, key):
         if key in self.attributes:
@@ -21,8 +23,14 @@ class BaseModel(object):
     def parse(cls, data, **kwargs):
         """Parse a JSON object into a model instance."""
         data = data or {}
+
         item = cls() if data else None
+
+        content = deepcopy(data)
+        setattr(item, "content", content)
+
         data.update(kwargs)
+
         for key, value in data.items():
             if key in item.attributes:
                 setattr(item, key, value)
