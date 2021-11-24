@@ -12,6 +12,11 @@ class GerritChanges(object):
         """
         Queries changes visible to the caller.
 
+        .. code-block:: python
+
+            result = gerrit.changes.search('q=status:open')
+
+        :param query: query
         :return:
         """
         endpoint = "/changes/?%s" % query
