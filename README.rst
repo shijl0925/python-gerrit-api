@@ -249,7 +249,7 @@ The project has been tested against Python versions:
 Gerrit versions
 ---------------
 
-Project tested on 3.1.8 Gerrit versions.
+Project tested on Version 3.1.8 Gerrit.
 
 Important Links
 ---------------
