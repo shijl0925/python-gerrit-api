@@ -23,6 +23,7 @@ class GerritChange(BaseModel):
             "status",
             "created",
             "updated",
+            "submitted",
             "mergeable",
             "insertions",
             "deletions",
