@@ -14,6 +14,10 @@ Project description
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
 
+What is it?
+-----------
+python-gerrit-api provides a simple interface for clients to interact with Gerrit Code Review via the REST API.
+
 Installation
 ------------
 
