@@ -94,13 +94,14 @@ class Requester(object):
 
         return request_kwargs
 
-    def get(self, url, params=None, headers=None, allow_redirects=True, stream=False):
+    def get(self, url, params=None, headers=None, allow_redirects=True, stream=False, **kwargs):
         """
         :param url:
         :param params:
         :param headers:
         :param allow_redirects:
         :param stream:
+        :param kwargs:
         :return:
         """
         request_kwargs = self.get_request_dict(
@@ -108,6 +109,7 @@ class Requester(object):
             headers=headers,
             allow_redirects=allow_redirects,
             stream=stream,
+            **kwargs
         )
         return self.confirm_status(self.session.get(url, **request_kwargs))
 

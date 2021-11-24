@@ -179,3 +179,45 @@ class GerritClient(object):
         :return:
         """
         return self.config.get_server_info()
+
+    def get(self, endpoint, **kwargs):
+        """
+        Send HTTP GET to the endpoint.
+
+        :param endpoint: The endpoint to send to.
+        :return:
+        """
+        response = self.requester.get(self.get_endpoint_url(endpoint), **kwargs)
+        result = self.decode_response(response)
+        return result
+
+    def post(self, endpoint, **kwargs):
+        """
+        Send HTTP POST to the endpoint.
+
+        :param endpoint: The endpoint to send to.
+        :return:
+        """
+        response = self.requester.post(self.get_endpoint_url(endpoint), **kwargs)
+        result = self.decode_response(response)
+        return result
+
+    def put(self, endpoint, **kwargs):
+        """
+        Send HTTP PUT to the endpoint.
+
+        :param endpoint: The endpoint to send to.
+        :return:
+        """
+        response = self.requester.put(self.get_endpoint_url(endpoint), **kwargs)
+        result = self.decode_response(response)
+        return result
+
+    def delete(self, endpoint):
+        """
+        Send HTTP DELETE to the endpoint.
+
+        :param endpoint: The endpoint to send to.
+        :return:
+        """
+        self.requester.delete(self.get_endpoint_url(endpoint))
