@@ -43,6 +43,24 @@ class GerritProjects(object):
         result = self.gerrit.decode_response(response)
         return GerritProject.parse_list(result, gerrit=self.gerrit)
 
+    def regex(self, query):
+        """
+        Regex queries projects visible to the caller.
+        The query string must be provided by the query parameter.
+        The start and limit parameters can be used to skip/limit results.
+        query parameter
+         * Boundary matchers '^' and '$' are implicit.
+         * For example: the regex 'test.*' will match any projects that start with 'test' and regex
+           '.*test' will match any project that end with 'test'.
+         * The match is case sensitive.
+        :param query:
+        :return:
+        """
+        endpoint = "/projects/?r=%s" % query
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return GerritProject.parse_dict(result, gerrit=self.gerrit)
+
     def get(self, project_name):
         """
         Retrieves a project.

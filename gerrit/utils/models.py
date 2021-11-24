@@ -22,7 +22,6 @@ class BaseModel(object):
         """Parse a JSON object into a model instance."""
         data = data or {}
         item = cls() if data else None
-        # setattr(item, "json", data)
         data.update(kwargs)
         for key, value in data.items():
             if key in item.attributes:
@@ -37,6 +36,16 @@ class BaseModel(object):
         for obj in data:
             if obj:
                 results.append(cls.parse(obj, **kwargs))
+        return results
+
+    @classmethod
+    def parse_dict(cls, data, **kwargs):
+        """Parse a dict of JSON objects into a result set of model instances."""
+        results = ResultSet()
+        data = data or {}
+        for obj in data.keys():
+            if obj:
+                results.append(cls.parse(data[obj], **kwargs))
         return results
 
     def __repr__(self):
