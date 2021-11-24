@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import json
+import netrc
 from gerrit.utils.requester import Requester
 from gerrit.config.config import GerritConfig
 from gerrit.projects.projects import GerritProjects
@@ -24,13 +25,20 @@ class GerritClient(object):
         self,
         base_url,
         username,
-        password,
+        password=None,
+        use_netrc=False,
         ssl_verify=True,
         cert=None,
         timeout=60,
         max_retries=None,
     ):
+        if not password and not use_netrc:
+            raise ValueError("One of 'password' or 'use_netrc' parameters should be set!")
+
         self._base_url = self.strip_trailing_slash(base_url)
+
+        if not password and use_netrc:
+            password = self.get_password_from_netrc_file()
 
         self.requester = Requester(
             username=username,
@@ -40,6 +48,20 @@ class GerritClient(object):
             timeout=timeout,
             max_retries=max_retries,
         )
+
+    def get_password_from_netrc_file(self):
+        """
+        Providing the password form .netrc file for getting Host name.
+        :return: The related password from .netrc file as a string.
+        """
+
+        netrc_client = netrc.netrc()
+        auth_tokens = netrc_client.authenticators(self._base_url)
+        if not auth_tokens:
+            raise ValueError(
+                "The '{}' host name is not found in netrc file.".format(self._base_url)
+            )
+        return auth_tokens[2]
 
     @classmethod
     def strip_trailing_slash(cls, url):
