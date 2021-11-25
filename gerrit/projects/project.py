@@ -37,7 +37,7 @@ class GerritProject(BaseModel):
         .. code-block:: python
 
             input_ = {
-                "description": "Plugin for Gerrit that handles the replication.",,
+                "description": "Plugin for Gerrit that handles the replication.",
                 "commit_message": "Update the project description"
             }
             project = gerrit.projects.get('myproject')

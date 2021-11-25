@@ -11,6 +11,7 @@ Welcome to Gerrit Client with Python's documentation!
    :caption: Contents:
 
    install
+   examples
 
 
 Indices and tables
