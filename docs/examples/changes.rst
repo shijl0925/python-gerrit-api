@@ -1,5 +1,5 @@
 ===========
-api/cahnges
+api/changes
 ===========
 
 Examples
