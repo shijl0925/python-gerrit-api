@@ -50,6 +50,17 @@ class Emails(object):
         result = self.gerrit.decode_response(response)
         return Email.parse_list(result, username=self.username, gerrit=self.gerrit)
 
+    def create(self, email):
+        """
+        Registers a new email address for the user.
+
+        :return:
+        """
+        endpoint = "/accounts/%s/emails/%s" % (self.username, email)
+        response = self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return result
+
     def get(self, email):
         """
         Retrieves an email address of a user.
