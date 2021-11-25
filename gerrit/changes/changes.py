@@ -8,7 +8,7 @@ class GerritChanges(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
 
-    def search(self, query):
+    def search(self, query, options=None, limit=None, skip=None):
         """
         Queries changes visible to the caller.
 
@@ -17,22 +17,38 @@ class GerritChanges(object):
             result = gerrit.changes.search('q=status:open')
 
         :param query: query
+        :param options: List of options to fetch additional data about changes
+        :param limit: Int value that allows to limit the number of changes
+                      to be included in the output results
+        :param skip: Int value that allows to skip the given number of
+                     changes from the beginning of the list
         :return:
         """
-        endpoint = "/changes/?%s" % query
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerritChange.parse_list(result, gerrit=self.gerrit)
+        params = {k: v for k, v in (('o', options),
+                                    ('limit', limit),
+                                    ('start', skip)) if v is not None}
 
-    def get(self, id_):
+        endpoint = "/changes/?%s" % query
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        result = self.gerrit.decode_response(response)
+        return result
+
+    def get(self, id_, detailed=False, options=None):
         """
         Retrieves a change.
 
         :param id_: change id
+        :param detailed: boolean value, if True then retrieve a change with
+                         labels, detailed labels, detailed accounts,
+                         reviewer updates, and messages.
+        :param options: List of options to fetch additional data about a change
         :return:
         """
-        endpoint = "/changes/%s" % id_
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        endpoint = "/changes/{id_}/{detail}".format(id_=id_,
+                                                    detail="detail" if detailed else "")
+        params = {'o': options}
+
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
         return GerritChange.parse(result, gerrit=self.gerrit)
 

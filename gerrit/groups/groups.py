@@ -44,14 +44,16 @@ class GerritGroups(object):
         result = self.gerrit.decode_response(response)
         return GerritGroup.parse_list(result, gerrit=self.gerrit)
 
-    def get(self, id_):
+    def get(self, id_, detailed=False):
         """
         Retrieves a group.
 
         :param id_: group id
+        :param detailed:
         :return:
         """
-        endpoint = "/groups/%s" % id_
+        endpoint = "/groups/{id_}/{detail}".format(id_=id_,
+                                                   detail="detail" if detailed else "")
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritGroup.parse(result, gerrit=self.gerrit)

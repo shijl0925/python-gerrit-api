@@ -56,7 +56,7 @@ class Branch(BaseModel):
                 'strategy': 'recursive'
             }
             result = stable.is_mergeable(input_)
-            pprint(result)
+            print(result)
 
         :param input_: the MergeInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-input
