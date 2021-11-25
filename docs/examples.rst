@@ -6,3 +6,6 @@ API examples
    :maxdepth: 1
 
    examples/projects
+   examples/project
+   examples/changes
+   examples/change
