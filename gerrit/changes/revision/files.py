@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 try:
-    from urllib.parse import quote
+    from urllib.parse import quote_plus
 except ImportError:
-    from urllib import quote
+    from urllib import quote_plus
 
 from gerrit.utils.models import BaseModel
 from gerrit.utils.exceptions import UnknownFile
@@ -36,7 +36,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/content" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
@@ -56,7 +56,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/download" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
@@ -72,7 +72,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/diff" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
 
         if intraline:
@@ -91,7 +91,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/blame" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
@@ -106,7 +106,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/reviewed" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
         self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
 
@@ -119,7 +119,7 @@ class File(BaseModel):
         endpoint = "/changes/%s/revisions/%s/files/%s/reviewed" % (
             self.change,
             self.revision,
-            quote(self.path, safe=""),
+            quote_plus(self.path),
         )
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 

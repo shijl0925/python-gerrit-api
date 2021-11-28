@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 try:
-    from urllib.parse import quote
+    from urllib.parse import quote_plus
 except ImportError:
-    from urllib import quote
+    from urllib import quote_plus
 
 from gerrit.utils.models import BaseModel
 
@@ -29,7 +29,7 @@ class Edit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote(file, safe=""))
+        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -41,7 +41,7 @@ class Edit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = "/changes/%s/edit/%s/meta" % (self.change, quote(file, safe=""))
+        endpoint = "/changes/%s/edit/%s/meta" % (self.change, quote_plus(file))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -54,7 +54,7 @@ class Edit(BaseModel):
         :param file_content: the content of the file need to change
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote(file, safe=""))
+        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.put(
             base_url, data=file_content, headers={"Content-Type": "plain/text"}
@@ -96,7 +96,7 @@ class Edit(BaseModel):
         :param file: Path to file to delete.
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote(file, safe=""))
+        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
     def change_commit_message(self, input_):

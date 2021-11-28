@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 try:
-    from urllib.parse import quote
+    from urllib.parse import quote_plus
 except ImportError:
-    from urllib import quote
+    from urllib import quote_plus
 
 from gerrit.changes.revision.drafts import Drafts
 from gerrit.changes.revision.comments import Comments
@@ -239,7 +239,7 @@ class Revision(object):
             endpoint += endpoint + "?download"
 
         if path:
-            endpoint += endpoint + "?path=%s" % quote(path, safe="")
+            endpoint += endpoint + "?path=%s" % quote_plus(path)
 
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)

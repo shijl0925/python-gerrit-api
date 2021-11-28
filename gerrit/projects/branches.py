@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 try:
-    from urllib.parse import quote
+    from urllib.parse import quote_plus
 except ImportError:
-    from urllib import quote
+    from urllib import quote_plus
 
 from gerrit.utils.models import BaseModel
 
@@ -38,7 +38,7 @@ class Branch(BaseModel):
         endpoint = "/projects/%s/branches/%s/files/%s/content" % (
             self.project,
             self.name,
-            quote(file, safe=""),
+            quote_plus(file),
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
