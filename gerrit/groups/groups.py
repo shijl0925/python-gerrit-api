@@ -9,40 +9,75 @@ class GerritGroups(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
 
-    def list(self):
+    def list(self, pattern_dispatcher=None, options=None, limit=None, skip=None):
         """
         Lists the groups accessible by the caller.
 
+        :param pattern_dispatcher: Dict of pattern type with respective
+                     pattern value: {('match'|'regex') : value}
+        :param options: Additional fields can be obtained by adding o parameters,
+                        each option requires more lookups and slows down the query response time to
+                        the client so they are generally disabled by default. Optional fields are:
+                          INCLUDES: include list of direct subgroups.
+                          MEMBERS: include list of direct group members.
+        :param limit: Int value that allows to limit the number of groups
+                      to be included in the output results
+        :param skip: Int value that allows to skip the given
+                     number of groups from the beginning of the list
         :return:
         """
+        pattern_types = {'match': 'm',
+                         'regex': 'r'}
+
+        p, v = None, None
+        if pattern_dispatcher is not None and pattern_dispatcher:
+            for item in pattern_types:
+                if item in pattern_dispatcher:
+                    p, v = pattern_types[item], pattern_dispatcher[item]
+                    break
+            else:
+                raise ValueError("Pattern types can be either "
+                                 "'match' or 'regex'.")
+
+        params = {k: v for k, v in (('o', options),
+                                    ('n', limit),
+                                    ('S', skip),
+                                    (p, v)) if v is not None}
+
         endpoint = "/groups/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
+        return result
 
-        groups = []
-        for key, value in result.items():
-            group = value
-            group.update({"name": key})
-            groups.append(group)
-
-        return GerritGroup.parse_list(groups, gerrit=self.gerrit)
-
-    def search(self, name):
+    def search(self, query, options=None, limit=None, skip=None):
         """
         Query Groups
 
-        :param name: group name
+        :param query:
+        :param options: Additional fields can be obtained by adding o parameters,
+                        each option requires more lookups and slows down the query response time to
+                        the client so they are generally disabled by default. Optional fields are:
+                          INCLUDES: include list of direct subgroups.
+                          MEMBERS: include list of direct group members.
+        :param limit: Int value that allows to limit the number of groups
+                      to be included in the output results
+        :param skip: Int value that allows to skip the given
+                     number of groups from the beginning of the list
         :return:
         """
         version = self.gerrit.version
         if parse(version) < parse("3.2.0"):
-            endpoint = "/groups/?query2=inname:%s" % name
+            endpoint = "/groups/?query2=%s" % query
         else:
-            endpoint = "/groups/?query=inname:%s" % name
+            endpoint = "/groups/?query=%s" % query
 
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        params = {k: v for k, v in (('o', options),
+                                    ('limit', limit),
+                                    ('start', skip)) if v is not None}
+
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
-        return GerritGroup.parse_list(result, gerrit=self.gerrit)
+        return result
 
     def get(self, id_, detailed=False):
         """

@@ -25,8 +25,8 @@ class GerritChanges(object):
         :return:
         """
         params = {k: v for k, v in (('o', options),
-                                    ('limit', limit),
-                                    ('start', skip)) if v is not None}
+                                    ('n', limit),
+                                    ('S', skip)) if v is not None}
 
         endpoint = "/changes/?%s" % query
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)

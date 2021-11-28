@@ -7,7 +7,6 @@ except ImportError:
     from urllib import quote
 
 from gerrit.utils.models import BaseModel
-from gerrit.utils.exceptions import UnknownBranch
 
 
 class Branch(BaseModel):
@@ -56,7 +55,6 @@ class Branch(BaseModel):
                 'strategy': 'recursive'
             }
             result = stable.is_mergeable(input_)
-            print(result)
 
         :param input_: the MergeInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-input
@@ -96,103 +94,37 @@ class Branches(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
-        self._data = []
 
-    def poll(self):
+    def list(self, pattern_dispatcher=None, limit=None, skip=None):
         """
+        List the branches of a project.
 
+        :param pattern_dispatcher: Dict of pattern type with respective
+               pattern value: {('match'|'regex') : value}
+        :param limit: Limit the number of branches to be included in the results.
+        :param skip: Skip the given number of branches from the beginning of the list.
         :return:
         """
+        pattern_types = {'match': 'm',
+                         'regex': 'r'}
+
+        p, v = None, None
+        if pattern_dispatcher is not None and pattern_dispatcher:
+            for item in pattern_types:
+                if item in pattern_dispatcher:
+                    p, v = pattern_types[item], pattern_dispatcher[item]
+                    break
+            else:
+                raise ValueError("Pattern types can be either "
+                                 "'match' or 'regex'.")
+
+        params = {k: v for k, v in (('n', limit),
+                                    ('s', skip),
+                                    (p, v)) if v is not None}
         endpoint = "/projects/%s/branches/" % self.project
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
-        for item in result:
-            if item["ref"] == "refs/meta/config":
-                result.remove(item)
         return result
-
-    def iterkeys(self):
-        """
-        Iterate over the names of all available branches
-        """
-        if not self._data:
-            self._data = self.poll()
-
-        for row in self._data:
-            yield row["ref"]
-
-    def keys(self):
-        """
-        Return a list of the names of all branches
-        """
-        return list(self.iterkeys())
-
-    def __len__(self):
-        """
-
-        :return:
-        """
-        return len(self.keys())
-
-    def __contains__(self, ref):
-        """
-        True if ref exists in project
-        """
-        return ref in self.keys()
-
-    def __getitem__(self, ref):
-        """
-        get a branch by ref
-
-        :param ref: branch ref
-        :return:
-        """
-        if not ref.startswith(self.branch_prefix):
-            raise KeyError("branch ref should start with {}".format(self.branch_prefix))
-
-        if not self._data:
-            self._data = self.poll()
-
-        result = [row for row in self._data if row["ref"] == ref]
-        if result:
-            return Branch.parse(result[0], project=self.project, gerrit=self.gerrit)
-        else:
-            raise UnknownBranch(ref)
-
-    def __setitem__(self, key, value):
-        """
-        create a branch by ref
-        :param key:
-        :param value:
-        :return:
-        """
-        if not key.startswith(self.branch_prefix):
-            raise KeyError("branch ref should start with {}".format(self.branch_prefix))
-
-        self.create(key.replace(self.branch_prefix, ""), value)
-
-    def __delitem__(self, key):
-        """
-        Delete a branch by ref
-
-        :param key:
-        :return:
-        """
-        self[key].delete()
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
-
-    def __iter__(self):
-        """
-
-        :return:
-        """
-        if not self._data:
-            self._data = self.poll()
-
-        for row in self._data:
-            yield Branch.parse(row, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -201,7 +133,10 @@ class Branches(object):
         :param name: branch ref name
         :return:
         """
-        return self[name]
+        endpoint = "/projects/%s/branches/%s" % (self.project, quote_plus(name))
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return Branch.parse(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -221,21 +156,13 @@ class Branches(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#branch-info
         :return:
         """
-        ref = self.branch_prefix + name
-        if ref in self.keys():
-            return self[ref]
-
         endpoint = "/projects/%s/branches/%s" % (self.project, name)
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
-
-        return Branch.parse(result, project=self.project, gerrit=self.gerrit)
+        return result
 
     def delete(self, name):
         """
@@ -244,7 +171,6 @@ class Branches(object):
         :param name: branch ref name
         :return:
         """
-        self[name].delete()
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
+        endpoint = "/projects/%s/branches/%s" % (self.project, quote_plus(name))
+        base_url = self.gerrit.get_endpoint_url(endpoint)
+        self.gerrit.requester.delete(base_url)

@@ -3,7 +3,6 @@
 # @Author: Jialiang Shi
 
 from gerrit.utils.models import BaseModel
-from gerrit.utils.exceptions import UnknownTag
 
 
 class Tag(BaseModel):
@@ -44,100 +43,37 @@ class Tags(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
-        self._data = []
 
-    def poll(self):
+    def list(self, pattern_dispatcher=None, limit=None, skip=None):
         """
+        List the tags of a project.
 
+        :param pattern_dispatcher: Dict of pattern type with respective
+               pattern value: {('match'|'regex') : value}
+        :param limit: Limit the number of tags to be included in the results.
+        :param skip: Skip the given number of tags from the beginning of the list.
         :return:
         """
-        endpoint = "/projects/%s/tags/" % self.project
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        pattern_types = {'match': 'm',
+                         'regex': 'r'}
+
+        p, v = None, None
+        if pattern_dispatcher is not None and pattern_dispatcher:
+            for item in pattern_types:
+                if item in pattern_dispatcher:
+                    p, v = pattern_types[item], pattern_dispatcher[item]
+                    break
+            else:
+                raise ValueError("Pattern types can be either "
+                                 "'match' or 'regex'.")
+
+        params = {k: v for k, v in (('n', limit),
+                                    ('s', skip),
+                                    (p, v)) if v is not None}
+        endpoint = "/projects/{}/tags/".format(self.project)
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
         return result
-
-    def iterkeys(self):
-        """
-        Iterate over the names of all available tags
-        """
-        if not self._data:
-            self._data = self.poll()
-
-        for row in self._data:
-            yield row["ref"]
-
-    def keys(self):
-        """
-        Return a list of the names of all tags
-        """
-        return list(self.iterkeys())
-
-    def __len__(self):
-        """
-
-        :return:
-        """
-        return len(self.keys())
-
-    def __contains__(self, ref):
-        """
-        True if ref exists in project
-        """
-        return ref in self.keys()
-
-    def __getitem__(self, ref):
-        """
-        get a tag by ref
-
-        :param ref: the tag ref
-        :return:
-        """
-        if not ref.startswith(self.tag_prefix):
-            raise KeyError("tag ref should start with {}".format(self.tag_prefix))
-
-        if not self._data:
-            self._data = self.poll()
-
-        result = [row for row in self._data if row["ref"] == ref]
-        if result:
-            return Tag.parse(result[0], project=self.project, gerrit=self.gerrit)
-        else:
-            raise UnknownTag(ref)
-
-    def __setitem__(self, key, value):
-        """
-        create a tag by ref
-        :param key:
-        :param value:
-        :return:
-        """
-        if not key.startswith(self.tag_prefix):
-            raise KeyError("tag ref should start with {}".format(self.tag_prefix))
-
-        self.create(key.replace(self.tag_prefix, ""), value)
-
-    def __delitem__(self, key):
-        """
-        Delete a tag by ref
-
-        :param key:
-        :return:
-        """
-        self[key].delete()
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
-
-    def __iter__(self):
-        """
-
-        :return:
-        """
-        if not self._data:
-            self._data = self.poll()
-
-        for row in self._data:
-            yield Tag.parse(row, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -146,7 +82,10 @@ class Tags(object):
         :param name: the tag ref
         :return:
         """
-        return self[name]
+        endpoint = "/projects/%s/tags/%s" % (self.project, quote_plus(name))
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return Tag.parse(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -167,21 +106,13 @@ class Tags(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#tag-input
         :return:
         """
-        ref = self.tag_prefix + name
-        if ref in self.keys():
-            return self[ref]
-
         endpoint = "/projects/%s/tags/%s" % (self.project, name)
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
-
-        return Tag.parse(result, project=self.project, gerrit=self.gerrit)
+        return result
 
     def delete(self, name):
         """
@@ -190,7 +121,6 @@ class Tags(object):
         :param name: the tag ref
         :return:
         """
-        self[name].delete()
-
-        # Reset to get it refreshed from Gerrit
-        self._data = []
+        endpoint = "/projects/%s/tags/%s" % (self.project, quote_plus(name))
+        base_url = self.gerrit.get_endpoint_url(endpoint)
+        self.gerrit.requester.delete(base_url)

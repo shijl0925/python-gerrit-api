@@ -14,7 +14,7 @@ class GerritProjects(object):
 
     def list(self, is_all=False, limit=None, skip=None,
              pattern_dispatcher=None, project_type=None,
-             description=False, branches=None):
+             description=False, branch=None):
         """
         Get list of all available projects accessible by the caller.
 
@@ -30,9 +30,8 @@ class GerritProjects(object):
                             ('code'|'permissions'|'all')
         :param description: boolean value, if True then description will be
                             added to the output result
-        :param branches: List of names of branches as a string to limit the
-                         results to the projects having the specified branches
-                         and include the sha1 of the branches in the results
+        :param branch: Limit the results to the projects having the specified branch
+                       and include the sha1 of the branch in the results.
 
         :return:
         """
@@ -54,7 +53,7 @@ class GerritProjects(object):
                                     ('S', skip),
                                     (p, v),
                                     ('type', project_type),
-                                    ('b', branches)) if v is not None}
+                                    ('b', branch)) if v is not None}
         params['all'] = int(is_all)
         params['d'] = int(description)
 
