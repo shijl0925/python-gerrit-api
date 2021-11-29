@@ -7,6 +7,7 @@ from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
     AuthError,
+    UnauthorizedError,
     NotFoundError,
     ConflictError,
     ClientError,
@@ -233,6 +234,10 @@ class Requester(object):
         elif res.status_code == 400:
             # Validation error
             raise ValidationError(http_error_msg)
+
+        elif res.status_code == 401:
+            # Unauthorized error
+            raise UnauthorizedError(http_error_msg)
 
         elif res.status_code == 403:
             # Auth error

@@ -21,6 +21,13 @@ class ServerError(GerritAPIException):
     pass
 
 
+class UnauthorizedError(GerritAPIException):
+    """
+    401 Unauthorized
+    """
+    pass
+
+
 class AuthError(ClientError):
     """
     403 Forbidden is returned if the operation is not allowed because the calling user does not have sufficient permissions.
