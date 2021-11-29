@@ -57,7 +57,9 @@ class GerritChangeMessages(object):
         endpoint = "/changes/%s/messages" % self.change
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeMessage.parse_list(
+            result, change=self.change, gerrit=self.gerrit
+        )
 
     def get(self, id_):
         """

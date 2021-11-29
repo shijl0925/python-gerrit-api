@@ -4,7 +4,6 @@
 
 
 class GerritGroupMembers(object):
-
     def __init__(self, group_id, gerrit):
         self.group_id = group_id
         self.gerrit = gerrit

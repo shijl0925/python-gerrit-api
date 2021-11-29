@@ -12,9 +12,17 @@ class GerritProjects(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
 
-    def list(self, is_all=False, limit=None, skip=None,
-             pattern_dispatcher=None, project_type=None,
-             description=False, branch=None, state=None):
+    def list(
+        self,
+        is_all=False,
+        limit=None,
+        skip=None,
+        pattern_dispatcher=None,
+        project_type=None,
+        description=False,
+        branch=None,
+        state=None,
+    ):
         """
         Get list of all available projects accessible by the caller.
 
@@ -37,9 +45,7 @@ class GerritProjects(object):
 
         :return:
         """
-        pattern_types = {'prefix': 'p',
-                         'match': 'm',
-                         'regex': 'r'}
+        pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
 
         p, v = None, None
         if pattern_dispatcher is not None and pattern_dispatcher:
@@ -48,23 +54,32 @@ class GerritProjects(object):
                     p, v = pattern_types[item], pattern_dispatcher[item]
                     break
             else:
-                raise ValueError("Pattern types can be either "
-                                 "'prefix', 'match' or 'regex'.")
+                raise ValueError(
+                    "Pattern types can be either 'prefix', 'match' or 'regex'."
+                )
 
         if is_all and state:
             raise ValueError("is_all can not be used together with the state option.")
 
-        params = {k: v for k, v in (('n', limit),
-                                    ('S', skip),
-                                    (p, v),
-                                    ('type', project_type),
-                                    ('b', branch),
-                                    ('state', state)) if v is not None}
-        params['all'] = int(is_all)
-        params['d'] = int(description)
+        params = {
+            k: v
+            for k, v in (
+                ("n", limit),
+                ("S", skip),
+                (p, v),
+                ("type", project_type),
+                ("b", branch),
+                ("state", state),
+            )
+            if v is not None
+        }
+        params["all"] = int(is_all)
+        params["d"] = int(description)
 
         endpoint = "/projects/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 
@@ -87,10 +102,12 @@ class GerritProjects(object):
                      number of accounts from the beginning of the list
         :return:
         """
-        params = {k: v for k, v in (('limit', limit), ('start', skip)) if v is not None}
+        params = {k: v for k, v in (("limit", limit), ("start", skip)) if v is not None}
 
         endpoint = "/projects/?query=%s" % query
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 

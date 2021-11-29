@@ -26,8 +26,7 @@ class GerritGroups(object):
                      number of groups from the beginning of the list
         :return:
         """
-        pattern_types = {'match': 'm',
-                         'regex': 'r'}
+        pattern_types = {"match": "m", "regex": "r"}
 
         p, v = None, None
         if pattern_dispatcher is not None and pattern_dispatcher:
@@ -36,16 +35,18 @@ class GerritGroups(object):
                     p, v = pattern_types[item], pattern_dispatcher[item]
                     break
             else:
-                raise ValueError("Pattern types can be either "
-                                 "'match' or 'regex'.")
+                raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
-        params = {k: v for k, v in (('o', options),
-                                    ('n', limit),
-                                    ('S', skip),
-                                    (p, v)) if v is not None}
+        params = {
+            k: v
+            for k, v in (("o", options), ("n", limit), ("S", skip), (p, v))
+            if v is not None
+        }
 
         endpoint = "/groups/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 
@@ -71,11 +72,15 @@ class GerritGroups(object):
         else:
             endpoint = "/groups/?query=%s" % query
 
-        params = {k: v for k, v in (('o', options),
-                                    ('limit', limit),
-                                    ('start', skip)) if v is not None}
+        params = {
+            k: v
+            for k, v in (("o", options), ("limit", limit), ("start", skip))
+            if v is not None
+        }
 
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 
@@ -87,8 +92,9 @@ class GerritGroups(object):
         :param detailed:
         :return:
         """
-        endpoint = "/groups/{id_}/{detail}".format(id_=id_,
-                                                   detail="detail" if detailed else "")
+        endpoint = "/groups/{id_}/{detail}".format(
+            id_=id_, detail="detail" if detailed else ""
+        )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritGroup.parse(result, gerrit=self.gerrit)

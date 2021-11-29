@@ -42,7 +42,9 @@ class GerritAccountEmails(object):
         endpoint = "/accounts/%s/emails" % self.username
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritAccountEmail.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmail.parse_list(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def create(self, email):
         """
@@ -64,7 +66,9 @@ class GerritAccountEmails(object):
         endpoint = "/accounts/%s/emails/%s" % (self.username, email)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritAccountEmail.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmail.parse(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def set_preferred(self, email):
         """

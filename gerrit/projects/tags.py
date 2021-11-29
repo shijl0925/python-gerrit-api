@@ -47,8 +47,7 @@ class GerrirProjectTags(object):
         :param skip: Skip the given number of tags from the beginning of the list.
         :return:
         """
-        pattern_types = {'match': 'm',
-                         'regex': 'r'}
+        pattern_types = {"match": "m", "regex": "r"}
 
         p, v = None, None
         if pattern_dispatcher is not None and pattern_dispatcher:
@@ -57,14 +56,13 @@ class GerrirProjectTags(object):
                     p, v = pattern_types[item], pattern_dispatcher[item]
                     break
             else:
-                raise ValueError("Pattern types can be either "
-                                 "'match' or 'regex'.")
+                raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
-        params = {k: v for k, v in (('n', limit),
-                                    ('s', skip),
-                                    (p, v)) if v is not None}
+        params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
         endpoint = "/projects/{}/tags/".format(self.project)
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 

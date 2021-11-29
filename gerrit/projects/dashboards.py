@@ -33,7 +33,9 @@ class GerrirProjectDashboards(object):
         endpoint = "/projects/%s/dashboards/" % self.project
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse_list(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def create(self, id_, input_):
         """
@@ -59,7 +61,9 @@ class GerrirProjectDashboards(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def get(self, id_):
         """
@@ -71,7 +75,9 @@ class GerrirProjectDashboards(object):
         endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def delete(self, id_):
         """

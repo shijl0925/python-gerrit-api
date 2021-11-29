@@ -44,7 +44,9 @@ class GerrirProjectWebHooks(object):
             webhook.update({"name": key})
             webhooks.append(webhook)
 
-        return GerrirProjectWebHook.parse_list(webhooks, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse_list(
+            webhooks, project=self.project, gerrit=self.gerrit
+        )
 
     def create(self, name, input_):
         """
@@ -74,7 +76,9 @@ class GerrirProjectWebHooks(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def get(self, name):
         """
@@ -90,7 +94,9 @@ class GerrirProjectWebHooks(object):
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         result.update({"name": name})
-        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def delete(self, name):
         """

@@ -38,7 +38,9 @@ class GerritAccountGPGKeys(object):
             gpg_key.update({"id": key})
             keys.append(gpg_key)
 
-        return GerritAccountGPGKey.parse_list(keys, username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKey.parse_list(
+            keys, username=self.username, gerrit=self.gerrit
+        )
 
     def get(self, id_):
         """
@@ -50,7 +52,9 @@ class GerritAccountGPGKeys(object):
         endpoint = "/accounts/%s/gpgkeys/%s" % (self.username, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritAccountGPGKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKey.parse(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def modify(self, input_):
         """

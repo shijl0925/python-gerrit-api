@@ -25,13 +25,19 @@ class GerritChanges(object):
                      changes from the beginning of the list
         :return:
         """
-        params = {k: v for k, v in (('o', options),
-                                    ('n', limit),
-                                    ('S', skip)) if v is not None}
+        params = {
+            k: v
+            for k, v in (("o", options), ("n", limit), ("S", skip))
+            if v is not None
+        }
 
-        endpoint = "/changes/{query}".format(query="?q={query}".format(query='&q='.join(query)))
+        endpoint = "/changes/{query}".format(
+            query="?q={query}".format(query="&q=".join(query))
+        )
 
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 
@@ -46,11 +52,14 @@ class GerritChanges(object):
         :param options: List of options to fetch additional data about a change
         :return:
         """
-        endpoint = "/changes/{id_}/{detail}".format(id_=id_,
-                                                    detail="detail" if detailed else "")
-        params = {'o': options}
+        endpoint = "/changes/{id_}/{detail}".format(
+            id_=id_, detail="detail" if detailed else ""
+        )
+        params = {"o": options}
 
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return GerritChange.parse(result, gerrit=self.gerrit)
 

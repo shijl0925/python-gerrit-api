@@ -323,15 +323,21 @@ class GerritChangeRevision(object):
 
     @property
     def drafts(self):
-        return GerritChangeRevisionDrafts(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionDrafts(
+            change=self.change, revision=self.revision, gerrit=self.gerrit
+        )
 
     @property
     def comments(self):
-        return GerritChangeRevisionComments(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionComments(
+            change=self.change, revision=self.revision, gerrit=self.gerrit
+        )
 
     @property
     def files(self):
-        return GerritChangeRevisionFiles(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionFiles(
+            change=self.change, revision=self.revision, gerrit=self.gerrit
+        )
 
     def cherry_pick(self, input_):
         """

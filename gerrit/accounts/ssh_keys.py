@@ -33,7 +33,9 @@ class GerritAccountSSHKeys(object):
         endpoint = "/accounts/%s/sshkeys" % self.username
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritAccountSSHKey.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse_list(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def get(self, seq):
         """
@@ -45,7 +47,9 @@ class GerritAccountSSHKeys(object):
         endpoint = "/accounts/%s/sshkeys/%s" % (self.username, str(seq))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def add(self, ssh_key):
         """
@@ -61,7 +65,9 @@ class GerritAccountSSHKeys(object):
             base_url, data=ssh_key, headers={"Content-Type": "plain/text"}
         )
         result = self.gerrit.decode_response(response)
-        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def delete(self, seq):
         """

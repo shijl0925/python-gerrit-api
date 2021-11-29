@@ -60,9 +60,7 @@ class GerritPlugins(object):
                      pattern value: {('prefix'|'match'|'regex') : value}
         :return:
         """
-        pattern_types = {'prefix': 'p',
-                         'match': 'm',
-                         'regex': 'r'}
+        pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
 
         p, v = None, None
         if pattern_dispatcher is not None and pattern_dispatcher:
@@ -71,16 +69,17 @@ class GerritPlugins(object):
                     p, v = pattern_types[item], pattern_dispatcher[item]
                     break
             else:
-                raise ValueError("Pattern types can be either "
-                                 "'prefix', 'match' or 'regex'.")
+                raise ValueError(
+                    "Pattern types can be either 'prefix', 'match' or 'regex'."
+                )
 
-        params = {k: v for k, v in (('n', limit),
-                                    ('S', skip),
-                                    (p, v)) if v is not None}
-        params['all'] = int(is_all)
+        params = {k: v for k, v in (("n", limit), ("S", skip), (p, v)) if v is not None}
+        params["all"] = int(is_all)
 
         endpoint = "/plugins/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
         return result
 

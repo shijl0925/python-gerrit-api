@@ -33,7 +33,9 @@ class GerritClient(object):
         max_retries=None,
     ):
         if not password and not use_netrc:
-            raise ValueError("One of 'password' or 'use_netrc' parameters should be set!")
+            raise ValueError(
+                "One of 'password' or 'use_netrc' parameters should be set!"
+            )
 
         self._base_url = self.strip_trailing_slash(base_url)
 

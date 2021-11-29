@@ -25,6 +25,7 @@ class UnauthorizedError(GerritAPIException):
     """
     401 Unauthorized
     """
+
     pass
 
 
@@ -98,4 +99,5 @@ class UnsupportMethod(Exception):
     """
     This Error will be raised when program calls methods or parameters that are currently unsupported
     """
+
     pass

@@ -95,7 +95,15 @@ class Requester(object):
 
         return request_kwargs
 
-    def get(self, url, params=None, headers=None, allow_redirects=True, stream=False, **kwargs):
+    def get(
+        self,
+        url,
+        params=None,
+        headers=None,
+        allow_redirects=True,
+        stream=False,
+        **kwargs
+    ):
         """
         :param url:
         :param params:

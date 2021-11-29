@@ -8,8 +8,15 @@ class GerritAccounts(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
 
-    def search(self, query, suggested=False, limit=None, skip=None,
-               detailed=False, all_emails=False):
+    def search(
+        self,
+        query,
+        suggested=False,
+        limit=None,
+        skip=None,
+        detailed=False,
+        all_emails=False,
+    ):
         """
         Queries accounts visible to the caller.
 
@@ -28,19 +35,23 @@ class GerritAccounts(object):
                            for each account will be added to the output result
         :return:
         """
-        option = filter(None, ['DETAILS' if detailed else None,
-                               'ALL_EMAILS' if all_emails else None])
+        option = filter(
+            None,
+            ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
+        )
         option = None if not option else option
-        params = {k: v for k, v in (('n', limit),
-                                    ('S', skip),
-                                    ('o', option)) if v is not None}
+        params = {
+            k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
+        }
 
         endpoint = "/accounts/{suggest}{query}".format(
             suggest="?suggest&" if suggested else "?",
-            query="q={query}".format(query=query)
+            query="q={query}".format(query=query),
         )
 
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
+        response = self.gerrit.requester.get(
+            self.gerrit.get_endpoint_url(endpoint), params
+        )
         result = self.gerrit.decode_response(response)
 
         return result
@@ -64,8 +75,9 @@ class GerritAccounts(object):
         :param detailed: boolean type, If True then fetch info in more details, such as: registered_on
         :return:
         """
-        endpoint = "/accounts/{username}/{detail}".format(username=username,
-                                                          detail="detail" if detailed else "")
+        endpoint = "/accounts/{username}/{detail}".format(
+            username=username, detail="detail" if detailed else ""
+        )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccount.parse(result, gerrit=self.gerrit)
