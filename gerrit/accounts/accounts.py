@@ -56,17 +56,6 @@ class GerritAccounts(object):
 
         return result
 
-    def whoami(self):
-        """
-        who am i
-
-        :return:
-        """
-        endpoint = "/accounts/self"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return self.get(result.get("username"))
-
     def get(self, username, detailed=False):
         """
         Returns an account
