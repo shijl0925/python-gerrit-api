@@ -5,20 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class Message(BaseModel):
+class GerritChangeMessage(BaseModel):
     def __init__(self, **kwargs):
-        super(Message, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "_revision_number",
-            "message",
-            "date",
-            "author",
-            "real_author",
-            "tag",
-            "change",
-            "gerrit",
-        ]
+        super(GerritChangeMessage, self).__init__(**kwargs)
 
     def delete(self, input_=None):
         """
@@ -54,7 +43,7 @@ class Message(BaseModel):
             return change.messages.get(result.get("id"))
 
 
-class Messages(object):
+class GerritChangeMessages(object):
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
@@ -68,7 +57,7 @@ class Messages(object):
         endpoint = "/changes/%s/messages" % self.change
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Message.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -80,4 +69,4 @@ class Messages(object):
         endpoint = "/changes/%s/messages/%s" % (self.change, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Message.parse(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeMessage.parse(result, change=self.change, gerrit=self.gerrit)

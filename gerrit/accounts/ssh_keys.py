@@ -4,19 +4,10 @@
 from gerrit.utils.models import BaseModel
 
 
-class SSHKey(BaseModel):
+class GerritAccountSSHKey(BaseModel):
     def __init__(self, **kwargs):
-        super(SSHKey, self).__init__(**kwargs)
-        self.attributes = [
-            "seq",
-            "ssh_public_key",
-            "encoded_key",
-            "algorithm",
-            "comment",
-            "valid",
-            "username",
-            "gerrit",
-        ]
+        super(GerritAccountSSHKey, self).__init__(**kwargs)
+        self.entity_name = "seq"
 
     def delete(self):
         """
@@ -28,7 +19,7 @@ class SSHKey(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class SSHKeys(object):
+class GerritAccountSSHKeys(object):
     def __init__(self, username, gerrit):
         self.username = username
         self.gerrit = gerrit
@@ -42,7 +33,7 @@ class SSHKeys(object):
         endpoint = "/accounts/%s/sshkeys" % self.username
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return SSHKey.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse_list(result, username=self.username, gerrit=self.gerrit)
 
     def get(self, seq):
         """
@@ -54,7 +45,7 @@ class SSHKeys(object):
         endpoint = "/accounts/%s/sshkeys/%s" % (self.username, str(seq))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return SSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
 
     def add(self, ssh_key):
         """
@@ -70,7 +61,7 @@ class SSHKeys(object):
             base_url, data=ssh_key, headers={"Content-Type": "plain/text"}
         )
         result = self.gerrit.decode_response(response)
-        return SSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
 
     def delete(self, seq):
         """

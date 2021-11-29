@@ -60,7 +60,7 @@ class GerritAccounts(object):
         """
         Returns an account
 
-        :param username:
+        :param username: username or _account_id
         :param detailed: boolean type, If True then fetch info in more details, such as: registered_on
         :return:
         """

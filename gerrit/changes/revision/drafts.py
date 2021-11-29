@@ -5,20 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class Draft(BaseModel):
+class GerritChangeRevisionDraft(BaseModel):
     def __init__(self, **kwargs):
-        super(Draft, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "path",
-            "line",
-            "message",
-            "unresolved",
-            "updated",
-            "change",
-            "revision",
-            "gerrit",
-        ]
+        super(GerritChangeRevisionDraft, self).__init__(**kwargs)
 
     def update(self, input_):
         """
@@ -50,7 +39,7 @@ class Draft(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return Draft.parse(
+        return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
@@ -68,7 +57,7 @@ class Draft(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class Drafts(object):
+class GerritChangeRevisionDrafts(object):
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -89,7 +78,7 @@ class Drafts(object):
                 draft = item
                 draft.update({"path": key})
                 drafts.append(draft)
-        return Draft.parse_list(
+        return GerritChangeRevisionDraft.parse_list(
             drafts, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
@@ -107,7 +96,7 @@ class Drafts(object):
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Draft.parse(
+        return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
@@ -136,7 +125,7 @@ class Drafts(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return Draft.parse(
+        return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 

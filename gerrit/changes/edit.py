@@ -9,17 +9,10 @@ except ImportError:
 from gerrit.utils.models import BaseModel
 
 
-class Edit(BaseModel):
+class GerritChangeEdit(BaseModel):
     def __init__(self, **kwargs):
-        super(Edit, self).__init__(**kwargs)
-        self.attributes = [
-            "ref",
-            "base_revision",
-            "base_patch_set_number",
-            "commit",
-            "change",
-            "gerrit",
-        ]
+        super(GerritChangeEdit, self).__init__(**kwargs)
+        self.entity_name = "ref"
 
     def get_change_file_content(self, file):
         """

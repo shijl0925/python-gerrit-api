@@ -2,12 +2,12 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from packaging.version import parse
-from gerrit.projects.branches import Branches
-from gerrit.projects.tags import Tags
-from gerrit.projects.commit import Commit
-from gerrit.projects.dashboards import Dashboards
-from gerrit.projects.labels import Labels
-from gerrit.projects.webhooks import Webhooks
+from gerrit.projects.branches import GerrirProjectBranches
+from gerrit.projects.tags import GerrirProjectTags
+from gerrit.projects.commit import GerrirProjectCommit
+from gerrit.projects.dashboards import GerrirProjectDashboards
+from gerrit.projects.labels import GerrirProjectLabels
+from gerrit.projects.webhooks import GerrirProjectWebHooks
 from gerrit.changes.change import GerritChange
 from gerrit.utils.models import BaseModel
 from gerrit.utils.exceptions import UnsupportMethod
@@ -16,10 +16,8 @@ from gerrit.utils.exceptions import UnsupportMethod
 class GerritProject(BaseModel):
     def __init__(self, **kwargs):
         super(GerritProject, self).__init__(**kwargs)
-        self.attributes = ["id", "name", "state", "web_links", "gerrit"]
 
-    @property
-    def description(self):
+    def get_description(self):
         """
         Retrieves the description of a project.
 
@@ -73,8 +71,7 @@ class GerritProject(BaseModel):
         endpoint = "/projects/%s/delete-project~delete" % self.id
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
-    @property
-    def parent(self):
+    def get_parent(self):
         """
         Retrieves the name of a project’s parent project. For the All-Projects root project an empty string is returned.
 
@@ -110,8 +107,7 @@ class GerritProject(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @property
-    def HEAD(self):
+    def get_HEAD(self):
         """
         Retrieves for a project the name of the branch to which HEAD points.
 
@@ -146,8 +142,7 @@ class GerritProject(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @property
-    def config(self):
+    def get_config(self):
         """
         Gets some configuration information about a project.
         Note that this config info is not simply the contents of project.config; it generally contains fields that may
@@ -258,8 +253,7 @@ class GerritProject(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @property
-    def access_rights(self):
+    def get_access_rights(self):
         """
         Lists the access rights for a single project.
 
@@ -428,7 +422,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return Branches(self.id, self.gerrit)
+        return GerrirProjectBranches(self.id, self.gerrit)
 
     @property
     def child_projects(self):
@@ -440,7 +434,7 @@ class GerritProject(BaseModel):
         endpoint = "/projects/%s/children/" % self.id
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return [self.gerrit.projects.get(item.get("id")) for item in result]
+        return result
 
     @property
     def tags(self):
@@ -449,7 +443,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return Tags(self.id, self.gerrit)
+        return GerrirProjectTags(self.id, self.gerrit)
 
     def get_commit(self, commit):
         """
@@ -460,7 +454,7 @@ class GerritProject(BaseModel):
         endpoint = "/projects/%s/commits/%s" % (self.id, commit)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Commit.parse(result, project=self.id, gerrit=self.gerrit)
+        return GerrirProjectCommit.parse(result, project=self.id, gerrit=self.gerrit)
 
     @property
     def dashboards(self):
@@ -469,10 +463,9 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return Dashboards(project=self.id, gerrit=self.gerrit)
+        return GerrirProjectDashboards(project=self.id, gerrit=self.gerrit)
 
-    @property
-    def labels(self):
+    def get_labels(self):
         """
         gerrit labels or gerrit labels operations
 
@@ -485,7 +478,7 @@ class GerritProject(BaseModel):
             result = self.gerrit.decode_response(response)
             return result.get("labels")
         else:
-            return Labels(project=self.id, gerrit=self.gerrit)
+            return GerrirProjectLabels(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):
@@ -494,4 +487,4 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return Webhooks(project=self.id, gerrit=self.gerrit)
+        return GerrirProjectWebHooks(project=self.id, gerrit=self.gerrit)

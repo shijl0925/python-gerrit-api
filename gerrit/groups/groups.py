@@ -83,7 +83,7 @@ class GerritGroups(object):
         """
         Retrieves a group.
 
-        :param id_: group id
+        :param id_: group id, or group_id, or group name
         :param detailed:
         :return:
         """

@@ -5,21 +5,10 @@
 from gerrit.utils.models import BaseModel
 
 
-class Webhook(BaseModel):
+class GerrirProjectWebHook(BaseModel):
     def __init__(self, **kwargs):
-        super(Webhook, self).__init__(**kwargs)
-        self.attributes = [
-            "name",
-            "url",
-            "maxTries",
-            "sslVerify",
-            "retryInterval",
-            "socketTimeout",
-            "connectionTimeout",
-            "events",
-            "project",
-            "gerrit",
-        ]
+        super(GerrirProjectWebHook, self).__init__(**kwargs)
+        self.entity_name = "name"
 
     def delete(self):
         """
@@ -34,7 +23,7 @@ class Webhook(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class Webhooks(object):
+class GerrirProjectWebHooks(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -55,7 +44,7 @@ class Webhooks(object):
             webhook.update({"name": key})
             webhooks.append(webhook)
 
-        return Webhook.parse_list(webhooks, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse_list(webhooks, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -85,7 +74,7 @@ class Webhooks(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return Webhook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -101,7 +90,7 @@ class Webhooks(object):
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         result.update({"name": name})
-        return Webhook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, name):
         """

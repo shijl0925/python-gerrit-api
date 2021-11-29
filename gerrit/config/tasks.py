@@ -7,16 +7,6 @@ from gerrit.utils.models import BaseModel
 class Task(BaseModel):
     def __init__(self, **kwargs):
         super(Task, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "state",
-            "command",
-            "start_time",
-            "remote_name",
-            "project",
-            "delay",
-            "gerrit",
-        ]
 
     def delete(self):
         """

@@ -7,15 +7,6 @@ from gerrit.utils.models import BaseModel
 class GerritPlugin(BaseModel):
     def __init__(self, **kwargs):
         super(GerritPlugin, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "index_url",
-            "filename",
-            "api_version",
-            "disabled",
-            "version",
-            "gerrit",
-        ]
 
     def enable(self):
         """

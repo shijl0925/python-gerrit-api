@@ -5,23 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class Dashboard(BaseModel):
+class GerrirProjectDashboard(BaseModel):
     def __init__(self, **kwargs):
-        super(Dashboard, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "ref",
-            "path",
-            "description",
-            "url",
-            "is_default",
-            "title",
-            "sections",
-            "defining_project",
-            "foreach",
-            "project",
-            "gerrit",
-        ]
+        super(GerrirProjectDashboard, self).__init__(**kwargs)
 
     def delete(self):
         """
@@ -33,7 +19,7 @@ class Dashboard(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class Dashboards(object):
+class GerrirProjectDashboards(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -47,7 +33,7 @@ class Dashboards(object):
         endpoint = "/projects/%s/dashboards/" % self.project
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Dashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, id_, input_):
         """
@@ -73,7 +59,7 @@ class Dashboards(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return Dashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -85,7 +71,7 @@ class Dashboards(object):
         endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Dashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, id_):
         """

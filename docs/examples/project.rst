@@ -15,7 +15,7 @@ setup gerrit client and retrieve one project instance::
 
 Retrieves the description of a project.::
 
-    description = project.description
+    description = project.get_description()
 
 Sets the description of a project.::
 
@@ -54,7 +54,7 @@ Sets the configuration of a project.::
 
 Lists the access rights for a single project.::
 
-    access_rights = project.access_rights
+    access_rights = project.get_access_rights()
 
 Create Change for review. support this method since v3.3.0::
 
@@ -68,9 +68,9 @@ Create Change for review. support this method since v3.3.0::
     result = project.create_change(input_)
 
 
-List the branches of a project. except the refs/meta/config::
+List the branches of a project.::
 
-    branches = project.branches
+    branches = project.branches.list()
 
 get a branch by ref::
 
@@ -85,7 +85,7 @@ Creates a new branch.::
 
 Delete a branch.::
 
-    project.branches.delete('refs/heads/stable')
+    branch.delete()
 
 Retrieves a commit of a project.::
 

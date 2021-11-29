@@ -5,18 +5,10 @@
 from gerrit.utils.models import BaseModel
 
 
-class Reviewer(BaseModel):
+class GerritChangeReviewer(BaseModel):
     def __init__(self, **kwargs):
-        super(Reviewer, self).__init__(**kwargs)
-        self.attributes = [
-            "username",
-            "_account_id",
-            "name",
-            "email",
-            "approvals",
-            "change",
-            "gerrit",
-        ]
+        super(GerritChangeReviewer, self).__init__(**kwargs)
+        self.entity_name = "username"
 
     def delete(self, input_=None):
         """
@@ -101,7 +93,7 @@ class Reviewer(BaseModel):
             )
 
 
-class Reviewers(object):
+class GerritChangeReviewers(object):
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
@@ -115,7 +107,7 @@ class Reviewers(object):
         endpoint = "/changes/%s/reviewers/" % self.change
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Reviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, query):
         """
@@ -128,7 +120,7 @@ class Reviewers(object):
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
-            return Reviewer.parse(result[0], change=self.change, gerrit=self.gerrit)
+            return GerritChangeReviewer.parse(result[0], change=self.change, gerrit=self.gerrit)
 
     def add(self, input_):
         """

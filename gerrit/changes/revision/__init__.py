@@ -6,12 +6,12 @@ try:
 except ImportError:
     from urllib import quote_plus
 
-from gerrit.changes.revision.drafts import Drafts
-from gerrit.changes.revision.comments import Comments
-from gerrit.changes.revision.files import Files
+from gerrit.changes.revision.drafts import GerritChangeRevisionDrafts
+from gerrit.changes.revision.comments import GerritChangeRevisionComments
+from gerrit.changes.revision.files import GerritChangeRevisionFiles
 
 
-class Revision(object):
+class GerritChangeRevision(object):
     def __init__(self, project, change, revision, gerrit):
         self.project = project
         self.change = change
@@ -262,7 +262,8 @@ class Revision(object):
 
     def is_mergeable(self):
         """
-        Gets the method the server will use to submit (merge) the change and an indicator if the change is currently mergeable.
+        Gets the method the server will use to submit (merge) the change and an indicator
+        if the change is currently mergeable.
 
         :return:
         """
@@ -322,15 +323,15 @@ class Revision(object):
 
     @property
     def drafts(self):
-        return Drafts(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionDrafts(change=self.change, revision=self.revision, gerrit=self.gerrit)
 
     @property
     def comments(self):
-        return Comments(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionComments(change=self.change, revision=self.revision, gerrit=self.gerrit)
 
     @property
     def files(self):
-        return Files(change=self.change, revision=self.revision, gerrit=self.gerrit)
+        return GerritChangeRevisionFiles(change=self.change, revision=self.revision, gerrit=self.gerrit)
 
     def cherry_pick(self, input_):
         """

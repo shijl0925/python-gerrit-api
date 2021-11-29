@@ -4,19 +4,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class GPGKey(BaseModel):
+class GerritAccountGPGKey(BaseModel):
     def __init__(self, **kwargs):
-        super(GPGKey, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "fingerprint",
-            "user_ids",
-            "key",
-            "status",
-            "problems",
-            "username",
-            "gerrit",
-        ]
+        super(GerritAccountGPGKey, self).__init__(**kwargs)
 
     def delete(self):
         """
@@ -28,7 +18,7 @@ class GPGKey(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class GPGKeys(object):
+class GerritAccountGPGKeys(object):
     def __init__(self, username, gerrit):
         self.username = username
         self.gerrit = gerrit
@@ -48,7 +38,7 @@ class GPGKeys(object):
             gpg_key.update({"id": key})
             keys.append(gpg_key)
 
-        return GPGKey.parse_list(keys, username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKey.parse_list(keys, username=self.username, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -60,7 +50,7 @@ class GPGKeys(object):
         endpoint = "/accounts/%s/gpgkeys/%s" % (self.username, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GPGKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKey.parse(result, username=self.username, gerrit=self.gerrit)
 
     def modify(self, input_):
         """

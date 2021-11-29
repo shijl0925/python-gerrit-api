@@ -2,10 +2,10 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from packaging.version import parse
-from gerrit.changes.reviewers import Reviewers
-from gerrit.changes.revision import Revision
-from gerrit.changes.edit import Edit
-from gerrit.changes.messages import Messages
+from gerrit.changes.reviewers import GerritChangeReviewers
+from gerrit.changes.revision import GerritChangeRevision
+from gerrit.changes.edit import GerritChangeEdit
+from gerrit.changes.messages import GerritChangeMessages
 from gerrit.utils.models import BaseModel
 from gerrit.utils.exceptions import UnsupportMethod
 
@@ -13,25 +13,6 @@ from gerrit.utils.exceptions import UnsupportMethod
 class GerritChange(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChange, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "project",
-            "branch",
-            "attention_set",
-            "change_id",
-            "subject",
-            "status",
-            "created",
-            "updated",
-            "submitted",
-            "mergeable",
-            "insertions",
-            "deletions",
-            "current_revision",
-            "_number",
-            "owner",
-            "gerrit",
-        ]
 
     def update(self, input_):
         """
@@ -88,8 +69,7 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @property
-    def topic(self):
+    def get_topic(self):
         """
         Retrieves the topic of a change.
 
@@ -104,8 +84,7 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @topic.setter
-    def topic(self, topic):
+    def set_topic(self, topic):
         """
         Sets the topic of a change.
 
@@ -121,8 +100,7 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @topic.deleter
-    def topic(self):
+    def delete_topic(self):
         """
         Deletes the topic of a change.
 
@@ -140,7 +118,9 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/assignee" % self.id
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return self.gerrit.accounts.get(result.get("username"))
+        if result:
+            username = result.get("username")
+            return self.gerrit.accounts.get(username)
 
     def set_assignee(self, input_):
         """
@@ -165,7 +145,9 @@ class GerritChange(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.accounts.get(result.get("username"))
+        if result:
+            username = result.get("username")
+            return self.gerrit.accounts.get(username)
 
     def get_past_assignees(self):
         """
@@ -176,7 +158,13 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/past_assignees" % self.id
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        assignees = [self.gerrit.accounts.get(item.get("username")) for item in result]
+        assignees = []
+        if result:
+            for item in result:
+                username = item.get("username")
+                assignee = self.gerrit.accounts.get(username)
+                assignees.append(assignee)
+
         return assignees
 
     def delete_assignee(self):
@@ -188,8 +176,10 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/assignee" % self.id
         response = self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
+
         if result:
-            return self.gerrit.accounts.get(result.get("username"))
+            username = result.get("username")
+            return self.gerrit.accounts.get(username)
 
     def get_pure_revert(self, commit):
         """
@@ -207,6 +197,8 @@ class GerritChange(BaseModel):
         """
         Abandons a change.
         Abandoning a change also removes all users from the attention set.
+        If the change cannot be abandoned because the change state doesn’t allow abandoning of the change,
+        the response is “409 Conflict” and the error message is contained in the response body.
 
         :return:
         """
@@ -218,6 +210,8 @@ class GerritChange(BaseModel):
     def restore(self):
         """
         Restores a change.
+        If the change cannot be restored because the change state doesn’t allow restoring the change,
+        the response is “409 Conflict” and the error message is contained in the response body.
 
         :return:
         """
@@ -658,7 +652,7 @@ class GerritChange(BaseModel):
 
     @property
     def messages(self):
-        return Messages(change=self.id, gerrit=self.gerrit)
+        return GerritChangeMessages(change=self.id, gerrit=self.gerrit)
 
     def get_edit(self):
         """
@@ -672,7 +666,7 @@ class GerritChange(BaseModel):
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
-            return Edit.parse(result, change=self.id, gerrit=self.gerrit)
+            return GerritChangeEdit.parse(result, change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
         """
@@ -685,7 +679,7 @@ class GerritChange(BaseModel):
 
     @property
     def reviewers(self):
-        return Reviewers(change=self.id, gerrit=self.gerrit)
+        return GerritChangeReviewers(change=self.id, gerrit=self.gerrit)
 
     def get_revision(self, revision_id):
         """
@@ -694,7 +688,7 @@ class GerritChange(BaseModel):
         :param revision_id:
         :return:
         """
-        return Revision(
+        return GerritChangeRevision(
             project=self.project,
             change=self.id,
             revision=revision_id,

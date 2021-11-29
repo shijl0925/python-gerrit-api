@@ -5,27 +5,10 @@
 from gerrit.utils.models import BaseModel
 
 
-class Label(BaseModel):
+class GerrirProjectLabel(BaseModel):
     def __init__(self, **kwargs):
-        super(Label, self).__init__(**kwargs)
-        self.attributes = [
-            "name",
-            "function",
-            "values",
-            "default_value",
-            "can_override",
-            "copy_min_score",
-            "copy_max_score",
-            "copy_all_scores_if_no_change",
-            "copy_all_scores_if_no_code_change",
-            "copy_all_scores_on_trivial_rebase",
-            "copy_all_scores_on_merge_first_parent_update",
-            "copy_values",
-            "allow_post_submit",
-            "ignore_self_approval",
-            "project",
-            "gerrit",
-        ]
+        super(GerrirProjectLabel, self).__init__(**kwargs)
+        self.entity_name = "name"
 
     def set(self, input_):
         """
@@ -67,7 +50,7 @@ class Label(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class Labels(object):
+class GerrirProjectLabels(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -81,7 +64,7 @@ class Labels(object):
         endpoint = "/projects/%s/labels/" % self.project
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Label.parse_list(result, gerrit=self.gerrit)
+        return GerrirProjectLabel.parse_list(result, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -94,7 +77,7 @@ class Labels(object):
         endpoint = "/projects/%s/labels/%s" % (self.project, name)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Label.parse(result, gerrit=self.gerrit)
+        return GerrirProjectLabel.parse(result, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -127,7 +110,7 @@ class Labels(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return Label.parse(result, gerrit=self.gerrit)
+        return GerrirProjectLabel.parse(result, gerrit=self.gerrit)
 
     def delete(self, name):
         """

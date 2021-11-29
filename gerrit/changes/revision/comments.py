@@ -5,21 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class Comment(BaseModel):
+class GerritChangeRevisionComment(BaseModel):
     def __init__(self, **kwargs):
-        super(Comment, self).__init__(**kwargs)
-        self.attributes = [
-            "id",
-            "path",
-            "line",
-            "in_reply_to",
-            "message",
-            "updated",
-            "author",
-            "change",
-            "revision",
-            "gerrit",
-        ]
+        super(GerritChangeRevisionComment, self).__init__(**kwargs)
 
     def delete(self, input_=None):
         """
@@ -69,7 +57,7 @@ class Comment(BaseModel):
             return result
 
 
-class Comments(object):
+class GerritChangeRevisionComments(object):
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -90,7 +78,7 @@ class Comments(object):
                 comment = item
                 comment.update({"path": key})
                 comments.append(comment)
-        return Comment.parse_list(
+        return GerritChangeRevisionComment.parse_list(
             comments, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
@@ -108,6 +96,6 @@ class Comments(object):
         )
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return Comment.parse(
+        return GerritChangeRevisionComment.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )

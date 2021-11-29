@@ -7,14 +7,7 @@ from gerrit.utils.models import BaseModel
 class Cache(BaseModel):
     def __init__(self, **kwargs):
         super(Cache, self).__init__(**kwargs)
-        self.attributes = [
-            "name",
-            "type",
-            "entries",
-            "average_get",
-            "hit_ratio",
-            "gerrit",
-        ]
+        self.entity_name = "name"
 
     def flush(self):
         """

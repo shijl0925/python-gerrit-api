@@ -10,11 +10,11 @@ class ResultSet(list):
 
 class BaseModel(object):
     def __init__(self, **kwargs):
-        self.attributes = ["id"]
+        self.entity_name = "id"
         self.content = None
 
     def __getattr__(self, key):
-        if key in self.attributes:
+        if key in self.__dict__:
             return self.__dict__.get(key)
         else:
             raise AttributeError(key)
@@ -32,8 +32,8 @@ class BaseModel(object):
         data.update(kwargs)
 
         for key, value in data.items():
-            if key in item.attributes:
-                setattr(item, key, value)
+            setattr(item, key, value)
+
         return item
 
     @classmethod
@@ -57,6 +57,6 @@ class BaseModel(object):
         return results
 
     def __repr__(self):
-        key = self.attributes[0]
+        key = self.entity_name
         value = getattr(self, key)
         return "%s(%s=%s)" % (self.__class__.__name__, key, value)

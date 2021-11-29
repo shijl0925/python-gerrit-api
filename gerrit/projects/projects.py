@@ -94,14 +94,14 @@ class GerritProjects(object):
         result = self.gerrit.decode_response(response)
         return result
 
-    def get(self, project_name):
+    def get(self, name):
         """
         Retrieves a project.
 
-        :param project_name: the name of the project
+        :param name: the name of the project
         :return:
         """
-        endpoint = "/projects/%s" % quote_plus(project_name)
+        endpoint = "/projects/%s" % quote_plus(name)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProject.parse(result, gerrit=self.gerrit)

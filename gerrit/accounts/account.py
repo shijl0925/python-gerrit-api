@@ -3,29 +3,28 @@
 # @Author: Jialiang Shi
 from packaging.version import parse
 from gerrit.utils.models import BaseModel
-from gerrit.accounts.emails import Emails
-from gerrit.accounts.ssh_keys import SSHKeys
-from gerrit.accounts.gpg_keys import GPGKeys
+from gerrit.accounts.emails import GerritAccountEmails
+from gerrit.accounts.ssh_keys import GerritAccountSSHKeys
+from gerrit.accounts.gpg_keys import GerritAccountGPGKeys
 from gerrit.utils.exceptions import UnsupportMethod
 
 
 class GerritAccount(BaseModel):
     def __init__(self, **kwargs):
         super(GerritAccount, self).__init__(**kwargs)
-        self.attributes = [
-            "username",
-            "registered_on",
-            "_account_id",
-            "name",
-            "email",
-            "secondary_emails",
-            "avatars",
-            "_more_accounts",
-            "inactive",
-            "tags",
-            "display_name",
-            "gerrit",
-        ]
+        self.entity_name = "username"
+
+    def get_name(self):
+        """
+        Retrieves the full name of an account.
+
+        :return:
+        """
+        endpoint = "/accounts/%s/name" % self.username
+        base_url = self.gerrit.get_endpoint_url(endpoint)
+        response = self.gerrit.requester.get(base_url)
+        result = self.gerrit.decode_response(response)
+        return result
 
     def set_name(self, input_):
         """
@@ -54,8 +53,6 @@ class GerritAccount(BaseModel):
         )
         result = self.gerrit.decode_response(response)
 
-        # update account model's name
-        self.name = result
         return result
 
     def delete_name(self):
@@ -69,11 +66,7 @@ class GerritAccount(BaseModel):
         endpoint = "/accounts/%s/name" % self.username
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
-        # update account model's name
-        self.name = None
-
-    @property
-    def status(self):
+    def get_status(self):
         """
         Retrieves the status of an account.
         If the account does not have a status an empty string is returned.
@@ -88,8 +81,7 @@ class GerritAccount(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
-    @status.setter
-    def status(self, status):
+    def set_status(self, status):
         """
         Sets the status of an account.
 
@@ -99,9 +91,11 @@ class GerritAccount(BaseModel):
         endpoint = "/accounts/%s/status" % self.username
         input_ = {"status": status}
         base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.put(
+        response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
         )
+        result = self.gerrit.decode_response(response)
+        return result
 
     def set_username(self, input_):
         """
@@ -129,8 +123,6 @@ class GerritAccount(BaseModel):
         )
         result = self.gerrit.decode_response(response)
 
-        # update account model's username
-        self.username = result
         return result
 
     def set_displayname(self, input_):
@@ -162,8 +154,6 @@ class GerritAccount(BaseModel):
         )
         result = self.gerrit.decode_response(response)
 
-        # update account model's displayname
-        self.displayname = result
         return result
 
     def get_active(self):
@@ -246,15 +236,15 @@ class GerritAccount(BaseModel):
 
     @property
     def emails(self):
-        return Emails(username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmails(username=self.username, gerrit=self.gerrit)
 
     @property
     def ssh_keys(self):
-        return SSHKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKeys(username=self.username, gerrit=self.gerrit)
 
     @property
     def gpg_keys(self):
-        return GPGKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKeys(username=self.username, gerrit=self.gerrit)
 
     def list_capabilities(self):
         """

@@ -35,15 +35,15 @@ Creates a new patch set with a new commit message.::
 
 Retrieves the topic of a change.::
 
-    topic = change.topic
+    topic = change.get_topic()
 
 Sets the topic of a change.::
 
-    change.topic = "test topic"
+    topic = change.set_topic("test topic")
 
 Deletes the topic of a change.::
 
-    del change.topic
+    change.delete_topic()
 
 Retrieves the account of the user assigned to a change.::
 

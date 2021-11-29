@@ -10,21 +10,10 @@ from gerrit.utils.models import BaseModel
 from gerrit.utils.exceptions import UnknownFile
 
 
-class File(BaseModel):
+class GerritChangeRevisionFile(BaseModel):
     def __init__(self, **kwargs):
-        super(File, self).__init__(**kwargs)
-        self.attributes = [
-            "path",
-            "lines_deleted",
-            "lines_inserted",
-            "size",
-            "size_delta",
-            "status",
-            "old_path",
-            "change",
-            "revision",
-            "gerrit",
-        ]
+        super(GerritChangeRevisionFile, self).__init__(**kwargs)
+        self.entity_name = "path"
 
     def get_content(self):
         """
@@ -124,7 +113,7 @@ class File(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class Files(object):
+class GerritChangeRevisionFiles(object):
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -192,7 +181,7 @@ class Files(object):
             self._data = self.poll()
 
         for file in self._data:
-            yield File.parse(
+            yield GerritChangeRevisionFile.parse(
                 file, change=self.change, revision=self.revision, gerrit=self.gerrit
             )
 
@@ -208,7 +197,7 @@ class Files(object):
 
         result = [file for file in self._data if file["path"] == path]
         if result:
-            return File.parse(
+            return GerritChangeRevisionFile.parse(
                 result[0],
                 change=self.change,
                 revision=self.revision,
