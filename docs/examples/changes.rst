@@ -12,13 +12,14 @@ setup gerrit client::
 
 Queries changes.::
 
-    result = gerrit.changes.search('q=status:open')
+    result = gerrit.changes.search(query=['status:open'])
+    # or
+    query = ["is:open+owner:self", "is:open+reviewer:self+-owner:self", "is:closed+owner:self+limit:5"]
+    result = gerrit.changes.search(query=query, options=["LABELS"])
 
 Retrieves a change.::
 
-    change = gerrit.changes.get(
-        "MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c"
-    )
+    change = gerrit.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
 
 create a change.::
 
@@ -34,4 +35,6 @@ create a change.::
 Deletes a change.::
 
     gerrit.changes.delete("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
-
+    # or
+    change = gerrit.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
+    change.delete()

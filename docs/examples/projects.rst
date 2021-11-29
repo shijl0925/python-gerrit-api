@@ -15,19 +15,9 @@ Lists the projects::
     projects = gerrit.projects.list()
 
 
-Queries projects::
-
-    projects = gerrit.projects.search(query="state:active")
-
-
-Regex queries projects::
-
-    projects = gerrit.projects.regex(query='test.*')
-
-
 Retrieves a project.::
 
-    project = gerrit.projects.get(project_name="MyProject1")
+    project = gerrit.projects.get(project_name="MyProject")
 
 
 Creates a new project.::
@@ -44,4 +34,6 @@ Creates a new project.::
 Delete the project, requires delete-project plugin::
 
     gerrit.projects.delete("MyProject")
-
+    # or
+    project = gerrit.projects.get(project_name="MyProject")
+    project.delete()

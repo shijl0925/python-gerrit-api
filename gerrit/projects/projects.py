@@ -14,12 +14,13 @@ class GerritProjects(object):
 
     def list(self, is_all=False, limit=None, skip=None,
              pattern_dispatcher=None, project_type=None,
-             description=False, branch=None):
+             description=False, branch=None, state=None):
         """
         Get list of all available projects accessible by the caller.
 
         :param is_all: boolean value, if True then all projects (including
-                       hidden ones) will be added to the results
+                       hidden ones) will be added to the results.
+                       May not be used together with the state option.
         :param limit: Int value that allows to limit the number of projects
                       to be included in the output results
         :param skip: Int value that allows to skip the given
@@ -32,6 +33,7 @@ class GerritProjects(object):
                             added to the output result
         :param branch: Limit the results to the projects having the specified branch
                        and include the sha1 of the branch in the results.
+        :param state: Get all projects with the given state. May not be used together with the all option.
 
         :return:
         """
@@ -49,11 +51,15 @@ class GerritProjects(object):
                 raise ValueError("Pattern types can be either "
                                  "'prefix', 'match' or 'regex'.")
 
+        if is_all and state:
+            raise ValueError("is_all can not be used together with the state option.")
+
         params = {k: v for k, v in (('n', limit),
                                     ('S', skip),
                                     (p, v),
                                     ('type', project_type),
-                                    ('b', branch)) if v is not None}
+                                    ('b', branch),
+                                    ('state', state)) if v is not None}
         params['all'] = int(is_all)
         params['d'] = int(description)
 

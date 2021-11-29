@@ -14,9 +14,10 @@ class GerritChanges(object):
 
         .. code-block:: python
 
-            result = gerrit.changes.search('q=status:open')
+            query = ["is:open+owner:self", "is:open+reviewer:self+-owner:self", "is:closed+owner:self+limit:5"]
+            result = gerrit.changes.search(query=query, options=["LABELS"])
 
-        :param query: query
+        :param query: Queries as a list of string
         :param options: List of options to fetch additional data about changes
         :param limit: Int value that allows to limit the number of changes
                       to be included in the output results
@@ -28,7 +29,8 @@ class GerritChanges(object):
                                     ('n', limit),
                                     ('S', skip)) if v is not None}
 
-        endpoint = "/changes/?%s" % query
+        endpoint = "/changes/{query}".format(query="?q={query}".format(query='&q='.join(query)))
+
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint), params)
         result = self.gerrit.decode_response(response)
         return result
