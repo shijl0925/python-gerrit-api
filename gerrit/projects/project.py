@@ -283,7 +283,8 @@ class GerritProject(BaseModel):
 
     def create_change(self, input_):
         """
-        Create Change for review.
+        Create Change for review. This endpoint is functionally equivalent to create change in the change API,
+        but it has the project name in the URL, which is easier to route in sharded deployments.
         support this method since v3.3.0
 
         .. code-block:: python

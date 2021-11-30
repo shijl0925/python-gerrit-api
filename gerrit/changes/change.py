@@ -14,7 +14,7 @@ class GerritChange(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChange, self).__init__(**kwargs)
 
-    def update(self, input_):
+    def create_merge_patch_set(self, input_):
         """
         Update an existing change by using a MergePatchSetInput entity.
         Gerrit will create a merge commit based on the information of MergePatchSetInput and add a new patch set to
@@ -42,7 +42,7 @@ class GerritChange(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def set_commit_message(self, input_):
         """
@@ -205,7 +205,7 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/abandon" % self.id
         response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def restore(self):
         """
@@ -218,7 +218,7 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/restore" % self.id
         response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def rebase(self, input_):
         """
@@ -245,7 +245,7 @@ class GerritChange(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def move(self, input_):
         """
@@ -272,7 +272,7 @@ class GerritChange(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def revert(self, input_=None):
         """
@@ -306,7 +306,7 @@ class GerritChange(BaseModel):
             base_url, json=input_ or {}, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def revert_submission(self):
         """
@@ -356,7 +356,7 @@ class GerritChange(BaseModel):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def delete(self):
         """
@@ -665,8 +665,7 @@ class GerritChange(BaseModel):
         endpoint = "/changes/%s/edit" % self.id
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        if result:
-            return GerritChangeEdit.parse(result, change=self.id, gerrit=self.gerrit)
+        return GerritChangeEdit.parse(result, change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
         """

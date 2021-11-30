@@ -11,19 +11,16 @@ class GerritAccounts(object):
     def search(
         self,
         query,
-        suggested=False,
         limit=None,
         skip=None,
         detailed=False,
+        suggested=False,
         all_emails=False,
     ):
         """
         Queries accounts visible to the caller.
 
         :param query: Query string
-        :param suggested: boolean value, if True get account suggestions
-                          based on query string. If a result limit n is not
-                          specified, then the default 10 is used.
         :param limit: Int value that allows to limit the number of accounts
                       to be included in the output results
         :param skip: Int value that allows to skip the given
@@ -31,6 +28,9 @@ class GerritAccounts(object):
         :param detailed: boolean value, if True then full name,
                          preferred email, username and avatars for each account
                          will be added to the output result
+        :param suggested: boolean value, if True get account suggestions
+                          based on query string. If a result limit n is not
+                          specified, then the default 10 is used.
         :param all_emails: boolean value, if True then all registered emails
                            for each account will be added to the output result
         :return:

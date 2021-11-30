@@ -27,7 +27,11 @@ class GerritChangeRevision(object):
         endpoint = "/changes/%s/revisions/%s/commit" % (self.change, self.revision)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return self.gerrit.projects.get(self.project).get_commit(result.get("commit"))
+        commit = result.get("commit")
+        if commit:
+            project = self.gerrit.projects.get(self.project)
+            if project:
+                return project.get_commit(commit)
 
     def get_description(self):
         """
@@ -232,7 +236,7 @@ class GerritChangeRevision(object):
         """
         endpoint = "/changes/%s/revisions/%s/patch" % (self.change, self.revision)
 
-        if zip:
+        if zip_:
             endpoint += endpoint + "?zip"
 
         if download:
@@ -333,6 +337,36 @@ class GerritChangeRevision(object):
             change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
+    def list_robot_comments(self):
+        """
+        Lists the robot comments of a revision.
+
+        :return:
+        """
+        endpoint = "/changes/%s/revisions/%s/robotcomments" % (
+            self.change,
+            self.revision,
+        )
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return result
+
+    def get_robot_comment(self, commit_id):
+        """
+        Retrieves a robot comment of a revision.
+
+        :param commit_id:
+        :return:
+        """
+        endpoint = "/changes/%s/revisions/%s/robotcomments/%s" % (
+            self.change,
+            self.revision,
+            commit_id,
+        )
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return result
+
     @property
     def files(self):
         return GerritChangeRevisionFiles(
@@ -376,3 +410,64 @@ class GerritChangeRevision(object):
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
+
+    def list_votes(self, account):
+        """
+        Lists the votes for a specific reviewer of the revision.
+
+        :param account: account id or username
+        :return:
+        """
+        endpoint = "/changes/%s/revisions/%s/reviewers/%s/votes/" % (
+            self.change,
+            self.revision,
+            account,
+        )
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        return result
+
+    def delete_vote(self, account, label, input_=None):
+        """
+        Deletes a single vote from a revision. The deletion will be possible only
+        if the revision is the current revision. By using this endpoint you can prevent
+        deleting the vote (with same label) from a newer patch set by mistake.
+        Note, that even when the last vote of a reviewer is removed the reviewer itself is still listed on the change.
+
+        .. code-block:: python
+
+            input_ = {
+                "notify": "NONE"
+            }
+
+            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            revision = change.get_revision("0f4f97b5af9a965e082fb8cde082c5f1ba2fe930")
+            revision.delete_vote('Code-Review', input_)
+            # or
+            revision.delete_vote('Code-Review')
+
+        :param account:
+        :param label:
+        :param input_: the DeleteVoteInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
+        :return:
+        """
+        if input_ is None:
+            endpoint = "/changes/%s/revisions/%s/reviewers/%s/votes/%s" % (
+                self.change,
+                self.revision,
+                account,
+                label,
+            )
+            self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        else:
+            endpoint = "/changes/%s/revisions/%s/reviewers/%s/votes/%s/delete" % (
+                self.change,
+                self.revision,
+                account,
+                label,
+            )
+            base_url = self.gerrit.get_endpoint_url(endpoint)
+            self.gerrit.requester.post(
+                base_url, json=input_, headers=self.gerrit.default_headers
+            )
