@@ -20,7 +20,7 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 setup(
     name="python-gerrit-api",
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.0.0-beta",
+    version="2.0.0",
     description="Python wrapper for the Gerrit REST API.",
     long_description=long_description,
     url="https://github.com/shijl0925/python-gerrit-api",
