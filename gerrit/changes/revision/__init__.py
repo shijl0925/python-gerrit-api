@@ -55,7 +55,7 @@ class GerritChangeRevision(object):
                 "description": "Added Documentation"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.set_description(input_)
 
@@ -158,7 +158,7 @@ class GerritChangeRevision(object):
                 }
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.set_review(input_)
 
@@ -185,7 +185,7 @@ class GerritChangeRevision(object):
                 "base" : "1234"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.rebase(input_)
 
@@ -384,7 +384,7 @@ class GerritChangeRevision(object):
                 "destination" : "release-branch"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.cherry_pick(input_)
 
@@ -440,7 +440,7 @@ class GerritChangeRevision(object):
                 "notify": "NONE"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision("0f4f97b5af9a965e082fb8cde082c5f1ba2fe930")
             revision.delete_vote('Code-Review', input_)
             # or

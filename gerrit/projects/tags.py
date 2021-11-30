@@ -89,7 +89,7 @@ class GerrirProjectTags(object):
                 'revision': 'c83117624b5b5d8a7f86093824e2f9c1ed309d63'
             }
 
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             new_tag = project.tags.create('1.1.8', input_)
 
         :param name: the tag name

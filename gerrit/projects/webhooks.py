@@ -60,7 +60,7 @@ class GerrirProjectWebHooks(object):
                 "sslVerify": "true"
             }
 
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             new_webhook = project.webhooks.create('test', input_)
 
         :param name: the webhook name

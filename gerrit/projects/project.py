@@ -38,7 +38,7 @@ class GerritProject(BaseModel):
                 "description": "Plugin for Gerrit that handles the replication.",
                 "commit_message": "Update the project description"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.set_description(input_)
 
         :param input_: the ProjectDescriptionInput entity,
@@ -92,7 +92,7 @@ class GerritProject(BaseModel):
                 "parent": "Public-Plugins",
                 "commit_message": "Update the project parent"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.set_parent(input_)
 
         :param input_: The ProjectParentInput entity,
@@ -127,7 +127,7 @@ class GerritProject(BaseModel):
             input_ = {
                 "ref": "refs/heads/stable"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.set_HEAD(input_)
 
         :param input_: The HeadInput entity,
@@ -175,7 +175,7 @@ class GerritProject(BaseModel):
                 "submit_type": "REBASE_IF_NECESSARY",
                 "state": "ACTIVE"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.set_config(input_)
 
         :param input_: the ConfigInput entity,
@@ -210,7 +210,7 @@ class GerritProject(BaseModel):
             input_ = {
                 "show_progress": "true"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.run_garbage_collection(input_)
 
         :param input_: the GCInput entity,
@@ -238,7 +238,7 @@ class GerritProject(BaseModel):
                 ],
                 "reason": "Violates IP"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.ban_commits(input_)
 
         :param input_: the BanInput entity,
@@ -296,7 +296,7 @@ class GerritProject(BaseModel):
                 "status": "NEW"
             }
 
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.create_change(input_)
 
         :param input_:
@@ -363,7 +363,7 @@ class GerritProject(BaseModel):
                 "index_children": "true"
                 "async": "true"
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.index(input_)
 
         :param input_: the IndexProjectInput entity,
@@ -401,7 +401,7 @@ class GerritProject(BaseModel):
                 }
             }
 
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             result = project.check_consistency(input_)
 
         :param input_: the CheckProjectInput entity,

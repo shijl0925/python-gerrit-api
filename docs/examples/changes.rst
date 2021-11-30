@@ -8,18 +8,18 @@ Examples
 setup gerrit client::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
+    client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
 Queries changes.::
 
-    result = gerrit.changes.search(query=['status:open'])
+    result = client.changes.search(query=['status:open'])
     # or
     query = ["is:open+owner:self", "is:open+reviewer:self+-owner:self", "is:closed+owner:self+limit:5"]
-    result = gerrit.changes.search(query=query, options=["LABELS"])
+    result = client.changes.search(query=query, options=["LABELS"])
 
 Retrieves a change.::
 
-    change = gerrit.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
+    change = client.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
 
 create a change.::
 
@@ -30,11 +30,11 @@ create a change.::
         "topic": "create-change-in-browser",
         "status": "NEW"
     }
-    result = gerrit.changes.create(input_)
+    result = client.changes.create(input_)
 
 Deletes a change.::
 
-    gerrit.changes.delete("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
+    client.changes.delete("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
     # or
-    change = gerrit.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
+    change = client.changes.get("MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c")
     change.delete()

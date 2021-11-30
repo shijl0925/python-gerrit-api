@@ -36,7 +36,7 @@ class GerritGroup(BaseModel):
                 "name": "My Project Committers"
             }
 
-            group = gerrit.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
             result = group.set_name(input_)
 
         :param input_:
@@ -75,7 +75,7 @@ class GerritGroup(BaseModel):
             input_ = {
                 "description": "The committers of MyProject."
             }
-            group = gerrit.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
             result = group.set_description(input_)
 
         :param input_:
@@ -124,7 +124,7 @@ class GerritGroup(BaseModel):
             input_ = {
                 "visible_to_all": True
             }
-            group = gerrit.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
             result = group.set_options(input_)
 
 
@@ -163,7 +163,7 @@ class GerritGroup(BaseModel):
             input_ = {
                 "owner": "6a1e70e1a88782771a91808c8af9bbb7a9871389"
             }
-            group = gerrit.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
             result = group.set_owner(input_)
 
         :param input_: As response a GroupInfo entity is returned that describes the new owner group.

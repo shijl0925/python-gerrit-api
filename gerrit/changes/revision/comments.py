@@ -21,7 +21,7 @@ class GerritChangeRevisionComment(BaseModel):
                 "reason": "contains confidential information"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             comment = revision.comments.get("e167e775_e069567a")
             result = comment.delete(input_)

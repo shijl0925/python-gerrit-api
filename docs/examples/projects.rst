@@ -8,16 +8,16 @@ Examples
 setup gerrit client::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
+    client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
 Lists the projects::
 
-    projects = gerrit.projects.list()
+    projects = client.projects.list()
 
 
 Retrieves a project.::
 
-    project = gerrit.projects.get(project_name="MyProject")
+    project = client.projects.get(project_name="MyProject")
 
 
 Creates a new project.::
@@ -29,11 +29,11 @@ Creates a new project.::
           "MyProject-Owners"
         ]
     }
-    project = gerrit.projects.create('MyProject', input_)
+    project = client.projects.create('MyProject', input_)
 
 Delete the project, requires delete-project plugin::
 
-    gerrit.projects.delete("MyProject")
+    client.projects.delete("MyProject")
     # or
-    project = gerrit.projects.get(project_name="MyProject")
+    project = client.projects.get(project_name="MyProject")
     project.delete()

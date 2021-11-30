@@ -29,7 +29,7 @@ class GerritChange(BaseModel):
                 }
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.update(input_)
 
         :param input_: the MergePatchSetInput entity,
@@ -54,7 +54,7 @@ class GerritChange(BaseModel):
                 "message": "New Commit message \\n\\nChange-Id: I10394472cbd17dd12454f229e4f6de00b143a444\\n"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_commit_message(input_)
 
         :param input_: the CommitMessageInput entity,
@@ -132,7 +132,7 @@ class GerritChange(BaseModel):
                 "assignee": "jhon.doe"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_assignee(input_)
 
         :param input_: the AssigneeInput entity,
@@ -232,7 +232,7 @@ class GerritChange(BaseModel):
                 "base" : "1234",
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.rebase(input_)
 
         :param input_: the RebaseInput entity,
@@ -259,7 +259,7 @@ class GerritChange(BaseModel):
                 "destination_branch" : "release-branch"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.move(input_)
 
         :param input_: the MoveInput entity,
@@ -291,7 +291,7 @@ class GerritChange(BaseModel):
                 "message" : "Message to be added as review comment to the change when reverting the change."
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.revert()
             # or
             result = change.revert(input_)
@@ -343,7 +343,7 @@ class GerritChange(BaseModel):
                 "on_behalf_of": 1001439
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.submit(input_)
 
         :param input_: the SubmitInput entity,
@@ -446,7 +446,7 @@ class GerritChange(BaseModel):
                 "expect_merged_as": "something"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.fix()
             # or
             result = change.fix(input_)
@@ -480,7 +480,7 @@ class GerritChange(BaseModel):
                 "message": "Refactoring needs to be done before we can proceed here."
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_work_in_progress(input_)
             # or
             result = change.set_work_in_progress()
@@ -507,7 +507,7 @@ class GerritChange(BaseModel):
                 'message': 'Refactoring is done.'
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.set_ready_for_review(input_)
 
         :param input_: the WorkInProgressInput entity,
@@ -530,7 +530,7 @@ class GerritChange(BaseModel):
             input_ = {
                 "message": "After this security fix has been released we can make it public now."
             }
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.mark_private(input_)
 
         :param input_: the PrivateInput entity,
@@ -553,7 +553,7 @@ class GerritChange(BaseModel):
             input_ = {
                 "message": "This is a security fix that must not be public."
             }
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.unmark_private(input_)
             # or
             change.unmark_private()
@@ -635,7 +635,7 @@ class GerritChange(BaseModel):
                     "hashtag2"
                 ]
             }
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_hashtags(input_)
 
         :param input_: the HashtagsInput entity,
@@ -724,7 +724,7 @@ class GerritChange(BaseModel):
                 "user": "John Doe",
                 "reason": "reason"
             }
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.add_to_attention_set(input_)
 
         :param input_: the AttentionSetInput entity,
@@ -756,7 +756,7 @@ class GerritChange(BaseModel):
             input_ = {
                 "reason": "reason"
             }
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.remove_from_attention_set('kevin.shi', input_)
             # or
             change.remove_from_attention_set('kevin.shi')

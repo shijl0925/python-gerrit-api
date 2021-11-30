@@ -86,7 +86,7 @@ class GerritAccounts(object):
                   "MyProject-Owners"
                 ]
             }
-            new_account = gerrit.accounts.create('john.doe', input_)
+            new_account = client.accounts.create('john.doe', input_)
 
         :param username: account username
         :param input_: the AccountInput entity,

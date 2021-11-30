@@ -104,7 +104,7 @@ class GerritPlugins(object):
                 "url": "file:///gerrit/plugins/delete-project/delete-project-2.8.jar"
             }
 
-            plugin = gerrit.plugins.install(input_)
+            plugin = client.plugins.install(input_)
 
         :param id_: plugin id
         :param input_: the PluginInput entity,

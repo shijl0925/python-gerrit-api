@@ -8,9 +8,9 @@ Examples
 setup gerrit client and retrieve one change instance::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
+    client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
-    change = gerrit.changes.get(
+    change = client.changes.get(
         "MyProject~master~I39b027b763fb0b0dc7ed6c9e6bb5128d882dbe7c"
     )
 

@@ -50,15 +50,15 @@ Usage
 Example 1: setup gerrit client::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
+    client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
 Example 2: operate gerrit project::
 
     # Retrieves a project.
-    project = gerrit.projects.get('MyProject')
+    project = client.projects.get('MyProject')
 
     # or
-    project = gerrit.get(endpoint="/projects/MyProject")
+    project = client.get(endpoint="/projects/MyProject")
 
     # Creates a new project.
     input_ = {
@@ -68,13 +68,13 @@ Example 2: operate gerrit project::
           "MyProject-Owners"
         ]
     }
-    gerrit.projects.create('MyProject', input_)
+    client.projects.create('MyProject', input_)
 
     # or
-    gerrit.post(endpoint="/projects/MyProject", json=input_)
+    client.post(endpoint="/projects/MyProject", json=input_)
 
     # Sets the description of a project.
-    project = gerrit.projects.get('MyProject')
+    project = client.projects.get('MyProject')
     input_ = {
         "description": "Plugin for Gerrit that handles the replication.",,
         "commit_message": "Update the project description"
@@ -82,20 +82,20 @@ Example 2: operate gerrit project::
     result = project.set_description(input_)
 
     # or
-    result = gerrit.put(endpoint="/projects/MyProject/description", json=input_)
+    result = client.put(endpoint="/projects/MyProject/description", json=input_)
 
     # Deletes the description of a project.
-    project = gerrit.projects.get('MyProject')
+    project = client.projects.get('MyProject')
     project.delete_description()
 
     # or
-    gerrit.put(endpoint="/projects/MyProject/description")
+    client.put(endpoint="/projects/MyProject/description")
 
     # get a branch of th project by ref
     branch = project.branches.get('refs/heads/stable')
 
     # get these branches of th project
-    branches = gerrit.get(endpoint = "/projects/MyProject"/branches/)
+    branches = client.get(endpoint = "/projects/MyProject"/branches/)
 
     # Creates a new branch.
     input_ = {
@@ -104,16 +104,16 @@ Example 2: operate gerrit project::
     new_branch = project.branches.create('stable', input_)
 
     # or
-    result = gerrit.put(endpoint="/projects/MyProject/branches/stable", json=input_)
+    result = client.put(endpoint="/projects/MyProject/branches/stable", json=input_)
 
 
 Example 3: operate gerrit change::
 
     # Retrieves a change.
-    change = gerrit.changes.get('python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
+    change = client.changes.get('python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
 
     # or
-    change = gerrit.get(endpoint='/changes/python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
+    change = client.get(endpoint='/changes/python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
 
     # Marks a change as reviewed.
     change.mark_as_reviewed()
@@ -141,7 +141,7 @@ Example 3: operate gerrit change::
 Example 4: operate gerrit account::
 
     # Retrieves an account
-    account = gerrit.accounts.get('kevin.shi')
+    account = client.accounts.get('kevin.shi')
 
     # Sets the full name of an account.
     input_ = {
@@ -156,7 +156,7 @@ Example 4: operate gerrit account::
 Example 5: operate gerrit group::
 
     # Retrieves a group.
-    group = gerrit.groups.get('af01a8cb8cbd8ee7be072b98b1ee882867c0cf06')
+    group = client.groups.get('af01a8cb8cbd8ee7be072b98b1ee882867c0cf06')
 
     # Adds a user as member to a Gerrit internal group.
     result = group.add_member("ci_jenkins")

@@ -23,7 +23,7 @@ class GerrirProjectLabel(BaseModel):
                 "ignore_self_approval": true
             }
 
-            project = gerrit.projects.get("MyProject")
+            project = client.projects.get("MyProject")
             label = project.labels.get("foo")
             result = label.set(input_)
 

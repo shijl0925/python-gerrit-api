@@ -41,7 +41,7 @@ class GerritConfig(object):
                 "check_accounts": {},
                 "check_account_external_ids": {}
             }
-            result = gerrit.config.check_consistency(input_)
+            result = client.config.check_consistency(input_)
 
         :param input_: the ConsistencyCheckInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#consistency-check-input
@@ -77,7 +77,7 @@ class GerritConfig(object):
             input_ = {
                 "token": "Enim+QNbAo6TV8Hur8WwoUypI6apG7qBPvF+bw==$MTAwMDAwNDp0ZXN0QHRlc3QuZGU="
             }
-            result = gerrit.config.confirm_email(input_)
+            result = client.config.confirm_email(input_)
 
         :param input_: the EmailConfirmationInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#email-confirmation-input
@@ -154,7 +154,7 @@ class GerritConfig(object):
             input_ = {
                 "changes_per_page": 50
             }
-            result = gerrit.config.set_default_user_preferences(input_)
+            result = client.config.set_default_user_preferences(input_)
 
         :param input_: the PreferencesInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
@@ -199,7 +199,7 @@ class GerritConfig(object):
                 "theme": "DEFAULT",
                 "ignore_whitespace": "IGNORE_NONE"
             }
-            result = gerrit.config.set_default_diff_preferences(input_)
+            result = client.config.set_default_diff_preferences(input_)
 
         :param input_: the DiffPreferencesInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
@@ -242,7 +242,7 @@ class GerritConfig(object):
                 "theme": "DEFAULT",
                 "key_map_type": "DEFAULT"
             }
-            result = gerrit.config.set_default_edit_preferences(input_)
+            result = client.config.set_default_edit_preferences(input_)
 
         :param input_: the EditPreferencesInfo entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-input

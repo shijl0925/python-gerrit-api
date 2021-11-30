@@ -70,7 +70,7 @@ class GerritAccountGPGKeys(object):
                   "DEADBEEF",
                 ]
             }
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.gpg_keys.modify(input_)
 
         :param input_: the GpgKeysInput entity,

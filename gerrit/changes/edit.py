@@ -102,7 +102,7 @@ class GerritChangeEdit(BaseModel):
                 "message": "New commit message\\n\\nChange-Id: I10394472cbd17dd12454f229e4f6de00b143a444"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             edit = change.get_edit()
             edit.change_commit_message(input_)
 
@@ -138,7 +138,7 @@ class GerritChangeEdit(BaseModel):
                 "notify": "NONE"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             edit = change.get_edit()
             edit.publish(input_)
 

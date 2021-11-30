@@ -111,7 +111,7 @@ class GerritGroups(object):
                 "owner": "Administrators",
                 "owner_id": "af01a8cb8cbd8ee7be072b98b1ee882867c0cf06"
             }
-            new_group = gerrit.groups.create('My-Project2-Committers', input_)
+            new_group = client.groups.create('My-Project2-Committers', input_)
 
         :param name: group name
         :param input_: the GroupInput entity,

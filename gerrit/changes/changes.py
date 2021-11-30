@@ -15,7 +15,7 @@ class GerritChanges(object):
         .. code-block:: python
 
             query = ["is:open+owner:self", "is:open+reviewer:self+-owner:self", "is:closed+owner:self+limit:5"]
-            result = gerrit.changes.search(query=query, options=["LABELS"])
+            result = client.changes.search(query=query, options=["LABELS"])
 
         :param query: Queries as a list of string
         :param options: List of options to fetch additional data about changes
@@ -76,7 +76,7 @@ class GerritChanges(object):
                 "topic": "create-change-in-browser",
                 "status": "NEW"
             }
-            result = gerrit.changes.create(input_)
+            result = client.changes.create(input_)
 
         :param input_: the ChangeInput entity,
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input

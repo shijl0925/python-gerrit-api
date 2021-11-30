@@ -136,7 +136,7 @@ class GerritProjects(object):
                   "MyProject-Owners"
                 ]
             }
-            project = gerrit.projects.create('MyProject', input_)
+            project = client.projects.create('MyProject', input_)
 
         :param project_name: the name of the project
         :param input_: the ProjectInput entity,

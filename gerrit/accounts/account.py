@@ -38,7 +38,7 @@ class GerritAccount(BaseModel):
                 "name": "Keven Shi"
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_name(input_)
 
 
@@ -109,7 +109,7 @@ class GerritAccount(BaseModel):
                 "username": "shijl0925.shi"
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_username(input_)
 
         :param input_: the UsernameInput entity,
@@ -136,7 +136,7 @@ class GerritAccount(BaseModel):
                 "display_name": "Kevin"
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_displayname(input_)
 
         :param input_: the DisplayNameInput entity,
@@ -197,7 +197,7 @@ class GerritAccount(BaseModel):
                 "http_password": "the_password"
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_http_password(input_)
 
         :param input_: the HttpPasswordInput entity,
@@ -334,7 +334,7 @@ class GerritAccount(BaseModel):
                 "mute_common_path_prefixes": true,
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_user_preferences(input_)
 
         :param input_: the PreferencesInput entity，
@@ -381,7 +381,7 @@ class GerritAccount(BaseModel):
                 "font_size": 12
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_diff_preferences(input_)
 
         :param input_: the DiffPreferencesInput entity,
@@ -430,7 +430,7 @@ class GerritAccount(BaseModel):
                 "auto_close_brackets": true
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.set_edit_preferences(input_)
 
         :param input_: the EditPreferencesInfo entity,
@@ -472,7 +472,7 @@ class GerritAccount(BaseModel):
                 }
             ]
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.modify_watched_projects(input_)
 
         :param input_: the ProjectWatchInfo entities as list
@@ -499,7 +499,7 @@ class GerritAccount(BaseModel):
                 }
             ]
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.delete_watched_projects(input_)
 
         :param input_: the watched projects as list
@@ -536,7 +536,7 @@ class GerritAccount(BaseModel):
                 "mailto:john.doe@example.com"
             ]
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.delete_external_ids(input_)
 
         :param input_: the external ids as list
@@ -568,7 +568,7 @@ class GerritAccount(BaseModel):
             input_ = {
                 "name": "Individual"
             }
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.sign_contributor_agreement(input_)
 
         :param input_: the ContributorAgreementInput entity,
@@ -592,7 +592,7 @@ class GerritAccount(BaseModel):
             input_ = {
                 "query": "is:abandoned"
             }
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             result = account.delete_draft_comments(input_)
 
         :param input_: the DeleteDraftCommentsInput entity,
@@ -681,7 +681,7 @@ class GerritAccount(BaseModel):
                 "remove": ["yellow"]
             }
 
-            account = gerrit.accounts.get('kevin.shi')
+            account = client.accounts.get('kevin.shi')
             change_id = "myProject~master~I8473b95934b5732ac55d26311a706c9c2bde9940"
             result = account.update_star_labels_on_change(change_id, input_)
 

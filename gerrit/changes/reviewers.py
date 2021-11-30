@@ -21,7 +21,7 @@ class GerritChangeReviewer(BaseModel):
                 "notify": "NONE"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             reviewer = change.reviewers.get('john.doe')
             reviewer.delete(input_)
             # or
@@ -63,7 +63,7 @@ class GerritChangeReviewer(BaseModel):
                 "notify": "NONE"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             reviewer = change.reviewers.get('john.doe')
             reviewer.delete_vote('Code-Review', input_)
             # or
@@ -143,7 +143,7 @@ class GerritChangeReviewers(object):
                 "reviewer": "john.doe"
             }
 
-            change = gerrit.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             new_reviewer = change.reviewers.add(input_)
 
         :param input_: the ReviewerInput entity,

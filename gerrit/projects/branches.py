@@ -140,7 +140,7 @@ class GerrirProjectBranches(object):
             input_ = {
                 'revision': '76016386a0d8ecc7b6be212424978bb45959d668'
             }
-            project = gerrit.projects.get('myproject')
+            project = client.projects.get('myproject')
             new_branch = project.branches.create('stable', input_)
 
 

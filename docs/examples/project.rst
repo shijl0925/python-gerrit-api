@@ -8,9 +8,9 @@ Examples
 setup gerrit client and retrieve one project instance::
 
     from gerrit import GerritClient
-    gerrit = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
+    client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
-    project = gerrit.projects.get('python-sonarqube-api')
+    project = client.projects.get('python-sonarqube-api')
 
 
 Retrieves the description of a project.::
