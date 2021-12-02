@@ -17,6 +17,9 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
+with open("requirements.txt") as f:
+    required = f.read().splitlines()
+
 setup(
     name="python-gerrit-api",
     # https://packaging.python.org/en/latest/single_source_version.html
@@ -44,9 +47,7 @@ setup(
     keywords="api gerrit client wrapper",
     packages=find_packages(exclude=["contrib", "docs", "test*"]),
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[
-        "requests",
-    ],
+    install_requires=required,
     extras_require={},
     package_data={},
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
