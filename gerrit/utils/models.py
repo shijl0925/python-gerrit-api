@@ -32,7 +32,10 @@ class BaseModel(object):
         data.update(kwargs)
 
         for key, value in data.items():
-            setattr(item, key, value)
+            try:
+                setattr(item, key, value)
+            except AttributeError:
+                pass
 
         return item
 
