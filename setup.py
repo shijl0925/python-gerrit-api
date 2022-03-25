@@ -23,7 +23,7 @@ with open("requirements.txt") as f:
 setup(
     name="python-gerrit-api",
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.0.2",
+    version="2.0.3",
     description="Python wrapper for the Gerrit REST API.",
     long_description=long_description,
     url="https://github.com/shijl0925/python-gerrit-api",
