@@ -69,6 +69,23 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
+    def get_vote(self, user):
+        """
+        Lists the votes for a specific reviewer of the change.
+
+        :return:
+        """
+        endpoint = "/changes/%s/reviewers/%s/votes" % (self.id, user)
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        verified = 0
+        code_review = 0
+        if "Code-Review" in result:
+            code_review = result["Code-Review"]
+        if "Verified" in result:
+            verified = result["Verified"]
+        return code_review, verified
+
     def get_topic(self):
         """
         Retrieves the topic of a change.
