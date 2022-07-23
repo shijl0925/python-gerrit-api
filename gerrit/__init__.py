@@ -18,7 +18,6 @@ class GerritClient(object):
 
     """
 
-    GERRIT_AUTH_SUFFIX = "/a"
     default_headers = {"Content-Type": "application/json; charset=UTF-8"}
 
     def __init__(
@@ -31,6 +30,7 @@ class GerritClient(object):
         cert=None,
         timeout=60,
         max_retries=None,
+        auth_suffix="/a"
     ):
         if not password and not use_netrc:
             raise ValueError(
@@ -50,6 +50,7 @@ class GerritClient(object):
             timeout=timeout,
             max_retries=max_retries,
         )
+        self.auth_suffix = auth_suffix
 
     def get_password_from_netrc_file(self):
         """
@@ -82,7 +83,7 @@ class GerritClient(object):
         :param endpoint: service endpoint as str
         :return: complete url (including host and port) as str
         """
-        return "{}{}{}".format(self._base_url, self.GERRIT_AUTH_SUFFIX, endpoint)
+        return "{}{}{}".format(self._base_url, self.auth_suffix, endpoint)
 
     @staticmethod
     def decode_response(response):
