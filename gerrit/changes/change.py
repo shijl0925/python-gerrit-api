@@ -697,18 +697,18 @@ class GerritChange(BaseModel):
     def reviewers(self):
         return GerritChangeReviewers(change=self.id, gerrit=self.gerrit)
 
-    def get_revision(self, revision_id):
+    def get_revision(self, revision_id="current"):
         """
-        get one revision by revision id
+        Get one revision by revision SHA.
 
-        :param revision_id:
+        :param revision_id: Optional ID. If not specified, the current revision will be retrieved.
         :return:
         """
         return GerritChangeRevision(
+            gerrit=self.gerrit,
             project=self.project,
             change=self.id,
-            revision=revision_id,
-            gerrit=self.gerrit,
+            revision=revision_id
         )
 
     def get_attention_set(self):

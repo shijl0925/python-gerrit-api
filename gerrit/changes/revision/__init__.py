@@ -12,7 +12,7 @@ from gerrit.changes.revision.files import GerritChangeRevisionFiles
 
 
 class GerritChangeRevision(object):
-    def __init__(self, project, change, revision, gerrit):
+    def __init__(self, gerrit, project, change, revision="current"):
         self.project = project
         self.change = change
         self.revision = revision
