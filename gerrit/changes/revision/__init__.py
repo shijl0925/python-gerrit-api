@@ -6,6 +6,7 @@ try:
 except ImportError:
     from urllib import quote_plus
 
+from base64 import b64decode
 from gerrit.changes.revision.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.revision.comments import GerritChangeRevisionComments
 from gerrit.changes.revision.files import GerritChangeRevisionFiles
@@ -215,10 +216,10 @@ class GerritChangeRevision(object):
         result = self.gerrit.decode_response(response)
         return result
 
-    def get_patch(self, zip_=False, download=False, path=None):
+    def get_patch(self, zip_=False, download=False, path=None, decode=False):
         """
         Gets the formatted patch for one revision.
-        The formatted patch is returned as text encoded inside base64
+        The formatted patch is returned as text encoded inside base64 if decode is False.
 
         Adding query parameter zip (for example /changes/…​/patch?zip) returns the patch as a single file inside of a
         ZIP archive. Clients can expand the ZIP to obtain the plain text patch, avoiding the need for a base64 decoding
@@ -232,6 +233,7 @@ class GerritChangeRevision(object):
         :param zip_:
         :param download:
         :param path:
+        :param decode: Decode bas64 to plain text.
         :return:
         """
         endpoint = "/changes/%s/revisions/%s/patch" % (self.change, self.revision)
@@ -247,6 +249,9 @@ class GerritChangeRevision(object):
 
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
+
+        if decode:
+            return b64decode(result).decode("utf-8")
         return result
 
     def submit_preview(self):
