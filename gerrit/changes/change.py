@@ -83,6 +83,47 @@ class GerritChange(BaseModel):
         result = self.gerrit.decode_response(response)
         return result
 
+    def delete_vote(self, account, label, input_=None):
+        """
+        Deletes a single vote from a change. Note, that even when the last vote of a reviewer is removed the reviewer
+        itself is still listed on the change.
+        If another user removed a user’s vote, the user with the deleted vote will be added to the attention set.
+
+        .. code-block:: python
+
+            input_ = {
+                "notify": "NONE"
+            }
+
+            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change.delete_vote('John', 'Code-Review', input_)
+            # or
+            change.delete_vote('John', 'Code-Review')
+
+        :param account:
+        :param label:
+        :param input_: the DeleteVoteInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
+        :return:
+        """
+        if input_ is None:
+            endpoint = "/changes/%s/reviewers/%s/votes/%s" % (
+                self.change,
+                account,
+                label,
+            )
+            self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        else:
+            endpoint = "/changes/%s/reviewers/%s/votes/%s/delete" % (
+                self.change,
+                account,
+                label,
+            )
+            base_url = self.gerrit.get_endpoint_url(endpoint)
+            self.gerrit.requester.post(
+                base_url, json=input_, headers=self.gerrit.default_headers
+            )
+
     def get_topic(self):
         """
         Retrieves the topic of a change.
