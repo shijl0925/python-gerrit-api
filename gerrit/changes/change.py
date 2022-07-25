@@ -12,6 +12,8 @@ from gerrit.utils.exceptions import UnsupportMethod
 
 class GerritChange(BaseModel):
     def __init__(self, **kwargs):
+        self.revisions = {}
+        self.current_revision_number = 0
         super(GerritChange, self).__init__(**kwargs)
 
     def create_merge_patch_set(self, input_):
@@ -68,6 +70,23 @@ class GerritChange(BaseModel):
         )
         result = self.gerrit.decode_response(response)
         return result
+
+    def get_vote(self, user):
+        """
+        Lists the votes for a specific reviewer of the change.
+
+        :return:
+        """
+        endpoint = "/changes/%s/reviewers/%s/votes" % (self.id, user)
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        result = self.gerrit.decode_response(response)
+        verified = 0
+        code_review = 0
+        if "Code-Review" in result:
+            code_review = result["Code-Review"]
+        if "Verified" in result:
+            verified = result["Verified"]
+        return code_review, verified
 
     def get_topic(self):
         """
@@ -680,18 +699,47 @@ class GerritChange(BaseModel):
     def reviewers(self):
         return GerritChangeReviewers(change=self.id, gerrit=self.gerrit)
 
-    def get_revision(self, revision_id):
-        """
-        get one revision by revision id
+    def __get_revisions(self):
+        endpoint = "/changes/?q=%s&o=ALL_REVISIONS" % self.number
+        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
+        [result] = self.gerrit.decode_response(response)
+        self.revisions = {}
+        for revision_sha, revision in result["revisions"].items():
+            if result["current_revision"] == revision_sha:
+                self.current_revision_number = revision["_number"]
+            self.revisions[revision["_number"]] = revision_sha
 
-        :param revision_id:
+    def __revision_number_to_sha(self, number):
+        if number in self.revisions:
+            return self.revisions[number]
+        return None
+
+    def get_revision(self, revision_id="current"):
+        """
+        Get one revision by revision SHA or integer number.
+
+        :param revision_id: Optional ID. If not specified, the current revision will be retrieved.
+                            It supports SHA IDs and integer numbers from -X to +X, where X is the
+                            current (latest) revision.
+                            Zero means current revision.
+                            -N means the current revision number X minus N, so if the current
+                            revision is 50, and -1 is given, the revision 49 will be retrieved.
         :return:
         """
+        if isinstance(revision_id, int):
+            if len(self.revisions) == 0:
+                self.__get_revisions()
+            if revision_id <= 0:
+                revision_id = self.current_revision_number + revision_id
+            revision_id = self.__revision_number_to_sha(revision_id)
+            if revision_id is None:
+                return None
+
         return GerritChangeRevision(
+            gerrit=self.gerrit,
             project=self.project,
             change=self.id,
-            revision=revision_id,
-            gerrit=self.gerrit,
+            revision=revision_id
         )
 
     def get_attention_set(self):

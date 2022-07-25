@@ -33,6 +33,8 @@ class BaseModel(object):
 
         for key, value in data.items():
             try:
+                if key[0] == '_':
+                    key = key[1:]
                 setattr(item, key, value)
             except AttributeError:
                 pass

@@ -38,8 +38,11 @@ class GerritChanges(object):
         response = self.gerrit.requester.get(
             self.gerrit.get_endpoint_url(endpoint), params
         )
-        result = self.gerrit.decode_response(response)
-        return result
+        changes = []
+        for change in self.gerrit.decode_response(response):
+            changes.append(GerritChange.parse(change, gerrit=self.gerrit))
+
+        return changes
 
     def get(self, id_, detailed=False, options=None):
         """
