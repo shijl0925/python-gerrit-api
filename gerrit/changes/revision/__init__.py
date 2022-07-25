@@ -447,9 +447,9 @@ class GerritChangeRevision(object):
 
             change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision("0f4f97b5af9a965e082fb8cde082c5f1ba2fe930")
-            revision.delete_vote('Code-Review', input_)
+            revision.delete_vote('John', 'Code-Review', input_)
             # or
-            revision.delete_vote('Code-Review')
+            revision.delete_vote('John', 'Code-Review')
 
         :param account:
         :param label:
