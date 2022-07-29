@@ -15,7 +15,7 @@ class GerritProjectDashboard(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/dashboards/%s" % (self.project, self.id)
+        endpoint = f"/projects/{self.project}/dashboards/{self.id}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -30,7 +30,7 @@ class GerritProjectDashboards(object):
 
         :return:
         """
-        endpoint = "/projects/%s/dashboards/" % self.project
+        endpoint = f"/projects/{self.project}/dashboards/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProjectDashboard.parse_list(
@@ -55,7 +55,7 @@ class GerritProjectDashboards(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#dashboard-input
         :return:
         """
-        endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
+        endpoint = f"/projects/{self.project}/dashboards/{id_}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -72,7 +72,7 @@ class GerritProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
+        endpoint = f"/projects/{self.project}/dashboards/{id_}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProjectDashboard.parse(
@@ -86,5 +86,5 @@ class GerritProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
+        endpoint = f"/projects/{self.project}/dashboards/{id_}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

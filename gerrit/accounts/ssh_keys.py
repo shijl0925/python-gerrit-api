@@ -15,7 +15,7 @@ class GerritAccountSSHKey(BaseModel):
 
         :return:
         """
-        endpoint = "/accounts/%s/sshkeys/%s" % (self.username, self.seq)
+        endpoint = f"/accounts/{self.username}/sshkeys/{str(self.seq)}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -30,7 +30,7 @@ class GerritAccountSSHKeys(object):
 
         :return:
         """
-        endpoint = "/accounts/%s/sshkeys" % self.username
+        endpoint = f"/accounts/{self.username}/sshkeys"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccountSSHKey.parse_list(
@@ -44,7 +44,7 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
-        endpoint = "/accounts/%s/sshkeys/%s" % (self.username, str(seq))
+        endpoint = f"/accounts/{self.username}/sshkeys/{str(seq)}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccountSSHKey.parse(
@@ -59,7 +59,7 @@ class GerritAccountSSHKeys(object):
         :param ssh_key: SSH key raw content
         :return:
         """
-        endpoint = "/accounts/%s/sshkeys" % self.username
+        endpoint = f"/accounts/{self.username}/sshkeys"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, data=ssh_key, headers={"Content-Type": "plain/text"}
@@ -76,5 +76,5 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
-        endpoint = "/accounts/%s/sshkeys/%s" % (self.username, str(seq))
+        endpoint = f"/accounts/{self.username}/sshkeys/{str(seq)}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

@@ -16,7 +16,7 @@ class GerritGroupSubGroups(object):
 
         :return:
         """
-        endpoint = "/groups/%s/groups/" % self.group_id
+        endpoint = f"/groups/{self.group_id}/groups/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         subgroups = []
@@ -35,7 +35,7 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        endpoint = "/groups/%s/groups/%s" % (self.group_id, subgroup)
+        endpoint = f"/groups/{self.group_id}/groups/{subgroup}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
@@ -51,7 +51,7 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        endpoint = "/groups/%s/groups/%s" % (self.group_id, subgroup)
+        endpoint = f"/groups/{self.group_id}/groups/{subgroup}"
         response = self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
@@ -67,5 +67,5 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        endpoint = "/groups/%s/groups/%s" % (self.group_id, subgroup)
+        endpoint = f"/groups/{self.group_id}/groups/{subgroup}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

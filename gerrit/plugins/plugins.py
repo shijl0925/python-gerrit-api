@@ -14,7 +14,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = "/plugins/%s/gerrit~enable" % self.id
+        endpoint = f"/plugins/{self.id}/gerrit~enable"
         response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return self.gerrit.plugins.get(result.get("id"))
@@ -25,7 +25,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = "/plugins/%s/gerrit~disable" % self.id
+        endpoint = f"/plugins/{self.id}/gerrit~disable"
         response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return self.gerrit.plugins.get(result.get("id"))
@@ -36,7 +36,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = "/plugins/%s/gerrit~reload" % self.id
+        endpoint = f"/plugins/{self.id}/gerrit~reload"
         response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return self.gerrit.plugins.get(result.get("id"))
@@ -89,7 +89,7 @@ class GerritPlugins(object):
         :param id_: plugin id
         :return:
         """
-        endpoint = "/plugins/%s/gerrit~status" % id_
+        endpoint = f"/plugins/{id_}/gerrit~status"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritPlugin.parse(result, gerrit=self.gerrit)
@@ -111,7 +111,7 @@ class GerritPlugins(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-plugins.html#plugin-input
         :return:
         """
-        endpoint = "/plugins/%s.jar" % id_
+        endpoint = f"/plugins/{id_}.jar"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers

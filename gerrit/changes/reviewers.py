@@ -31,11 +31,11 @@ class GerritChangeReviewer(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-reviewer-input
         :return:
         """
+        endpoint = f"/changes/{self.change}/reviewers/{self.username}"
         if input_ is None:
-            endpoint = "/changes/%s/reviewers/%s" % (self.change, self.username)
             self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
         else:
-            endpoint = "/changes/%s/reviewers/%s/delete" % (self.change, self.username)
+            endpoint += "/delete"
             base_url = self.gerrit.get_endpoint_url(endpoint)
             self.gerrit.requester.post(
                 base_url, json=input_, headers=self.gerrit.default_headers
@@ -47,7 +47,7 @@ class GerritChangeReviewer(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/reviewers/%s/votes/" % (self.change, self.username)
+        endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -74,19 +74,11 @@ class GerritChangeReviewer(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
+        endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/{label}"
         if input_ is None:
-            endpoint = "/changes/%s/reviewers/%s/votes/%s" % (
-                self.change,
-                self.username,
-                label,
-            )
             self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
         else:
-            endpoint = "/changes/%s/reviewers/%s/votes/%s/delete" % (
-                self.change,
-                self.username,
-                label,
-            )
+            endpoint += "/delete"
             base_url = self.gerrit.get_endpoint_url(endpoint)
             self.gerrit.requester.post(
                 base_url, json=input_, headers=self.gerrit.default_headers
@@ -104,7 +96,7 @@ class GerritChangeReviewers(object):
 
         :return:
         """
-        endpoint = "/changes/%s/reviewers/" % self.change
+        endpoint = f"/changes/{self.change}/reviewers/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChangeReviewer.parse_list(
@@ -118,7 +110,7 @@ class GerritChangeReviewers(object):
         :param account: _account_id, name, username or email
         :return:
         """
-        endpoint = "/changes/%s/reviewers/%s" % (self.change, account)
+        endpoint = f"/changes/{self.change}/reviewers/{account}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
@@ -150,7 +142,7 @@ class GerritChangeReviewers(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#reviewer-input
         :return:
         """
-        endpoint = "/changes/%s/reviewers" % self.change
+        endpoint = f"/changes/{self.change}/reviewers"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers

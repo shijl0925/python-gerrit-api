@@ -17,7 +17,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/name" % self.id
+        endpoint = f"/groups/{self.id}/name"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.get(base_url)
         result = self.gerrit.decode_response(response)
@@ -42,7 +42,7 @@ class GerritGroup(BaseModel):
         :param input_:
         :return:
         """
-        endpoint = "/groups/%s/name" % self.id
+        endpoint = f"/groups/{self.id}/name"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -57,7 +57,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/description" % self.id
+        endpoint = f"/groups/{self.id}/description"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.get(base_url)
         result = self.gerrit.decode_response(response)
@@ -81,7 +81,7 @@ class GerritGroup(BaseModel):
         :param input_:
         :return:
         """
-        endpoint = "/groups/%s/description" % self.id
+        endpoint = f"/groups/{self.id}/description"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -98,7 +98,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/description" % self.id
+        endpoint = f"/groups/{self.id}/description"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
     def get_options(self):
@@ -107,7 +107,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/options" % self.id
+        endpoint = f"/groups/{self.id}/options"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.get(base_url)
         result = self.gerrit.decode_response(response)
@@ -132,7 +132,7 @@ class GerritGroup(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-options-input
         :return:
         """
-        endpoint = "/groups/%s/options" % self.id
+        endpoint = f"/groups/{self.id}/options"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -146,7 +146,7 @@ class GerritGroup(BaseModel):
 
         :return: As response a GroupInfo entity is returned that describes the owner group.
         """
-        endpoint = "/groups/%s/owner" % self.id
+        endpoint = f"/groups/{self.id}/owner"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.get(base_url)
         result = self.gerrit.decode_response(response)
@@ -169,7 +169,7 @@ class GerritGroup(BaseModel):
         :param input_: As response a GroupInfo entity is returned that describes the new owner group.
         :return:
         """
-        endpoint = "/groups/%s/owner" % self.id
+        endpoint = f"/groups/{self.id}/owner"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -186,7 +186,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/log.audit" % self.id
+        endpoint = f"/groups/{self.id}/log.audit"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -197,7 +197,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        endpoint = "/groups/%s/index" % self.id
+        endpoint = f"/groups/{self.id}/index"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
     @property

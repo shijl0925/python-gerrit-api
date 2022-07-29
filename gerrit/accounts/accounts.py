@@ -44,10 +44,10 @@ class GerritAccounts(object):
             k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
         }
 
-        endpoint = "/accounts/{suggest}{query}".format(
-            suggest="?suggest&" if suggested else "?",
-            query="q={query}".format(query=query),
-        )
+        endpoint = "/accounts/?"
+        if suggested:
+            endpoint += "suggest&"
+        endpoint += f"q={query}"
 
         response = self.gerrit.requester.get(
             self.gerrit.get_endpoint_url(endpoint), params
@@ -64,9 +64,9 @@ class GerritAccounts(object):
         :param detailed: boolean type, If True then fetch info in more details, such as: registered_on
         :return:
         """
-        endpoint = "/accounts/{username}/{detail}".format(
-            username=username, detail="detail" if detailed else ""
-        )
+        endpoint = f"/accounts/{username}/"
+        if detailed:
+            endpoint += "detail"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccount.parse(result, gerrit=self.gerrit)
@@ -93,7 +93,7 @@ class GerritAccounts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-input
         :return:
         """
-        endpoint = "/accounts/%s" % username
+        endpoint = f"/accounts/{username}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers

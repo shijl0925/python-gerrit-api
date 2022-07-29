@@ -20,7 +20,7 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/commits/%s/in" % (self.project, self.commit)
+        endpoint = f"/projects/{self.project}/commits/{self.commit}/in"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -32,11 +32,7 @@ class GerritProjectCommit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = "/projects/%s/commits/%s/files/%s/content" % (
-            self.project,
-            self.commit,
-            quote_plus(file),
-        )
+        endpoint = f"/projects/{self.project}/commits/{self.commit}/files/{quote_plus(file)}/content"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -57,7 +53,7 @@ class GerritProjectCommit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#cherrypick-input
         :return:  the resulting cherry-picked change
         """
-        endpoint = "/projects/%s/commits/%s/cherrypick" % (self.project, self.commit)
+        endpoint = f"/projects/{self.project}/commits/{self.commit}/cherrypick"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -71,7 +67,7 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/commits/%s/files/" % (self.project, self.commit)
+        endpoint = f"/projects/{self.project}/commits/{self.commit}/files/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result

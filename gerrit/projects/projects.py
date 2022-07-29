@@ -104,7 +104,7 @@ class GerritProjects(object):
         """
         params = {k: v for k, v in (("limit", limit), ("start", skip)) if v is not None}
 
-        endpoint = "/projects/?query=%s" % query
+        endpoint = f"/projects/?query={query}"
         response = self.gerrit.requester.get(
             self.gerrit.get_endpoint_url(endpoint), params
         )
@@ -118,7 +118,7 @@ class GerritProjects(object):
         :param name: the name of the project
         :return:
         """
-        endpoint = "/projects/%s" % quote_plus(name)
+        endpoint = f"/projects/{quote_plus(name)}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProject.parse(result, gerrit=self.gerrit)
@@ -144,7 +144,7 @@ class GerritProjects(object):
 
         :return:
         """
-        endpoint = "/projects/%s" % quote_plus(project_name)
+        endpoint = f"/projects/{quote_plus(project_name)}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -159,5 +159,5 @@ class GerritProjects(object):
         :param project_name: project name
         :return:
         """
-        endpoint = "/projects/%s/delete-project~delete" % quote_plus(project_name)
+        endpoint = f"/projects/{quote_plus(project_name)}/delete-project~delete"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))

@@ -15,7 +15,7 @@ class Cache(BaseModel):
 
         :return:
         """
-        endpoint = "/config/server/caches/%s/flush" % self.name
+        endpoint = f"/config/server/caches/{self.name}/flush"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -48,7 +48,7 @@ class Caches(object):
         :param name: cache name
         :return:
         """
-        endpoint = "/config/server/caches/%s" % name
+        endpoint = f"/config/server/caches/{name}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return Cache.parse(result, gerrit=self.gerrit)
@@ -60,7 +60,7 @@ class Caches(object):
         :param name: cache name
         :return:
         """
-        endpoint = "/config/server/caches/%s/flush" % name
+        endpoint = f"/config/server/caches/{name}/flush"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
     def operation(self, input_):

@@ -14,7 +14,7 @@ class GerritAccountGPGKey(BaseModel):
 
         :return:
         """
-        endpoint = "/accounts/%s/gpgkeys/%s" % (self.username, self.id)
+        endpoint = f"/accounts/{self.username}/gpgkeys/{self.id}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -29,7 +29,7 @@ class GerritAccountGPGKeys(object):
 
         :return:
         """
-        endpoint = "/accounts/%s/gpgkeys" % self.username
+        endpoint = f"/accounts/{self.username}/gpgkeys"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         keys = []
@@ -49,7 +49,7 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        endpoint = "/accounts/%s/gpgkeys/%s" % (self.username, id_)
+        endpoint = f"/accounts/{self.username}/gpgkeys/{id_}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccountGPGKey.parse(
@@ -77,7 +77,7 @@ class GerritAccountGPGKeys(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        endpoint = "/accounts/%s/gpgkeys" % self.username
+        endpoint = f"/accounts/{self.username}/gpgkeys"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -92,5 +92,5 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        endpoint = "/accounts/%s/gpgkeys/%s" % (self.username, id_)
+        endpoint = f"/accounts/{self.username}/gpgkeys/{id_}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

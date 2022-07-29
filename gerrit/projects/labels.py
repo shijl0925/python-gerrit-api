@@ -31,7 +31,7 @@ class GerritProjectLabel(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
         :return:
         """
-        endpoint = "/projects/%s/labels/%s" % (self.project, self.name)
+        endpoint = f"/projects/{self.project}/labels/{self.name}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -46,7 +46,7 @@ class GerritProjectLabel(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/labels/%s" % (self.project, self.name)
+        endpoint = f"/projects/{self.project}/labels/{self.name}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -61,7 +61,7 @@ class GerritProjectLabels(object):
 
         :return:
         """
-        endpoint = "/projects/%s/labels/" % self.project
+        endpoint = f"/projects/{self.project}/labels/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProjectLabel.parse_list(result, gerrit=self.gerrit)
@@ -74,7 +74,7 @@ class GerritProjectLabels(object):
         :param name: label name
         :return:
         """
-        endpoint = "/projects/%s/labels/%s" % (self.project, name)
+        endpoint = f"/projects/{self.project}/labels/{name}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritProjectLabel.parse(result, gerrit=self.gerrit)
@@ -104,7 +104,7 @@ class GerritProjectLabels(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
         :return:
         """
-        endpoint = "/projects/%s/labels/%s" % (self.project, name)
+        endpoint = f"/projects/{self.project}/labels/{name}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -120,5 +120,5 @@ class GerritProjectLabels(object):
         :param name: label name
         :return:
         """
-        endpoint = "/projects/%s/labels/%s" % (self.project, name)
+        endpoint = f"/projects/{self.project}/labels/{name}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

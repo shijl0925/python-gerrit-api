@@ -16,10 +16,7 @@ class GerritProjectWebHook(BaseModel):
 
         :return:
         """
-        endpoint = "/config/server/webhooks~projects/%s/remotes/%s" % (
-            self.project,
-            self.name,
-        )
+        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -34,7 +31,7 @@ class GerritProjectWebHooks(object):
 
         :return:
         """
-        endpoint = "/config/server/webhooks~projects/%s/remotes/" % self.project
+        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
 
@@ -67,10 +64,7 @@ class GerritProjectWebHooks(object):
         :param input_: the RemoteInfo entity
         :return:
         """
-        endpoint = "/config/server/webhooks~projects/%s/remotes/%s" % (
-            self.project,
-            name,
-        )
+        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -87,10 +81,7 @@ class GerritProjectWebHooks(object):
         :param name: the webhook name
         :return:
         """
-        endpoint = "/config/server/webhooks~projects/%s/remotes/%s" % (
-            self.project,
-            name,
-        )
+        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         result.update({"name": name})
@@ -105,8 +96,5 @@ class GerritProjectWebHooks(object):
         :param name: the webhook name
         :return:
         """
-        endpoint = "/config/server/webhooks~projects/%s/remotes/%s" % (
-            self.project,
-            name,
-        )
+        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

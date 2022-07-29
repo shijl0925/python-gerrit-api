@@ -33,22 +33,14 @@ class GerritChangeRevisionComment(BaseModel):
         :return:
         """
         if input_ is None:
-            endpoint = "/changes/%s/revisions/%s/comments/%s" % (
-                self.change,
-                self.revision,
-                self.id,
-            )
+            endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
             response = self.gerrit.requester.delete(
                 self.gerrit.get_endpoint_url(endpoint)
             )
             result = self.gerrit.decode_response(response)
             return result
         else:
-            endpoint = "/changes/%s/revisions/%s/comments/%s/delete" % (
-                self.change,
-                self.revision,
-                self.id,
-            )
+            endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}/delete"
             base_url = self.gerrit.get_endpoint_url(endpoint)
             response = self.gerrit.requester.post(
                 base_url, json=input_, headers=self.gerrit.default_headers
@@ -69,7 +61,7 @@ class GerritChangeRevisionComments(object):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/comments" % (self.change, self.revision)
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         comments = []
@@ -89,11 +81,7 @@ class GerritChangeRevisionComments(object):
         :param id_:
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/comments/%s" % (
-            self.change,
-            self.revision,
-            id_,
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{id_}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChangeRevisionComment.parse(

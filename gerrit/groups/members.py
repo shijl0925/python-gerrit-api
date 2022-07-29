@@ -16,7 +16,7 @@ class GerritGroupMembers(object):
 
         :return:
         """
-        endpoint = "/groups/%s/members/" % self.group_id
+        endpoint = f"/groups/{self.group_id}/members/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
 
@@ -36,7 +36,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = "/groups/%s/members/%s" % (self.group_id, username)
+        endpoint = f"/groups/{self.group_id}/members/{username}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
@@ -52,7 +52,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = "/groups/%s/members/%s" % (self.group_id, username)
+        endpoint = f"/groups/{self.group_id}/members/{username}"
         response = self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         if result:
@@ -68,5 +68,5 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = "/groups/%s/members/%s" % (self.group_id, username)
+        endpoint = f"/groups/{self.group_id}/members/{username}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

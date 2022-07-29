@@ -68,9 +68,9 @@ class GerritGroups(object):
         """
         version = self.gerrit.version
         if parse(version) < parse("3.2.0"):
-            endpoint = "/groups/?query2=%s" % query
+            endpoint = f"/groups/?query2={query}"
         else:
-            endpoint = "/groups/?query=%s" % query
+            endpoint = f"/groups/?query={query}"
 
         params = {
             k: v
@@ -92,9 +92,10 @@ class GerritGroups(object):
         :param detailed:
         :return:
         """
-        endpoint = "/groups/{id_}/{detail}".format(
-            id_=id_, detail="detail" if detailed else ""
-        )
+        endpoint = f"/groups/{id_}/"
+        if detailed:
+            endpoint += "detail"
+
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritGroup.parse(result, gerrit=self.gerrit)
@@ -118,7 +119,7 @@ class GerritGroups(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-input
         :return:
         """
-        endpoint = "/groups/%s" % name
+        endpoint = f"/groups/{name}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers

@@ -64,4 +64,4 @@ class BaseModel(object):
     def __repr__(self):
         key = self.entity_name
         value = getattr(self, key)
-        return "%s(%s=%s)" % (self.__class__.__name__, key, value)
+        return f"{self.__class__.__name__}({key}={value})"
