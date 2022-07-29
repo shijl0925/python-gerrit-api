@@ -61,9 +61,7 @@ class GerritClient(object):
         netrc_client = netrc.netrc()
         auth_tokens = netrc_client.authenticators(self._base_url)
         if not auth_tokens:
-            raise ValueError(
-                "The '{}' host name is not found in netrc file.".format(self._base_url)
-            )
+            raise ValueError(f"The '{self._base_url}' host name is not found in netrc file.")
         return auth_tokens[2]
 
     @classmethod
@@ -83,7 +81,7 @@ class GerritClient(object):
         :param endpoint: service endpoint as str
         :return: complete url (including host and port) as str
         """
-        return "{}{}{}".format(self._base_url, self.auth_suffix, endpoint)
+        return f"{self._base_url}{self.auth_suffix}{endpoint}"
 
     @staticmethod
     def decode_response(response):
@@ -110,7 +108,7 @@ class GerritClient(object):
         try:
             return json.loads(content)
         except ValueError:
-            raise ValueError("Invalid json content: {}".format(content))
+            raise ValueError(f"Invalid json content: {content}")
 
     @property
     def config(self):

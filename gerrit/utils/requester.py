@@ -63,15 +63,11 @@ class Requester(object):
             request_kwargs["auth"] = (self.username, self.password)
 
         if params:
-            assert isinstance(params, dict), "Params must be a dict, got %s" % repr(
-                params
-            )
+            assert isinstance(params, dict), f"Params must be a dict, got {repr(params)}"
             request_kwargs["params"] = params
 
         if headers:
-            assert isinstance(headers, dict), "headers must be a dict, got %s" % repr(
-                headers
-            )
+            assert isinstance(headers, dict), f"headers must be a dict, got {repr(headers)}"
             request_kwargs["headers"] = headers
 
         if self.AUTH_COOKIE:
@@ -222,18 +218,10 @@ class Requester(object):
             reason = res.reason
 
         if 400 <= res.status_code < 500:
-            http_error_msg = u"%s Client Error: %s for url: %s" % (
-                res.status_code,
-                reason,
-                res.url,
-            )
+            http_error_msg = f"{res.status_code} Client Error: {reason} for url: {res.url}"
 
         elif 500 <= res.status_code < 600:
-            http_error_msg = u"%s Server Error: %s for url: %s" % (
-                res.status_code,
-                reason,
-                res.url,
-            )
+            http_error_msg = f"{res.status_code} Server Error: {reason} for url: {res.url}"
 
         if res.status_code < 300:
             # OK, return http response

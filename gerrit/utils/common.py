@@ -18,18 +18,12 @@ def check(fn):
             arg_type = fn.__annotations__.get(argspec[i], None)
             if arg_type and not isinstance(p, arg_type):
                 raise TypeError(
-                    "{} should be {}, not {}".format(
-                        argspec[i], arg_type.__name__, type(p).__name__
-                    )
+                    f"{argspec[i]} should be {arg_type.__name__}, not {type(p).__name__}"
                 )
         for k, v in kwargs.items():
             kwarg_type = fn.__annotations__.get(k, None)
             if kwarg_type and not isinstance(v, kwarg_type):
-                raise TypeError(
-                    "{} should be {}, not {}".format(
-                        k, kwarg_type.__name__, type(v).__name__
-                    )
-                )
+                raise TypeError(f"{k} should be {kwarg_type.__name__}, not {type(v).__name__}")
 
         result = fn(*args, **kwargs)
 
@@ -37,9 +31,7 @@ def check(fn):
         return_type = fn.__annotations__.get("return", None)
         if return_type and not isinstance(result, return_type):
             raise TypeError(
-                "{} should return {}, not {}".format(
-                    fn.__name__, return_type.__name__, type(result).__name__
-                )
+                f"{fn.__name__} should return {return_type.__name__}, not {type(result).__name__}"
             )
 
         return result

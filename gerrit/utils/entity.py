@@ -19,9 +19,7 @@ class Entity(object):
         for item in self.required:
             if item not in kwargs.keys():
                 logger.warning(
-                    "*** Warning! {} missing a required keyword argument '{}' ***".format(
-                        self.__class__.__name__, item
-                    )
+                    f"*** Warning! {self.__class__.__name__} missing a required keyword argument '{item}' ***"
                 )
 
         for (k, v) in kwargs.items():
@@ -29,9 +27,7 @@ class Entity(object):
                 setattr(self, k, v)
             else:
                 logger.warning(
-                    "*** Warning! {} got an unexpected keyword argument: '{}' ***".format(
-                        self.__class__.__name__, k
-                    )
+                    f"*** Warning! {self.__class__.__name__} got an unexpected keyword argument: '{k}' ***"
                 )
 
     def __getattr__(self, key):

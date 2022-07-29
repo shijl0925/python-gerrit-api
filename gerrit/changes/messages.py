@@ -29,11 +29,11 @@ class GerritChangeMessage(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-change-message-input
         :return:
         """
+        endpoint = f"/changes/{self.change}/messages/{self.id}"
         if input_ is None:
-            endpoint = "/changes/%s/messages/%s" % (self.change, self.id)
             self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
         else:
-            endpoint = "/changes/%s/messages/%s/delete" % (self.change, self.id)
+            endpoint += "/delete"
             base_url = self.gerrit.get_endpoint_url(endpoint)
             response = self.gerrit.requester.post(
                 base_url, json=input_, headers=self.gerrit.default_headers
@@ -54,7 +54,7 @@ class GerritChangeMessages(object):
 
         :return:
         """
-        endpoint = "/changes/%s/messages" % self.change
+        endpoint = f"/changes/{self.change}/messages"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChangeMessage.parse_list(
@@ -68,7 +68,7 @@ class GerritChangeMessages(object):
         :param id_: change message id
         :return:
         """
-        endpoint = "/changes/%s/messages/%s" % (self.change, id_)
+        endpoint = f"/changes/{self.change}/messages/{id_}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChangeMessage.parse(result, change=self.change, gerrit=self.gerrit)

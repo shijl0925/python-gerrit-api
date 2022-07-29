@@ -15,7 +15,7 @@ class GerritAccountEmail(BaseModel):
 
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s" % (self.username, self.email)
+        endpoint = f"/accounts/{self.username}/emails/{self.email}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
     def set_preferred(self):
@@ -24,7 +24,7 @@ class GerritAccountEmail(BaseModel):
 
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s/preferred" % (self.username, self.email)
+        endpoint = f"/accounts/{self.username}/emails/{self.email}/preferred"
         self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -39,7 +39,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        endpoint = "/accounts/%s/emails" % self.username
+        endpoint = f"/accounts/{self.username}/emails"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccountEmail.parse_list(
@@ -52,7 +52,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s" % (self.username, email)
+        endpoint = f"/accounts/{self.username}/emails/{email}"
         response = self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -63,7 +63,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s" % (self.username, email)
+        endpoint = f"/accounts/{self.username}/emails/{email}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritAccountEmail.parse(
@@ -77,7 +77,7 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s/preferred" % (self.username, email)
+        endpoint = f"/accounts/{self.username}/emails/{email}/preferred"
         self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
 
     def delete(self, email):
@@ -87,5 +87,5 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
-        endpoint = "/accounts/%s/emails/%s" % (self.username, email)
+        endpoint = f"/accounts/{self.username}/emails/{email}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

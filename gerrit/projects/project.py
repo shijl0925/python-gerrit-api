@@ -23,7 +23,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/description" % self.id
+        endpoint = f"/projects/{self.id}/description"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -45,7 +45,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-description-input
         :return:
         """
-        endpoint = "/projects/%s/description" % self.id
+        endpoint = f"/projects/{self.id}/description"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -59,7 +59,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/description" % self.id
+        endpoint = f"/projects/{self.id}/description"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
     def delete(self):
@@ -68,7 +68,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/delete-project~delete" % self.id
+        endpoint = f"/projects/{self.id}/delete-project~delete"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
     def get_parent(self):
@@ -77,7 +77,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/parent" % self.id
+        endpoint = f"/projects/{self.id}/parent"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -99,7 +99,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-parent-input
         :return:
         """
-        endpoint = "/projects/%s/parent" % self.id
+        endpoint = f"/projects/{self.id}/parent"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -113,7 +113,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/HEAD" % self.id
+        endpoint = f"/projects/{self.id}/HEAD"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -134,7 +134,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#head-input
         :return:
         """
-        endpoint = "/projects/%s/HEAD" % self.id
+        endpoint = f"/projects/{self.id}/HEAD"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -150,7 +150,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/config" % self.id
+        endpoint = f"/projects/{self.id}/config"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -182,7 +182,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#config-info
         :return:
         """
-        endpoint = "/projects/%s/config" % self.id
+        endpoint = f"/projects/{self.id}/config"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -196,7 +196,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/statistics.git" % self.id
+        endpoint = f"/projects/{self.id}/statistics.git"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -217,7 +217,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#gc-input
         :return:
         """
-        endpoint = "/projects/%s/gc" % self.id
+        endpoint = f"/projects/{self.id}/gc"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -245,7 +245,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#ban-input
         :return:
         """
-        endpoint = "/projects/%s/ban" % self.id
+        endpoint = f"/projects/{self.id}/ban"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -259,7 +259,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/access" % self.id
+        endpoint = f"/projects/{self.id}/access"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -273,7 +273,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
-        endpoint = "/projects/%s/access" % self.id
+        endpoint = f"/projects/{self.id}/access"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -306,7 +306,7 @@ class GerritProject(BaseModel):
         if parse(version) < parse("3.3.0"):
             raise UnsupportMethod("The server does not support this method")
 
-        endpoint = "/projects/%s/create.change" % self.id
+        endpoint = f"/projects/{self.id}/create.change"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -325,7 +325,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
-        endpoint = "/projects/%s/access:review" % self.id
+        endpoint = f"/projects/{self.id}/access:review"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -346,7 +346,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/check.access?%s" % (self.id, options)
+        endpoint = f"/projects/{self.id}/check.access?{options}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -370,7 +370,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#index-project-input
         :return:
         """
-        endpoint = "/projects/%s/index" % self.id
+        endpoint = f"/projects/{self.id}/index"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -384,7 +384,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/index.changes" % self.id
+        endpoint = f"/projects/{self.id}/index.changes"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
     def check_consistency(self, input_):
@@ -408,7 +408,7 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#check-project-input
         :return:
         """
-        endpoint = "/projects/%s/check" % self.id
+        endpoint = f"/projects/{self.id}/check"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -432,7 +432,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/children/" % self.id
+        endpoint = f"/projects/{self.id}/children/"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -452,7 +452,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/commits/%s" % (self.id, commit)
+        endpoint = f"/projects/{self.id}/commits/{commit}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerrirProjectCommit.parse(result, project=self.id, gerrit=self.gerrit)
@@ -474,7 +474,7 @@ class GerritProject(BaseModel):
         """
         version = self.gerrit.version
         if parse(version) < parse("3.2.0"):
-            endpoint = "/projects/%s" % self.id
+            endpoint = f"/projects/{self.id}"
             response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
             result = self.gerrit.decode_response(response)
             return result.get("labels")

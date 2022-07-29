@@ -22,7 +22,7 @@ class GerritChangeEdit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
+        endpoint = f"/changes/{self.change}/edit/{quote_plus(file)}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -34,7 +34,7 @@ class GerritChangeEdit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = "/changes/%s/edit/%s/meta" % (self.change, quote_plus(file))
+        endpoint = f"/changes/{self.change}/edit/{quote_plus(file)}/meta"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -47,7 +47,7 @@ class GerritChangeEdit(BaseModel):
         :param file_content: the content of the file need to change
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
+        endpoint = f"/changes/{self.change}/edit/{quote_plus(file)}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.put(
             base_url, data=file_content, headers={"Content-Type": "plain/text"}
@@ -61,7 +61,7 @@ class GerritChangeEdit(BaseModel):
         :return:
         """
         input_ = {"restore_path": file}
-        endpoint = "/changes/%s/edit" % self.change
+        endpoint = f"/changes/{self.change}/edit"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -76,7 +76,7 @@ class GerritChangeEdit(BaseModel):
         :return:
         """
         input_ = {"old_path": old_path, "new_path": new_path}
-        endpoint = "/changes/%s/edit" % self.change
+        endpoint = f"/changes/{self.change}/edit"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -89,7 +89,7 @@ class GerritChangeEdit(BaseModel):
         :param file: Path to file to delete.
         :return:
         """
-        endpoint = "/changes/%s/edit/%s" % (self.change, quote_plus(file))
+        endpoint = f"/changes/{self.change}/edit/{quote_plus(file)}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
     def change_commit_message(self, input_):
@@ -110,7 +110,7 @@ class GerritChangeEdit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-edit-message-input
         :return:
         """
-        endpoint = "/changes/%s/edit:message" % self.change
+        endpoint = f"/changes/{self.change}/edit:message"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -123,7 +123,7 @@ class GerritChangeEdit(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/edit:message" % self.change
+        endpoint = f"/changes/{self.change}/edit:message"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -146,7 +146,7 @@ class GerritChangeEdit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#publish-change-edit-input
         :return:
         """
-        endpoint = "/changes/%s/edit:publish" % self.change
+        endpoint = f"/changes/{self.change}/edit:publish"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.post(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -160,7 +160,7 @@ class GerritChangeEdit(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/edit:rebase" % self.change
+        endpoint = f"/changes/{self.change}/edit:rebase"
         self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
 
     def delete(self):
@@ -169,5 +169,5 @@ class GerritChangeEdit(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/edit" % self.change
+        endpoint = f"/changes/{self.change}/edit"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

@@ -22,11 +22,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/content" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/content"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -42,11 +38,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/download" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/download"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -58,11 +50,7 @@ class GerritChangeRevisionFile(BaseModel):
         :param intraline: If the intraline parameter is specified, intraline differences are included in the diff.
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/diff" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/diff"
 
         if intraline:
             endpoint += endpoint + "?intraline"
@@ -77,11 +65,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/blame" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/blame"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return result
@@ -92,11 +76,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/reviewed" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/reviewed"
         self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
 
     def delete_reviewed(self):
@@ -105,11 +85,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files/%s/reviewed" % (
-            self.change,
-            self.revision,
-            quote_plus(self.path),
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/reviewed"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -125,7 +101,7 @@ class GerritChangeRevisionFiles(object):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/files" % (self.change, self.revision)
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
 

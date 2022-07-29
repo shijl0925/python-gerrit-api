@@ -31,10 +31,7 @@ class GerritChanges(object):
             if v is not None
         }
 
-        endpoint = "/changes/{query}".format(
-            query="?q={query}".format(query="&q=".join(query))
-        )
-
+        endpoint = f"/changes/?q={'&q='.join(query)}"
         response = self.gerrit.requester.get(
             self.gerrit.get_endpoint_url(endpoint), params
         )
@@ -52,9 +49,11 @@ class GerritChanges(object):
         :param options: List of options to fetch additional data about a change
         :return:
         """
-        endpoint = "/changes/{id_}/{detail}".format(
-            id_=id_, detail="detail" if detailed else ""
-        )
+
+        endpoint = f"/changes/{id_}/"
+        if detailed:
+            endpoint += "detail"
+
         params = {"o": options}
 
         response = self.gerrit.requester.get(
@@ -97,5 +96,5 @@ class GerritChanges(object):
         :param id_: change id
         :return:
         """
-        endpoint = "/changes/%s" % id_
+        endpoint = f"/changes/{id_}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))

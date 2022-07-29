@@ -26,7 +26,7 @@ class GerrirProjectTag(BaseModel):
 
         :return:
         """
-        endpoint = "/projects/%s/tags/%s" % (self.project, self.name)
+        endpoint = f"/projects/{self.project}/tags/{self.name}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -59,7 +59,7 @@ class GerrirProjectTags(object):
                 raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
         params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
-        endpoint = "/projects/{}/tags/".format(self.project)
+        endpoint = f"/projects/{self.project}/tags/"
         response = self.gerrit.requester.get(
             self.gerrit.get_endpoint_url(endpoint), params
         )
@@ -73,7 +73,7 @@ class GerrirProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        endpoint = "/projects/%s/tags/%s" % (self.project, quote_plus(name))
+        endpoint = f"/projects/{self.project}/tags/{quote_plus(name)}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerrirProjectTag.parse(result, project=self.project, gerrit=self.gerrit)
@@ -97,7 +97,7 @@ class GerrirProjectTags(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#tag-input
         :return:
         """
-        endpoint = "/projects/%s/tags/%s" % (self.project, name)
+        endpoint = f"/projects/{self.project}/tags/{name}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -112,6 +112,6 @@ class GerrirProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        endpoint = "/projects/%s/tags/%s" % (self.project, quote_plus(name))
+        endpoint = f"/projects/{self.project}/tags/{quote_plus(name)}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         self.gerrit.requester.delete(base_url)

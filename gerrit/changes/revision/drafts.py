@@ -29,11 +29,7 @@ class GerritChangeRevisionDraft(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts/%s" % (
-            self.change,
-            self.revision,
-            self.id,
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -49,11 +45,7 @@ class GerritChangeRevisionDraft(BaseModel):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts/%s" % (
-            self.change,
-            self.revision,
-            self.id,
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
@@ -69,7 +61,7 @@ class GerritChangeRevisionDrafts(object):
 
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts" % (self.change, self.revision)
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         drafts = []
@@ -89,11 +81,7 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts/%s" % (
-            self.change,
-            self.revision,
-            id_,
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}"
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
         return GerritChangeRevisionDraft.parse(
@@ -119,7 +107,7 @@ class GerritChangeRevisionDrafts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts" % (self.change, self.revision)
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
         base_url = self.gerrit.get_endpoint_url(endpoint)
         response = self.gerrit.requester.put(
             base_url, json=input_, headers=self.gerrit.default_headers
@@ -136,9 +124,5 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        endpoint = "/changes/%s/revisions/%s/drafts/%s" % (
-            self.change,
-            self.revision,
-            id_,
-        )
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}"
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
