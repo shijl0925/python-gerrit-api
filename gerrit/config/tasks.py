@@ -15,8 +15,7 @@ class Task(BaseModel):
 
         :return:
         """
-        endpoint = f"/config/server/tasks/{self.id}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/config/server/tasks/{self.id}")
 
 
 class Tasks(object):
@@ -30,9 +29,7 @@ class Tasks(object):
 
         :return:
         """
-        endpoint = "/config/server/tasks/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get("/config/server/tasks/")
         return Task.parse_list(result, gerrit=self.gerrit)
 
     def get(self, id_):
@@ -43,9 +40,8 @@ class Tasks(object):
         :param id_: task id
         :return:
         """
-        endpoint = f"/config/server/tasks/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+
+        result = self.gerrit.get(f"/config/server/tasks/{id_}")
         return Task.parse(result, gerrit=self.gerrit)
 
     def delete(self, id_):
@@ -56,5 +52,4 @@ class Tasks(object):
         :param id_: task id
         :return:
         """
-        endpoint = f"/config/server/tasks/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/config/server/tasks/{id_}")

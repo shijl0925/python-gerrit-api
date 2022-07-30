@@ -30,11 +30,7 @@ class GerritChangeRevisionDraft(BaseModel):
         :return:
         """
         endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -46,7 +42,7 @@ class GerritChangeRevisionDraft(BaseModel):
         :return:
         """
         endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(endpoint)
 
 
 class GerritChangeRevisionDrafts(object):
@@ -61,9 +57,7 @@ class GerritChangeRevisionDrafts(object):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts")
         drafts = []
         for key, value in result.items():
             for item in value:
@@ -81,9 +75,7 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}")
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -108,11 +100,7 @@ class GerritChangeRevisionDrafts(object):
         :return:
         """
         endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -124,5 +112,4 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}")

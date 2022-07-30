@@ -20,10 +20,7 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/commits/{self.commit}/in"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/projects/{self.project}/commits/{self.commit}/in")
 
     def get_file_content(self, file):
         """
@@ -32,10 +29,9 @@ class GerritProjectCommit(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = f"/projects/{self.project}/commits/{self.commit}/files/{quote_plus(file)}/content"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(
+            f"/projects/{self.project}/commits/{self.commit}/files/{quote_plus(file)}/content"
+        )
 
     def cherry_pick(self, input_):
         """
@@ -54,11 +50,7 @@ class GerritProjectCommit(BaseModel):
         :return:  the resulting cherry-picked change
         """
         endpoint = f"/projects/{self.project}/commits/{self.commit}/cherrypick"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
         return self.gerrit.changes.get(result.get("id"))
 
     def list_change_files(self):
@@ -67,7 +59,4 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/commits/{self.commit}/files/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/projects/{self.project}/commits/{self.commit}/files/")

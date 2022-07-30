@@ -31,14 +31,10 @@ class GerritChangeMessage(BaseModel):
         """
         endpoint = f"/changes/{self.change}/messages/{self.id}"
         if input_ is None:
-            self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+            self.gerrit.delete(endpoint)
         else:
             endpoint += "/delete"
-            base_url = self.gerrit.get_endpoint_url(endpoint)
-            response = self.gerrit.requester.post(
-                base_url, json=input_, headers=self.gerrit.default_headers
-            )
-            result = self.gerrit.decode_response(response)
+            result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
             change = self.gerrit.changes.get(self.change)
             return change.messages.get(result.get("id"))
 
@@ -55,11 +51,8 @@ class GerritChangeMessages(object):
         :return:
         """
         endpoint = f"/changes/{self.change}/messages"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerritChangeMessage.parse_list(
-            result, change=self.change, gerrit=self.gerrit
-        )
+        result = self.gerrit.get(endpoint)
+        return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -68,7 +61,5 @@ class GerritChangeMessages(object):
         :param id_: change message id
         :return:
         """
-        endpoint = f"/changes/{self.change}/messages/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/messages/{id_}")
         return GerritChangeMessage.parse(result, change=self.change, gerrit=self.gerrit)

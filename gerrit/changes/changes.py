@@ -31,12 +31,7 @@ class GerritChanges(object):
             if v is not None
         }
 
-        endpoint = f"/changes/?q={'&q='.join(query)}"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/changes/?q={'&q='.join(query)}", params=params)
 
     def get(self, id_, detailed=False, options=None):
         """
@@ -54,12 +49,7 @@ class GerritChanges(object):
         if detailed:
             endpoint += "detail"
 
-        params = {"o": options}
-
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(endpoint, {"o": options})
         return GerritChange.parse(result, gerrit=self.gerrit)
 
     def create(self, input_):
@@ -81,12 +71,7 @@ class GerritChanges(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input
         :return:
         """
-        endpoint = "/changes/"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.post("/changes/", json=input_, headers=self.gerrit.default_headers)
         return GerritChange.parse(result, gerrit=self.gerrit)
 
     def delete(self, id_):
@@ -96,5 +81,4 @@ class GerritChanges(object):
         :param id_: change id
         :return:
         """
-        endpoint = f"/changes/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/changes/{id_}")

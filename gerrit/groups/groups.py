@@ -43,12 +43,7 @@ class GerritGroups(object):
             if v is not None
         }
 
-        endpoint = "/groups/"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/groups/", params=params)
 
     def search(self, query, options=None, limit=None, skip=None):
         """
@@ -78,11 +73,7 @@ class GerritGroups(object):
             if v is not None
         }
 
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(endpoint, params=params)
 
     def get(self, id_, detailed=False):
         """
@@ -95,10 +86,7 @@ class GerritGroups(object):
         endpoint = f"/groups/{id_}/"
         if detailed:
             endpoint += "detail"
-
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerritGroup.parse(result, gerrit=self.gerrit)
+        return GerritGroup.parse(self.gerrit.get(endpoint), gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -120,9 +108,5 @@ class GerritGroups(object):
         :return:
         """
         endpoint = f"/groups/{name}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritGroup.parse(result, gerrit=self.gerrit)

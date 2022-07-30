@@ -15,10 +15,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/version"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/version")
 
     def get_server_info(self):
         """
@@ -26,10 +23,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/info"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/info")
 
     def check_consistency(self, input_):
         """
@@ -48,12 +42,7 @@ class GerritConfig(object):
         :return:
         """
         endpoint = "/config/server/check.consistency"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def reload_config(self):
         """
@@ -61,10 +50,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/reload"
-        response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post("/config/server/reload")
 
     def confirm_email(self, input_):
         """
@@ -83,10 +69,8 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#email-confirmation-input
         :return:
         """
-        endpoint = "/config/server/email.confirm"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        self.gerrit.put(
+            "/config/server/email.confirm", json=input_, headers=self.gerrit.default_headers
         )
 
     @property
@@ -103,9 +87,7 @@ class GerritConfig(object):
         endpoint = "/config/server/summary"
         if option is not None:
             endpoint += f"?{option}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(endpoint)
 
     def list_capabilities(self):
         """
@@ -114,10 +96,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/capabilities"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/capabilities")
 
     @property
     def tasks(self):
@@ -129,10 +108,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/top-menus"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/top-menus")
 
     def get_default_user_preferences(self):
         """
@@ -140,10 +116,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/preferences"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/preferences")
 
     def set_default_user_preferences(self, input_):
         """
@@ -160,13 +133,9 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
         :return:
         """
-        endpoint = "/config/server/preferences"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        return self.gerrit.put(
+            "/config/server/preferences", json=input_, headers=self.gerrit.default_headers
         )
-        result = self.gerrit.decode_response(response)
-        return result
 
     def get_default_diff_preferences(self):
         """
@@ -174,10 +143,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/preferences.diff"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/preferences.diff")
 
     def set_default_diff_preferences(self, input_):
         """
@@ -205,13 +171,9 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
         :return:
         """
-        endpoint = "/config/server/preferences.diff"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        return self.gerrit.put(
+            "/config/server/preferences.diff", json=input_, headers=self.gerrit.default_headers
         )
-        result = self.gerrit.decode_response(response)
-        return result
 
     def get_default_edit_preferences(self):
         """
@@ -219,10 +181,7 @@ class GerritConfig(object):
 
         :return:
         """
-        endpoint = "/config/server/preferences.edit"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/config/server/preferences.edit")
 
     def set_default_edit_preferences(self, input_):
         """
@@ -248,13 +207,9 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-input
         :return:
         """
-        endpoint = "/config/server/preferences.edit"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        return self.gerrit.put(
+            "/config/server/preferences.edit", json=input_, headers=self.gerrit.default_headers
         )
-        result = self.gerrit.decode_response(response)
-        return result
 
     def index_changes(self, input_):
         """
@@ -269,8 +224,6 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#index-changes-input
         :return:
         """
-        endpoint = "/config/server/index.changes"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        self.gerrit.post(
+            "/config/server/index.changes", json=input_, headers=self.gerrit.default_headers
         )

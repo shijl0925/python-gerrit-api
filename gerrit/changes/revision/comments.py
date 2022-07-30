@@ -32,21 +32,12 @@ class GerritChangeRevisionComment(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-comment-input
         :return:
         """
+        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
         if input_ is None:
-            endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
-            response = self.gerrit.requester.delete(
-                self.gerrit.get_endpoint_url(endpoint)
-            )
-            result = self.gerrit.decode_response(response)
-            return result
+            return self.gerrit.delete(endpoint)
         else:
-            endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}/delete"
-            base_url = self.gerrit.get_endpoint_url(endpoint)
-            response = self.gerrit.requester.post(
-                base_url, json=input_, headers=self.gerrit.default_headers
-            )
-            result = self.gerrit.decode_response(response)
-            return result
+            endpoint += "/delete"
+            return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
 
 class GerritChangeRevisionComments(object):
@@ -61,9 +52,7 @@ class GerritChangeRevisionComments(object):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/comments")
         comments = []
         for key, value in result.items():
             for item in value:
@@ -81,9 +70,7 @@ class GerritChangeRevisionComments(object):
         :param id_:
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/comments/{id_}")
         return GerritChangeRevisionComment.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )

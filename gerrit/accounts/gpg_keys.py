@@ -14,8 +14,7 @@ class GerritAccountGPGKey(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/gpgkeys/{self.id}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/gpgkeys/{self.id}")
 
 
 class GerritAccountGPGKeys(object):
@@ -29,9 +28,7 @@ class GerritAccountGPGKeys(object):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/gpgkeys"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/accounts/{self.username}/gpgkeys")
         keys = []
         for key, value in result.items():
             gpg_key = value
@@ -49,9 +46,7 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        endpoint = f"/accounts/{self.username}/gpgkeys/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/accounts/{self.username}/gpgkeys/{id_}")
         return GerritAccountGPGKey.parse(
             result, username=self.username, gerrit=self.gerrit
         )
@@ -78,12 +73,7 @@ class GerritAccountGPGKeys(object):
         :return:
         """
         endpoint = f"/accounts/{self.username}/gpgkeys"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, id_):
         """
@@ -92,5 +82,4 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        endpoint = f"/accounts/{self.username}/gpgkeys/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/gpgkeys/{id_}")
