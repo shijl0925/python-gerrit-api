@@ -33,13 +33,10 @@ class GerritChangeReviewer(BaseModel):
         """
         endpoint = f"/changes/{self.change}/reviewers/{self.username}"
         if input_ is None:
-            self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+            self.gerrit.delete(endpoint)
         else:
             endpoint += "/delete"
-            base_url = self.gerrit.get_endpoint_url(endpoint)
-            self.gerrit.requester.post(
-                base_url, json=input_, headers=self.gerrit.default_headers
-            )
+            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def list_votes(self):
         """
@@ -48,9 +45,7 @@ class GerritChangeReviewer(BaseModel):
         :return:
         """
         endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(endpoint)
 
     def delete_vote(self, label, input_=None):
         """
@@ -76,13 +71,10 @@ class GerritChangeReviewer(BaseModel):
         """
         endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/{label}"
         if input_ is None:
-            self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+            self.gerrit.delete(endpoint)
         else:
             endpoint += "/delete"
-            base_url = self.gerrit.get_endpoint_url(endpoint)
-            self.gerrit.requester.post(
-                base_url, json=input_, headers=self.gerrit.default_headers
-            )
+            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
 
 class GerritChangeReviewers(object):
@@ -96,12 +88,8 @@ class GerritChangeReviewers(object):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerritChangeReviewer.parse_list(
-            result, change=self.change, gerrit=self.gerrit
-        )
+        result = self.gerrit.get(f"/changes/{self.change}/reviewers/")
+        return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, account):
         """
@@ -110,13 +98,9 @@ class GerritChangeReviewers(object):
         :param account: _account_id, name, username or email
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{account}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/changes/{self.change}/reviewers/{account}")
         if result:
-            return GerritChangeReviewer.parse(
-                result[0], change=self.change, gerrit=self.gerrit
-            )
+            return GerritChangeReviewer.parse(result[0], change=self.change, gerrit=self.gerrit)
 
     def add(self, input_):
         """
@@ -143,9 +127,4 @@ class GerritChangeReviewers(object):
         :return:
         """
         endpoint = f"/changes/{self.change}/reviewers"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)

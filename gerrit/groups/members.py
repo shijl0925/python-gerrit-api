@@ -16,9 +16,7 @@ class GerritGroupMembers(object):
 
         :return:
         """
-        endpoint = f"/groups/{self.group_id}/members/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/groups/{self.group_id}/members/")
 
         accounts = []
         for item in result:
@@ -36,9 +34,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = f"/groups/{self.group_id}/members/{username}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/groups/{self.group_id}/members/{username}")
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -52,9 +48,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = f"/groups/{self.group_id}/members/{username}"
-        response = self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(f"/groups/{self.group_id}/members/{username}")
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -68,5 +62,4 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        endpoint = f"/groups/{self.group_id}/members/{username}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/groups/{self.group_id}/members/{username}")

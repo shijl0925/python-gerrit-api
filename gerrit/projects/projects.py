@@ -76,12 +76,7 @@ class GerritProjects(object):
         params["all"] = int(is_all)
         params["d"] = int(description)
 
-        endpoint = "/projects/"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/projects/", params=params)
 
     def search(self, query, limit=None, skip=None):
         """
@@ -104,12 +99,7 @@ class GerritProjects(object):
         """
         params = {k: v for k, v in (("limit", limit), ("start", skip)) if v is not None}
 
-        endpoint = f"/projects/?query={query}"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/projects/?query={query}", params=params)
 
     def get(self, name):
         """
@@ -118,9 +108,7 @@ class GerritProjects(object):
         :param name: the name of the project
         :return:
         """
-        endpoint = f"/projects/{quote_plus(name)}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/projects/{quote_plus(name)}")
         return GerritProject.parse(result, gerrit=self.gerrit)
 
     def create(self, project_name, input_):
@@ -145,11 +133,7 @@ class GerritProjects(object):
         :return:
         """
         endpoint = f"/projects/{quote_plus(project_name)}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritProject.parse(result, gerrit=self.gerrit)
 
     def delete(self, project_name):
@@ -159,5 +143,4 @@ class GerritProjects(object):
         :param project_name: project name
         :return:
         """
-        endpoint = f"/projects/{quote_plus(project_name)}/delete-project~delete"
-        self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.post(f"/projects/{quote_plus(project_name)}/delete-project~delete")

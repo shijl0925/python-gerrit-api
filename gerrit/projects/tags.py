@@ -26,8 +26,7 @@ class GerrirProjectTag(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/tags/{self.name}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/projects/{self.project}/tags/{self.name}")
 
 
 class GerrirProjectTags(object):
@@ -59,12 +58,7 @@ class GerrirProjectTags(object):
                 raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
         params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
-        endpoint = f"/projects/{self.project}/tags/"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/projects/{self.project}/tags/", params=params)
 
     def get(self, name):
         """
@@ -73,9 +67,7 @@ class GerrirProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        endpoint = f"/projects/{self.project}/tags/{quote_plus(name)}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/projects/{self.project}/tags/{quote_plus(name)}")
         return GerrirProjectTag.parse(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
@@ -98,12 +90,7 @@ class GerrirProjectTags(object):
         :return:
         """
         endpoint = f"/projects/{self.project}/tags/{name}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, name):
         """
@@ -112,6 +99,4 @@ class GerrirProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        endpoint = f"/projects/{self.project}/tags/{quote_plus(name)}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.delete(base_url)
+        self.gerrit.delete(f"/projects/{self.project}/tags/{quote_plus(name)}")

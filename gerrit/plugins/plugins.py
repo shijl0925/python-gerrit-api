@@ -14,9 +14,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = f"/plugins/{self.id}/gerrit~enable"
-        response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~enable")
         return self.gerrit.plugins.get(result.get("id"))
 
     def disable(self):
@@ -25,9 +23,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = f"/plugins/{self.id}/gerrit~disable"
-        response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~disable")
         return self.gerrit.plugins.get(result.get("id"))
 
     def reload(self):
@@ -36,9 +32,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        endpoint = f"/plugins/{self.id}/gerrit~reload"
-        response = self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~reload")
         return self.gerrit.plugins.get(result.get("id"))
 
 
@@ -76,12 +70,7 @@ class GerritPlugins(object):
         params = {k: v for k, v in (("n", limit), ("S", skip), (p, v)) if v is not None}
         params["all"] = int(is_all)
 
-        endpoint = "/plugins/"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get("/plugins/", params=params)
 
     def get(self, id_):
         """
@@ -89,9 +78,7 @@ class GerritPlugins(object):
         :param id_: plugin id
         :return:
         """
-        endpoint = f"/plugins/{id_}/gerrit~status"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/plugins/{id_}/gerrit~status")
         return GerritPlugin.parse(result, gerrit=self.gerrit)
 
     def install(self, id_, input_):
@@ -111,10 +98,7 @@ class GerritPlugins(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-plugins.html#plugin-input
         :return:
         """
-        endpoint = f"/plugins/{id_}.jar"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        result = self.gerrit.put(
+            f"/plugins/{id_}.jar", json=input_, headers=self.gerrit.default_headers
         )
-        result = self.gerrit.decode_response(response)
         return GerritPlugin.parse(result, gerrit=self.gerrit)

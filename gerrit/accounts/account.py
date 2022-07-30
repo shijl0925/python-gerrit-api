@@ -20,11 +20,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/name"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.get(base_url)
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get_endpoint_url(f"/accounts/{self.username}/name")
 
     def set_name(self, input_):
         """
@@ -47,13 +43,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/name"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete_name(self):
         """
@@ -63,8 +53,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/name"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/name")
 
     def get_status(self):
         """
@@ -76,10 +65,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/status"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/status")
 
     def set_status(self, status):
         """
@@ -90,12 +76,7 @@ class GerritAccount(BaseModel):
         """
         endpoint = f"/accounts/{self.username}/status"
         input_ = {"status": status}
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def set_username(self, input_):
         """
@@ -117,13 +98,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/username"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def set_displayname(self, input_):
         """
@@ -148,13 +123,7 @@ class GerritAccount(BaseModel):
             raise UnsupportMethod("The server does not support this method")
 
         endpoint = f"/accounts/{self.username}/displayname"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def get_active(self):
         """
@@ -162,10 +131,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/active"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/active")
 
     def set_active(self):
         """
@@ -173,8 +139,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/active"
-        self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.put(f"/accounts/{self.username}/active")
 
     def delete_active(self):
         """
@@ -183,8 +148,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/active"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/active")
 
     def set_http_password(self, input_):
         """
@@ -205,12 +169,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/password.http"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete_http_password(self):
         """
@@ -218,8 +177,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/password.http"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/password.http")
 
     def get_oauth_token(self):
         """
@@ -229,10 +187,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/oauthtoken"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/oauthtoken")
 
     @property
     def emails(self):
@@ -252,10 +207,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/capabilities"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/capabilities")
 
     def check_capability(self, capability):
         """
@@ -264,10 +216,7 @@ class GerritAccount(BaseModel):
         :param capability:
         :return:
         """
-        endpoint = f"/accounts/{self.username}/capabilities/{capability}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/capabilities/{capability}")
 
     @property
     def groups(self):
@@ -276,9 +225,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/groups"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get( f"/accounts/{self.username}/groups")
         return [self.gerrit.groups.get(item.get("id")) for item in result]
 
     def get_avatar(self):
@@ -287,10 +234,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/avatar"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/avatar")
 
     def get_avatar_change_url(self):
         """
@@ -298,10 +242,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/avatar.change.url"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/avatar.change.url")
 
     def get_user_preferences(self):
         """
@@ -309,10 +250,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/preferences"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/preferences")
 
     def set_user_preferences(self, input_):
         """
@@ -342,12 +280,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/preferences"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def get_diff_preferences(self):
         """
@@ -355,10 +288,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/preferences.diff"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/preferences.diff")
 
     def set_diff_preferences(self, input_):
         """
@@ -389,12 +319,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/preferences.diff"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def get_edit_preferences(self):
         """
@@ -402,10 +327,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/preferences.edit"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/preferences.edit")
 
     def set_edit_preferences(self, input_):
         """
@@ -438,12 +360,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/preferences.edit"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def get_watched_projects(self):
         """
@@ -451,10 +368,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/watched.projects"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/watched.projects")
 
     def modify_watched_projects(self, input_):
         """
@@ -479,12 +393,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/watched.projects"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete_watched_projects(self, input_):
         """
@@ -506,10 +415,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/watched.projects:delete"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
+        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def get_external_ids(self):
         """
@@ -519,10 +425,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/external.ids"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/external.ids")
 
     def delete_external_ids(self, input_):
         """
@@ -543,10 +446,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/external.ids:delete"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
+        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def list_contributor_agreements(self):
         """
@@ -554,10 +454,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/agreements"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/agreements")
 
     def sign_contributor_agreement(self, input_):
         """
@@ -576,12 +473,8 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/agreements"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+
 
     def delete_draft_comments(self, input_):
         """
@@ -600,12 +493,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/drafts:delete"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def index(self):
         """
@@ -613,8 +501,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/index"
-        self.gerrit.requester.post(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.post(f"/accounts/{self.username}/index")
 
     def get_default_starred_changes(self):
         """
@@ -622,9 +509,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/starred.changes"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/accounts/{self.username}/starred.changes")
         return [self.gerrit.changes.get(item.get("id")) for item in result]
 
     def put_default_star_on_change(self, id_):
@@ -634,8 +519,7 @@ class GerritAccount(BaseModel):
         :param id_: change id
         :return:
         """
-        endpoint = f"/accounts/{self.username}/starred.changes/{id_}"
-        self.gerrit.requester.put(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.put(f"/accounts/{self.username}/starred.changes/{id_}")
 
     def remove_default_star_from_change(self, id_):
         """
@@ -644,8 +528,7 @@ class GerritAccount(BaseModel):
         :param id_: change id
         :return:
         """
-        endpoint = f"/accounts/{self.username}/starred.changes/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/accounts/{self.username}/starred.changes/{id_}")
 
     def get_starred_changes(self):
         """
@@ -653,9 +536,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        endpoint = f"/accounts/{self.username}/stars.changes"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/accounts/{self.username}/stars.changes")
         return [self.gerrit.changes.get(item.get("id")) for item in result]
 
     def get_star_labels_from_change(self, id_):
@@ -665,10 +546,7 @@ class GerritAccount(BaseModel):
         :param id_: change id
         :return:
         """
-        endpoint = f"/accounts/{self.username}/stars.changes/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/accounts/{self.username}/stars.changes/{id_}")
 
     def update_star_labels_on_change(self, id_, input_):
         """
@@ -692,9 +570,4 @@ class GerritAccount(BaseModel):
         :return:
         """
         endpoint = f"/accounts/{self.username}/stars.changes/{id_}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.post(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)

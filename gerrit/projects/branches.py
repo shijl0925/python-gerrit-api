@@ -28,10 +28,9 @@ class GerrirProjectBranch(BaseModel):
         :param file: the file path
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{self.name}/files/{quote_plus(file)}/content"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(
+            f"/projects/{self.project}/branches/{self.name}/files/{quote_plus(file)}/content"
+        )
 
     def is_mergeable(self, input_):
         """
@@ -49,12 +48,9 @@ class GerrirProjectBranch(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-input
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{self.name}/mergeable"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params=input_
+        return self.gerrit.get(
+            f"/projects/{self.project}/branches/{self.name}/mergeable", params=input_
         )
-        result = self.gerrit.decode_response(response)
-        return result
 
     def get_reflog(self):
         """
@@ -62,10 +58,7 @@ class GerrirProjectBranch(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{self.name}/reflog"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return result
+        return self.gerrit.get(f"/projects/{self.project}/branches/{self.name}/reflog")
 
     def delete(self):
         """
@@ -73,8 +66,7 @@ class GerrirProjectBranch(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{self.name}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/projects/{self.project}/branches/{self.name}")
 
 
 class GerrirProjectBranches(object):
@@ -106,12 +98,8 @@ class GerrirProjectBranches(object):
                 raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
         params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
-        endpoint = f"/projects/{self.project}/branches/"
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-        return result
+
+        return self.gerrit.get(f"/projects/{self.project}/branches/", params=params)
 
     def get(self, name):
         """
@@ -120,12 +108,8 @@ class GerrirProjectBranches(object):
         :param name: branch ref name
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{quote_plus(name)}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerrirProjectBranch.parse(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        result = self.gerrit.get(f"/projects/{self.project}/branches/{quote_plus(name)}")
+        return GerrirProjectBranch.parse(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -145,13 +129,10 @@ class GerrirProjectBranches(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#branch-info
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{name}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
+        return self.gerrit.put(
+            f"/projects/{self.project}/branches/{name}",
+            json=input_, headers=self.gerrit.default_headers
         )
-        result = self.gerrit.decode_response(response)
-        return result
 
     def delete(self, name):
         """
@@ -160,6 +141,4 @@ class GerrirProjectBranches(object):
         :param name: branch ref name
         :return:
         """
-        endpoint = f"/projects/{self.project}/branches/{quote_plus(name)}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        self.gerrit.requester.delete(base_url)
+        self.gerrit.delete(f"/projects/{self.project}/branches/{quote_plus(name)}")

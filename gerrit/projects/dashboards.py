@@ -15,8 +15,7 @@ class GerrirProjectDashboard(BaseModel):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/dashboards/{self.id}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/projects/{self.project}/dashboards/{self.id}")
 
 
 class GerrirProjectDashboards(object):
@@ -30,12 +29,8 @@ class GerrirProjectDashboards(object):
 
         :return:
         """
-        endpoint = f"/projects/{self.project}/dashboards/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse_list(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        result = self.gerrit.get(f"/projects/{self.project}/dashboards/")
+        return GerrirProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, id_, input_):
         """
@@ -56,14 +51,8 @@ class GerrirProjectDashboards(object):
         :return:
         """
         endpoint = f"/projects/{self.project}/dashboards/{id_}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -72,12 +61,8 @@ class GerrirProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        endpoint = f"/projects/{self.project}/dashboards/{id_}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        result = self.gerrit.get(f"/projects/{self.project}/dashboards/{id_}")
+        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, id_):
         """
@@ -86,5 +71,4 @@ class GerrirProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        endpoint = f"/projects/{self.project}/dashboards/{id_}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/projects/{self.project}/dashboards/{id_}")

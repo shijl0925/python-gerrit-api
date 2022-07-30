@@ -16,8 +16,7 @@ class GerrirProjectWebHook(BaseModel):
 
         :return:
         """
-        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}")
 
 
 class GerrirProjectWebHooks(object):
@@ -31,9 +30,7 @@ class GerrirProjectWebHooks(object):
 
         :return:
         """
-        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(f"/config/server/webhooks~projects/{self.project}/remotes/")
 
         webhooks = []
         for key, value in result.items():
@@ -65,14 +62,8 @@ class GerrirProjectWebHooks(object):
         :return:
         """
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
-        return GerrirProjectWebHook.parse(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -82,12 +73,9 @@ class GerrirProjectWebHooks(object):
         :return:
         """
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(endpoint)
         result.update({"name": name})
-        return GerrirProjectWebHook.parse(
-            result, project=self.project, gerrit=self.gerrit
-        )
+        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, name):
         """
@@ -96,5 +84,4 @@ class GerrirProjectWebHooks(object):
         :param name: the webhook name
         :return:
         """
-        endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
-        self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
+        self.gerrit.delete(f"/config/server/webhooks~projects/{self.project}/remotes/{name}")

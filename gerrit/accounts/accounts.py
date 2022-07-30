@@ -49,12 +49,7 @@ class GerritAccounts(object):
             endpoint += "suggest&"
         endpoint += f"q={query}"
 
-        response = self.gerrit.requester.get(
-            self.gerrit.get_endpoint_url(endpoint), params
-        )
-        result = self.gerrit.decode_response(response)
-
-        return result
+        return self.gerrit.get(endpoint, params=params)
 
     def get(self, username, detailed=False):
         """
@@ -67,8 +62,7 @@ class GerritAccounts(object):
         endpoint = f"/accounts/{username}/"
         if detailed:
             endpoint += "detail"
-        response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.get(endpoint)
         return GerritAccount.parse(result, gerrit=self.gerrit)
 
     def create(self, username, input_):
@@ -94,9 +88,5 @@ class GerritAccounts(object):
         :return:
         """
         endpoint = f"/accounts/{username}"
-        base_url = self.gerrit.get_endpoint_url(endpoint)
-        response = self.gerrit.requester.put(
-            base_url, json=input_, headers=self.gerrit.default_headers
-        )
-        result = self.gerrit.decode_response(response)
+        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritAccount.parse(result, gerrit=self.gerrit)
