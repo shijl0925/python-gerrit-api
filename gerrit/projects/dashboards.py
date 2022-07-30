@@ -5,9 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectDashboard(BaseModel):
+class GerritProjectDashboard(BaseModel):
     def __init__(self, **kwargs):
-        super(GerrirProjectDashboard, self).__init__(**kwargs)
+        super(GerritProjectDashboard, self).__init__(**kwargs)
 
     def delete(self):
         """
@@ -18,7 +18,7 @@ class GerrirProjectDashboard(BaseModel):
         self.gerrit.delete(f"/projects/{self.project}/dashboards/{self.id}")
 
 
-class GerrirProjectDashboards(object):
+class GerritProjectDashboards(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -30,7 +30,7 @@ class GerrirProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.project}/dashboards/")
-        return GerrirProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, id_, input_):
         """
@@ -52,7 +52,7 @@ class GerrirProjectDashboards(object):
         """
         endpoint = f"/projects/{self.project}/dashboards/{id_}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, id_):
         """
@@ -62,7 +62,7 @@ class GerrirProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.project}/dashboards/{id_}")
-        return GerrirProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, id_):
         """

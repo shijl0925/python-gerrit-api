@@ -5,9 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectWebHook(BaseModel):
+class GerritProjectWebHook(BaseModel):
     def __init__(self, **kwargs):
-        super(GerrirProjectWebHook, self).__init__(**kwargs)
+        super(GerritProjectWebHook, self).__init__(**kwargs)
         self.entity_name = "name"
 
     def delete(self):
@@ -19,7 +19,7 @@ class GerrirProjectWebHook(BaseModel):
         self.gerrit.delete(f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}")
 
 
-class GerrirProjectWebHooks(object):
+class GerritProjectWebHooks(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -38,7 +38,7 @@ class GerrirProjectWebHooks(object):
             webhook.update({"name": key})
             webhooks.append(webhook)
 
-        return GerrirProjectWebHook.parse_list(
+        return GerritProjectWebHook.parse_list(
             webhooks, project=self.project, gerrit=self.gerrit
         )
 
@@ -63,7 +63,7 @@ class GerrirProjectWebHooks(object):
         """
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -75,7 +75,7 @@ class GerrirProjectWebHooks(object):
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         result = self.gerrit.get(endpoint)
         result.update({"name": name})
-        return GerrirProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, name):
         """
