@@ -86,7 +86,7 @@ class GerritGroups(object):
         endpoint = f"/groups/{id_}/"
         if detailed:
             endpoint += "detail"
-        return GerritGroup.parse(self.gerrit.get(endpoint), gerrit=self.gerrit)
+        return GerritGroup(json=self.gerrit.get(endpoint), gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -109,4 +109,4 @@ class GerritGroups(object):
         """
         endpoint = f"/groups/{name}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritGroup.parse(result, gerrit=self.gerrit)
+        return GerritGroup(json=result, gerrit=self.gerrit)

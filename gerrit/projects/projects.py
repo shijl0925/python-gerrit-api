@@ -109,7 +109,7 @@ class GerritProjects(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{quote_plus(name)}")
-        return GerritProject.parse(result, gerrit=self.gerrit)
+        return GerritProject(json=result, gerrit=self.gerrit)
 
     def create(self, project_name, input_):
         """
@@ -134,7 +134,7 @@ class GerritProjects(object):
         """
         endpoint = f"/projects/{quote_plus(project_name)}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritProject.parse(result, gerrit=self.gerrit)
+        return GerritProject(json=result, gerrit=self.gerrit)
 
     def delete(self, project_name):
         """

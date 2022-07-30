@@ -79,7 +79,7 @@ class GerritPlugins(object):
         :return:
         """
         result = self.gerrit.get(f"/plugins/{id_}/gerrit~status")
-        return GerritPlugin.parse(result, gerrit=self.gerrit)
+        return GerritPlugin(json=result, gerrit=self.gerrit)
 
     def install(self, id_, input_):
         """
@@ -101,4 +101,4 @@ class GerritPlugins(object):
         result = self.gerrit.put(
             f"/plugins/{id_}.jar", json=input_, headers=self.gerrit.default_headers
         )
-        return GerritPlugin.parse(result, gerrit=self.gerrit)
+        return GerritPlugin(json=result, gerrit=self.gerrit)

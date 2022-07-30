@@ -63,7 +63,7 @@ class GerritProjectWebHooks(object):
         """
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -75,7 +75,7 @@ class GerritProjectWebHooks(object):
         endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{name}"
         result = self.gerrit.get(endpoint)
         result.update({"name": name})
-        return GerritProjectWebHook.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, name):
         """

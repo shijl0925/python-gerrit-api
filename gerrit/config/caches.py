@@ -46,7 +46,7 @@ class Caches(object):
         :return:
         """
         result = self.gerrit.get(f"/config/server/caches/{name}")
-        return Cache.parse(result, gerrit=self.gerrit)
+        return Cache(json=result, gerrit=self.gerrit)
 
     def flush(self, name):
         """

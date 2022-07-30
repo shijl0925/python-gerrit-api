@@ -109,7 +109,7 @@ class GerritProjectBranches(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.project}/branches/{quote_plus(name)}")
-        return GerritProjectBranch.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectBranch(json=result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """

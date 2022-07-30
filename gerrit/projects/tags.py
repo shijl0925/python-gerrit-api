@@ -68,7 +68,7 @@ class GerritProjectTags(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.project}/tags/{quote_plus(name)}")
-        return GerritProjectTag.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectTag(json=result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """

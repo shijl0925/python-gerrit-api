@@ -100,7 +100,7 @@ class GerritChangeReviewers(object):
         """
         result = self.gerrit.get(f"/changes/{self.change}/reviewers/{account}")
         if result:
-            return GerritChangeReviewer.parse(result[0], change=self.change, gerrit=self.gerrit)
+            return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
 
     def add(self, input_):
         """

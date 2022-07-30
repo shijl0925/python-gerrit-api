@@ -601,7 +601,7 @@ class GerritChange(BaseModel):
         :return:
         """
         result = self.gerrit.get(f"/changes/{self.id}/edit")
-        return GerritChangeEdit.parse(result, change=self.id, gerrit=self.gerrit)
+        return GerritChangeEdit(json=result, change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
         """

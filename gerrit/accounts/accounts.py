@@ -63,7 +63,7 @@ class GerritAccounts(object):
         if detailed:
             endpoint += "detail"
         result = self.gerrit.get(endpoint)
-        return GerritAccount.parse(result, gerrit=self.gerrit)
+        return GerritAccount(json=result, gerrit=self.gerrit)
 
     def create(self, username, input_):
         """
@@ -89,4 +89,4 @@ class GerritAccounts(object):
         """
         endpoint = f"/accounts/{username}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritAccount.parse(result, gerrit=self.gerrit)
+        return GerritAccount(json=result, gerrit=self.gerrit)

@@ -55,9 +55,7 @@ class GerritAccountEmails(object):
         :return:
         """
         result = self.gerrit.get(f"/accounts/{self.username}/emails/{email}")
-        return GerritAccountEmail.parse(
-            result, username=self.username, gerrit=self.gerrit
-        )
+        return GerritAccountEmail(json=result, username=self.username, gerrit=self.gerrit)
 
     def set_preferred(self, email):
         """

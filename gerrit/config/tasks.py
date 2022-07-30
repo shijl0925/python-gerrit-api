@@ -42,7 +42,7 @@ class Tasks(object):
         """
 
         result = self.gerrit.get(f"/config/server/tasks/{id_}")
-        return Task.parse(result, gerrit=self.gerrit)
+        return Task(json=result, gerrit=self.gerrit)
 
     def delete(self, id_):
         """

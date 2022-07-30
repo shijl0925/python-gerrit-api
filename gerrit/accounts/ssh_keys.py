@@ -40,7 +40,7 @@ class GerritAccountSSHKeys(object):
         :return:
         """
         result = self.gerrit.get(f"/accounts/{self.username}/sshkeys/{str(seq)}")
-        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def add(self, ssh_key):
         """
@@ -52,7 +52,7 @@ class GerritAccountSSHKeys(object):
         """
         endpoint = f"/accounts/{self.username}/sshkeys"
         result = self.gerrit.post(endpoint, data=ssh_key, headers={"Content-Type": "plain/text"})
-        return GerritAccountSSHKey.parse(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def delete(self, seq):
         """

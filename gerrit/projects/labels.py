@@ -68,7 +68,7 @@ class GerritProjectLabels(object):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.project}/labels/{name}")
-        return GerritProjectLabel.parse(result, gerrit=self.gerrit)
+        return GerritProjectLabel(json=result, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -97,7 +97,7 @@ class GerritProjectLabels(object):
         """
         endpoint = f"/projects/{self.project}/labels/{name}"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectLabel.parse(result, gerrit=self.gerrit)
+        return GerritProjectLabel(json=result, gerrit=self.gerrit)
 
     def delete(self, name):
         """

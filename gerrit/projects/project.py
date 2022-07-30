@@ -253,7 +253,7 @@ class GerritProject(BaseModel):
 
         endpoint = f"/projects/{self.id}/create.change"
         result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChange.parse(result, gerrit=self.gerrit)
+        return GerritChange(json=result, gerrit=self.gerrit)
 
     def create_access_rights_change(self, input_):
         """
@@ -268,7 +268,7 @@ class GerritProject(BaseModel):
         """
         endpoint = f"/projects/{self.id}/access:review"
         result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChange.parse(result, gerrit=self.gerrit)
+        return GerritChange(json=result, gerrit=self.gerrit)
 
     def check_access(self, options):
         """
@@ -375,7 +375,7 @@ class GerritProject(BaseModel):
         :return:
         """
         result = self.gerrit.get(f"/projects/{self.id}/commits/{commit}")
-        return GerritProjectCommit.parse(result, project=self.id, gerrit=self.gerrit)
+        return GerritProjectCommit(json=result, project=self.id, gerrit=self.gerrit)
 
     @property
     def dashboards(self):

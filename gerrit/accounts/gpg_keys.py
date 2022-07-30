@@ -47,9 +47,7 @@ class GerritAccountGPGKeys(object):
         :return:
         """
         result = self.gerrit.get(f"/accounts/{self.username}/gpgkeys/{id_}")
-        return GerritAccountGPGKey.parse(
-            result, username=self.username, gerrit=self.gerrit
-        )
+        return GerritAccountGPGKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def modify(self, input_):
         """

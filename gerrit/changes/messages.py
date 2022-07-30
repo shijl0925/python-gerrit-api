@@ -62,4 +62,4 @@ class GerritChangeMessages(object):
         :return:
         """
         result = self.gerrit.get(f"/changes/{self.change}/messages/{id_}")
-        return GerritChangeMessage.parse(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeMessage(json=result, change=self.change, gerrit=self.gerrit)

@@ -50,7 +50,7 @@ class GerritChanges(object):
             endpoint += "detail"
 
         result = self.gerrit.get(endpoint, {"o": options})
-        return GerritChange.parse(result, gerrit=self.gerrit)
+        return GerritChange(json=result, gerrit=self.gerrit)
 
     def create(self, input_):
         """
@@ -72,7 +72,7 @@ class GerritChanges(object):
         :return:
         """
         result = self.gerrit.post("/changes/", json=input_, headers=self.gerrit.default_headers)
-        return GerritChange.parse(result, gerrit=self.gerrit)
+        return GerritChange(json=result, gerrit=self.gerrit)
 
     def delete(self, id_):
         """
