@@ -214,7 +214,7 @@ This library allows you to automate most common Gerrit operations using Python, 
     * Lists/Retrieves/Adds/Removes the direct subgroups of a group.
 
 * Ability to create/delete/query Gerrit changes, and ability to execute change:
-    * Update/Abandons/Restores/Rebases/Move/Reverts/Submits an existing change.
+    * Update/Abandon/Restore/Rebase/Move/Revert/Submit an existing change.
     * Creates a new patch set with a new commit message.
     * Retrieves/Sets/Deletes the topic of a change.
     * Retrieves/Sets/Deletes the assignee of a change.
