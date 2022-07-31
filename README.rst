@@ -177,18 +177,18 @@ Gerrit simplifies Git based project maintainership by permitting any authorized 
 
 This library allows you to automate most common Gerrit operations using Python, such as:
 
-* Ability to create/delete/query Gerrit projects, and ability to excute project:
+* Ability to create/delete/query Gerrit projects, and ability to execute project:
     * Retrieves/Set/Delete the description of a project.
     * Retrieves the name of a project's parent project, and set the parent project for a project.
     * Retrieves for a project the name of the branch to which HEAD points, and sets HEAD for a project.
     * Gets some configuration information about a project, and sets the configuration of a project.
     * Lists the access rights for a single project, and sets access rights for a project.
     * Retrieves a commit of a project.
-    * Ability to excute project's branches, tags, labels, dashboards and so on:
+    * Ability to execute project's branches, tags, labels, dashboards and so on:
         * Retrieves/Create/Delete
     * ...
 
-* Ability to create/query Gerrit accounts, and ability to excute account:
+* Ability to create/query Gerrit accounts, and ability to execute account:
     * Sets/Deletes the full name of an account.
     * Retrieves/Sets the status of an account.
     * Sets the username of an account.
@@ -199,11 +199,11 @@ This library allows you to automate most common Gerrit operations using Python, 
     * Retrieves/Sets the user's (diff/edit) preferences.
     * Retrieves/Add/Deletes the watched projects of an account.
     * Retrieves/Delete the external ids of a user account.
-    * Ability to excute account's emails, ssh keys, gpg keys.
+    * Ability to execute account's emails, ssh keys, gpg keys.
         * Retrieves/Create/Delete
     * ...
 
-* Ability to create/query Gerrit groups, and ability to excute group:
+* Ability to create/query Gerrit groups, and ability to execute group:
     * Renames a Gerrit internal group.
     * Sets/Deletes the description of a Gerrit internal group.
     * Sets the options of a Gerrit internal group.
@@ -213,7 +213,7 @@ This library allows you to automate most common Gerrit operations using Python, 
     * Retrieves/Adds/Removes a group member to a Gerrit internal group..
     * Lists/Retrieves/Adds/Removes the direct subgroups of a group.
 
-* Ability to create/delete/query Gerrit changes, and ability to excute change:
+* Ability to create/delete/query Gerrit changes, and ability to execute change:
     * Update/Abandons/Restores/Rebases/Move/Reverts/Submits an existing change.
     * Creates a new patch set with a new commit message.
     * Retrieves/Sets/Deletes the topic of a change.
@@ -226,11 +226,11 @@ This library allows you to automate most common Gerrit operations using Python, 
     * Marks/Un-marks a change as ignored.
     * Marks a change as reviewed/unreviewed.
     * Gets/Adds/Removes the hashtags associated with a change.
-    * Ability to excute change's messages, change edit, reviewers, revision
+    * Ability to execute change's messages, change edit, reviewers, revision
     * Retrieves all users that are currently in the attention set, Adds a single user to the attention set of a change, Deletes a single user from the attention set of a change.
     * ...
 
-* Ability to excute Gerrit config:
+* Ability to execute Gerrit config:
     * Retrieves/Sets the default user/diff/edit preferences for the server.
     * ...
 
