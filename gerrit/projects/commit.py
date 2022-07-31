@@ -13,6 +13,7 @@ class GerritProjectCommit(BaseModel):
     def __init__(self, **kwargs):
         super(GerritProjectCommit, self).__init__(**kwargs)
         self.entity_name = "commit"
+        self.endpoint = f"/projects/{self.project}/commits/{self.commit}"
 
     def get_include_in(self):
         """
@@ -20,7 +21,7 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.project}/commits/{self.commit}/in")
+        return self.gerrit.get(self.endpoint + "/in")
 
     def get_file_content(self, file):
         """
@@ -29,9 +30,7 @@ class GerritProjectCommit(BaseModel):
         :param file: the file path
         :return:
         """
-        return self.gerrit.get(
-            f"/projects/{self.project}/commits/{self.commit}/files/{quote_plus(file)}/content"
-        )
+        return self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
 
     def cherry_pick(self, input_):
         """
@@ -49,8 +48,8 @@ class GerritProjectCommit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#cherrypick-input
         :return:  the resulting cherry-picked change
         """
-        endpoint = f"/projects/{self.project}/commits/{self.commit}/cherrypick"
-        result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(
+            self.endpoint + "/cherrypick", json=input_, headers=self.gerrit.default_headers)
         return self.gerrit.changes.get(result.get("id"))
 
     def list_change_files(self):
@@ -59,4 +58,4 @@ class GerritProjectCommit(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.project}/commits/{self.commit}/files/")
+        return self.gerrit.get(self.endpoint + "/files/")

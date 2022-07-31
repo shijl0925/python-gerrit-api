@@ -8,6 +8,7 @@ from gerrit.config.tasks import Tasks
 class GerritConfig(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/config/server"
 
     def get_version(self):
         """
@@ -15,7 +16,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/version")
+        return self.gerrit.get(self.endpoint + "/version")
 
     def get_server_info(self):
         """
@@ -23,7 +24,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/info")
+        return self.gerrit.get(self.endpoint + "/info")
 
     def check_consistency(self, input_):
         """
@@ -41,8 +42,8 @@ class GerritConfig(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#consistency-check-input
         :return:
         """
-        endpoint = "/config/server/check.consistency"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/check.consistency", json=input_, headers=self.gerrit.default_headers)
 
     def reload_config(self):
         """
@@ -50,7 +51,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.post("/config/server/reload")
+        return self.gerrit.post(self.endpoint + "/reload")
 
     def confirm_email(self, input_):
         """
@@ -70,7 +71,7 @@ class GerritConfig(object):
         :return:
         """
         self.gerrit.put(
-            "/config/server/email.confirm", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/email.confirm", json=input_, headers=self.gerrit.default_headers
         )
 
     @property
@@ -84,7 +85,7 @@ class GerritConfig(object):
         :param option: query option.such as jvm or gc
         :return:
         """
-        endpoint = "/config/server/summary"
+        endpoint = self.endpoint + "/summary"
         if option is not None:
             endpoint += f"?{option}"
         return self.gerrit.get(endpoint)
@@ -96,7 +97,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/capabilities")
+        return self.gerrit.get(self.endpoint + "/capabilities")
 
     @property
     def tasks(self):
@@ -108,7 +109,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/top-menus")
+        return self.gerrit.get(self.endpoint + "/top-menus")
 
     def get_default_user_preferences(self):
         """
@@ -116,7 +117,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/preferences")
+        return self.gerrit.get(self.endpoint + "/preferences")
 
     def set_default_user_preferences(self, input_):
         """
@@ -134,7 +135,7 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            "/config/server/preferences", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences", json=input_, headers=self.gerrit.default_headers
         )
 
     def get_default_diff_preferences(self):
@@ -143,7 +144,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/preferences.diff")
+        return self.gerrit.get(self.endpoint + "/preferences.diff")
 
     def set_default_diff_preferences(self, input_):
         """
@@ -172,7 +173,7 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            "/config/server/preferences.diff", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences.diff", json=input_, headers=self.gerrit.default_headers
         )
 
     def get_default_edit_preferences(self):
@@ -181,7 +182,7 @@ class GerritConfig(object):
 
         :return:
         """
-        return self.gerrit.get("/config/server/preferences.edit")
+        return self.gerrit.get(self.endpoint + "/preferences.edit")
 
     def set_default_edit_preferences(self, input_):
         """
@@ -208,7 +209,7 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            "/config/server/preferences.edit", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences.edit", json=input_, headers=self.gerrit.default_headers
         )
 
     def index_changes(self, input_):
@@ -225,5 +226,5 @@ class GerritConfig(object):
         :return:
         """
         self.gerrit.post(
-            "/config/server/index.changes", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/index.changes", json=input_, headers=self.gerrit.default_headers
         )

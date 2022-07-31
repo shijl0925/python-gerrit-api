@@ -7,6 +7,7 @@ from gerrit.utils.models import BaseModel
 class GerritPlugin(BaseModel):
     def __init__(self, **kwargs):
         super(GerritPlugin, self).__init__(**kwargs)
+        self.endpoint = f"/plugins/{self.id}"
 
     def enable(self):
         """
@@ -14,7 +15,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~enable")
+        result = self.gerrit.post(self.endpoint + "/gerrit~enable")
         return self.gerrit.plugins.get(result.get("id"))
 
     def disable(self):
@@ -23,7 +24,7 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~disable")
+        result = self.gerrit.post(self.endpoint + "/gerrit~disable")
         return self.gerrit.plugins.get(result.get("id"))
 
     def reload(self):
@@ -32,13 +33,14 @@ class GerritPlugin(BaseModel):
 
         :return:
         """
-        result = self.gerrit.post(f"/plugins/{self.id}/gerrit~reload")
+        result = self.gerrit.post(self.endpoint + "/gerrit~reload")
         return self.gerrit.plugins.get(result.get("id"))
 
 
 class GerritPlugins(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/plugins"
 
     def list(self, is_all=False, limit=None, skip=None, pattern_dispatcher=None):
         """
@@ -70,7 +72,7 @@ class GerritPlugins(object):
         params = {k: v for k, v in (("n", limit), ("S", skip), (p, v)) if v is not None}
         params["all"] = int(is_all)
 
-        return self.gerrit.get("/plugins/", params=params)
+        return self.gerrit.get(self.endpoint, params=params)
 
     def get(self, id_):
         """
@@ -78,7 +80,7 @@ class GerritPlugins(object):
         :param id_: plugin id
         :return:
         """
-        result = self.gerrit.get(f"/plugins/{id_}/gerrit~status")
+        result = self.gerrit.get(self.endpoint + f"/{id_}/gerrit~status")
         return GerritPlugin(json=result, gerrit=self.gerrit)
 
     def install(self, id_, input_):
@@ -99,6 +101,6 @@ class GerritPlugins(object):
         :return:
         """
         result = self.gerrit.put(
-            f"/plugins/{id_}.jar", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + f"/{id_}.jar", json=input_, headers=self.gerrit.default_headers
         )
         return GerritPlugin(json=result, gerrit=self.gerrit)

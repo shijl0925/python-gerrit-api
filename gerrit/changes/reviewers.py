@@ -9,6 +9,7 @@ class GerritChangeReviewer(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChangeReviewer, self).__init__(**kwargs)
         self.entity_name = "username"
+        self.endpoint = f"/changes/{self.change}/reviewers/{self.username}"
 
     def delete(self, input_=None):
         """
@@ -31,12 +32,11 @@ class GerritChangeReviewer(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-reviewer-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{self.username}"
         if input_ is None:
-            self.gerrit.delete(endpoint)
+            self.gerrit.delete(self.endpoint)
         else:
-            endpoint += "/delete"
-            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(self.endpoint + "/delete",
+                             json=input_, headers=self.gerrit.default_headers)
 
     def list_votes(self):
         """
@@ -44,8 +44,7 @@ class GerritChangeReviewer(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + "/votes/")
 
     def delete_vote(self, label, input_=None):
         """
@@ -69,18 +68,18 @@ class GerritChangeReviewer(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{self.username}/votes/{label}"
+        endpoint = self.endpoint + f"/votes/{label}"
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
-            endpoint += "/delete"
-            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(endpoint + "/delete", json=input_, headers=self.gerrit.default_headers)
 
 
 class GerritChangeReviewers(object):
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
+        self.endpoint = f"/changes/{self.change}/reviewers/"
 
     def list(self):
         """
@@ -88,7 +87,7 @@ class GerritChangeReviewers(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/reviewers/")
+        result = self.gerrit.get(self.endpoint)
         return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, account):
@@ -98,7 +97,7 @@ class GerritChangeReviewers(object):
         :param account: _account_id, name, username or email
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/reviewers/{account}")
+        result = self.gerrit.get(self.endpoint + f"/{account}")
         if result:
             return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
 
@@ -126,5 +125,4 @@ class GerritChangeReviewers(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#reviewer-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)

@@ -7,6 +7,7 @@ class GerritGroupSubGroups(object):
     def __init__(self, group_id, gerrit):
         self.group_id = group_id
         self.gerrit = gerrit
+        self.endpoint = f"/groups/{self.group_id}/groups/"
 
     def list(self):
         """
@@ -16,7 +17,7 @@ class GerritGroupSubGroups(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/groups/{self.group_id}/groups/")
+        result = self.gerrit.get(self.endpoint)
         subgroups = []
         for item in result:
             group_id = item.get("id")
@@ -33,7 +34,7 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        result = self.gerrit.get(f"/groups/{self.group_id}/groups/{subgroup}")
+        result = self.gerrit.get(self.endpoint + f"/{subgroup}")
         if result:
             subgroup_id = result.get("id")
             return self.gerrit.groups.get(subgroup_id)
@@ -47,7 +48,7 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        result = self.gerrit.put(f"/groups/{self.group_id}/groups/{subgroup}")
+        result = self.gerrit.put(self.endpoint + f"/{subgroup}")
         if result:
             subgroup_id = result.get("id")
             return self.gerrit.groups.get(subgroup_id)
@@ -61,4 +62,4 @@ class GerritGroupSubGroups(object):
         :param subgroup: subgroup id or name
         :return:
         """
-        self.gerrit.delete(f"/groups/{self.group_id}/groups/{subgroup}")
+        self.gerrit.delete(self.endpoint + f"/{subgroup}")

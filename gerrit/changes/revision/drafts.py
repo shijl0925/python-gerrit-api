@@ -8,6 +8,7 @@ from gerrit.utils.models import BaseModel
 class GerritChangeRevisionDraft(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChangeRevisionDraft, self).__init__(**kwargs)
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
 
     def update(self, input_):
         """
@@ -29,8 +30,7 @@ class GerritChangeRevisionDraft(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -41,8 +41,7 @@ class GerritChangeRevisionDraft(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
-        self.gerrit.delete(endpoint)
+        self.gerrit.delete(self.endpoint)
 
 
 class GerritChangeRevisionDrafts(object):
@@ -50,6 +49,7 @@ class GerritChangeRevisionDrafts(object):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
+        self.endpoint = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts")
 
     def list(self):
         """
@@ -75,7 +75,7 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -99,8 +99,7 @@ class GerritChangeRevisionDrafts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritChangeRevisionDraft.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -112,4 +111,4 @@ class GerritChangeRevisionDrafts(object):
         :param id_: the draft comment id
         :return:
         """
-        self.gerrit.delete(f"/changes/{self.change}/revisions/{self.revision}/drafts/{id_}")
+        self.gerrit.delete(self.endpoint + f"/{id_}")

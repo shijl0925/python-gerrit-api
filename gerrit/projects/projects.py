@@ -11,6 +11,7 @@ from gerrit.projects.project import GerritProject
 class GerritProjects(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/projects/"
 
     def list(
         self,
@@ -76,7 +77,7 @@ class GerritProjects(object):
         params["all"] = int(is_all)
         params["d"] = int(description)
 
-        return self.gerrit.get("/projects/", params=params)
+        return self.gerrit.get(self.endpoint, params=params)
 
     def search(self, query, limit=None, skip=None):
         """
@@ -99,7 +100,7 @@ class GerritProjects(object):
         """
         params = {k: v for k, v in (("limit", limit), ("start", skip)) if v is not None}
 
-        return self.gerrit.get(f"/projects/?query={query}", params=params)
+        return self.gerrit.get(self.endpoint + f"/?query={query}", params=params)
 
     def get(self, name):
         """
@@ -108,7 +109,7 @@ class GerritProjects(object):
         :param name: the name of the project
         :return:
         """
-        result = self.gerrit.get(f"/projects/{quote_plus(name)}")
+        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
         return GerritProject(json=result, gerrit=self.gerrit)
 
     def create(self, project_name, input_):
@@ -132,8 +133,9 @@ class GerritProjects(object):
 
         :return:
         """
-        endpoint = f"/projects/{quote_plus(project_name)}"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint + f"/{quote_plus(project_name)}",
+            json=input_, headers=self.gerrit.default_headers)
         return GerritProject(json=result, gerrit=self.gerrit)
 
     def delete(self, project_name):
@@ -143,4 +145,4 @@ class GerritProjects(object):
         :param project_name: project name
         :return:
         """
-        self.gerrit.post(f"/projects/{quote_plus(project_name)}/delete-project~delete")
+        self.gerrit.post(self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete")

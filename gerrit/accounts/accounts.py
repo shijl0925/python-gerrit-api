@@ -7,6 +7,7 @@ from gerrit.accounts.account import GerritAccount
 class GerritAccounts(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/accounts"
 
     def search(
         self,
@@ -44,7 +45,7 @@ class GerritAccounts(object):
             k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
         }
 
-        endpoint = "/accounts/?"
+        endpoint = self.endpoint + "/?"
         if suggested:
             endpoint += "suggest&"
         endpoint += f"q={query}"
@@ -59,7 +60,7 @@ class GerritAccounts(object):
         :param detailed: boolean type, If True then fetch info in more details, such as: registered_on
         :return:
         """
-        endpoint = f"/accounts/{username}/"
+        endpoint = self.endpoint + f"/{username}/"
         if detailed:
             endpoint += "detail"
         result = self.gerrit.get(endpoint)
@@ -87,6 +88,6 @@ class GerritAccounts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-input
         :return:
         """
-        endpoint = f"/accounts/{username}"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint + f"/{username}", json=input_, headers=self.gerrit.default_headers)
         return GerritAccount(json=result, gerrit=self.gerrit)

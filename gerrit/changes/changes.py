@@ -7,6 +7,7 @@ from gerrit.changes.change import GerritChange
 class GerritChanges(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/changes"
 
     def search(self, query, options=None, limit=None, skip=None):
         """
@@ -31,7 +32,7 @@ class GerritChanges(object):
             if v is not None
         }
 
-        return self.gerrit.get(f"/changes/?q={'&q='.join(query)}", params=params)
+        return self.gerrit.get(self.endpoint + f"/?q={'&q='.join(query)}", params=params)
 
     def get(self, id_, detailed=False, options=None):
         """
@@ -45,7 +46,7 @@ class GerritChanges(object):
         :return:
         """
 
-        endpoint = f"/changes/{id_}/"
+        endpoint = self.endpoint + f"/{id_}/"
         if detailed:
             endpoint += "detail"
 
@@ -71,7 +72,7 @@ class GerritChanges(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input
         :return:
         """
-        result = self.gerrit.post("/changes/", json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
         return GerritChange(json=result, gerrit=self.gerrit)
 
     def delete(self, id_):
@@ -81,4 +82,4 @@ class GerritChanges(object):
         :param id_: change id
         :return:
         """
-        self.gerrit.delete(f"/changes/{id_}")
+        self.gerrit.delete(self.endpoint + f"/{id_}")

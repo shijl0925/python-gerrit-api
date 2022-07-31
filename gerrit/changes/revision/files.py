@@ -14,6 +14,8 @@ class GerritChangeRevisionFile(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChangeRevisionFile, self).__init__(**kwargs)
         self.entity_name = "path"
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}" \
+                        f"/files/{quote_plus(self.path)}"
 
     def get_content(self):
         """
@@ -22,8 +24,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/content"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + "/content")
 
     def download_content(self):
         """
@@ -36,8 +37,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/download"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + "/download")
 
     def get_diff(self, intraline=False):
         """
@@ -46,8 +46,7 @@ class GerritChangeRevisionFile(BaseModel):
         :param intraline: If the intraline parameter is specified, intraline differences are included in the diff.
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/diff"
-
+        endpoint = self.endpoint + "/diff"
         if intraline:
             endpoint += endpoint + "?intraline"
 
@@ -59,8 +58,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/blame"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + "/blame")
 
     def set_reviewed(self):
         """
@@ -68,8 +66,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/reviewed"
-        self.gerrit.put(endpoint)
+        self.gerrit.put(self.endpoint + "/reviewed")
 
     def delete_reviewed(self):
         """
@@ -77,8 +74,7 @@ class GerritChangeRevisionFile(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/files/{quote_plus(self.path)}/reviewed"
-        self.gerrit.delete(endpoint)
+        self.gerrit.delete(self.endpoint + "/reviewed")
 
 
 class GerritChangeRevisionFiles(object):
@@ -87,13 +83,14 @@ class GerritChangeRevisionFiles(object):
         self.revision = revision
         self.gerrit = gerrit
         self._data = []
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/files"
 
     def poll(self):
         """
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/files")
+        result = self.gerrit.get(self.endpoint)
         files = []
         for key, value in result.items():
             file = value

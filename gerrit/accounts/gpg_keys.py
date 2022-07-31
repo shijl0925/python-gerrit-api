@@ -7,6 +7,7 @@ from gerrit.utils.models import BaseModel
 class GerritAccountGPGKey(BaseModel):
     def __init__(self, **kwargs):
         super(GerritAccountGPGKey, self).__init__(**kwargs)
+        self.endpoint = f"/accounts/{self.username}/gpgkeys"
 
     def delete(self):
         """
@@ -14,13 +15,14 @@ class GerritAccountGPGKey(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/gpgkeys/{self.id}")
+        self.gerrit.delete(self.endpoint + f"/{self.id}")
 
 
 class GerritAccountGPGKeys(object):
     def __init__(self, username, gerrit):
         self.username = username
         self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.username}/gpgkeys"
 
     def list(self):
         """
@@ -28,7 +30,7 @@ class GerritAccountGPGKeys(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/gpgkeys")
+        result = self.gerrit.get(self.endpoint)
         keys = []
         for key, value in result.items():
             gpg_key = value
@@ -46,7 +48,7 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/gpgkeys/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritAccountGPGKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def modify(self, input_):
@@ -70,8 +72,7 @@ class GerritAccountGPGKeys(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        endpoint = f"/accounts/{self.username}/gpgkeys"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint , json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, id_):
         """
@@ -80,4 +81,4 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/gpgkeys/{id_}")
+        self.gerrit.delete(self.endpoint + f"/{id_}")

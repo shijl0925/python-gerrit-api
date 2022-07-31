@@ -8,6 +8,7 @@ from gerrit.utils.models import BaseModel
 class GerritChangeMessage(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChangeMessage, self).__init__(**kwargs)
+        self.endpoint = f"/changes/{self.change}/messages/{self.id}"
 
     def delete(self, input_=None):
         """
@@ -29,12 +30,11 @@ class GerritChangeMessage(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-change-message-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/messages/{self.id}"
         if input_ is None:
-            self.gerrit.delete(endpoint)
+            self.gerrit.delete(self.endpoint)
         else:
-            endpoint += "/delete"
-            result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            result = self.gerrit.post(self.endpoint + "/delete",
+                                      json=input_, headers=self.gerrit.default_headers)
             change = self.gerrit.changes.get(self.change)
             return change.messages.get(result.get("id"))
 
@@ -43,6 +43,7 @@ class GerritChangeMessages(object):
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
+        self.endpoint = f"/changes/{self.change}/messages"
 
     def list(self):
         """
@@ -50,8 +51,7 @@ class GerritChangeMessages(object):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/messages"
-        result = self.gerrit.get(endpoint)
+        result = self.gerrit.get(self.endpoint)
         return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, id_):
@@ -61,5 +61,5 @@ class GerritChangeMessages(object):
         :param id_: change message id
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/messages/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritChangeMessage(json=result, change=self.change, gerrit=self.gerrit)

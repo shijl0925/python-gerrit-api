@@ -8,6 +8,7 @@ from gerrit.utils.models import BaseModel
 class GerritChangeRevisionComment(BaseModel):
     def __init__(self, **kwargs):
         super(GerritChangeRevisionComment, self).__init__(**kwargs)
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
 
     def delete(self, input_=None):
         """
@@ -32,12 +33,11 @@ class GerritChangeRevisionComment(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-comment-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
         if input_ is None:
-            return self.gerrit.delete(endpoint)
+            return self.gerrit.delete(self.endpoint)
         else:
-            endpoint += "/delete"
-            return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            return self.gerrit.post(self.endpoint + "/delete",
+                                    json=input_, headers=self.gerrit.default_headers)
 
 
 class GerritChangeRevisionComments(object):
@@ -45,6 +45,7 @@ class GerritChangeRevisionComments(object):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments"
 
     def list(self):
         """
@@ -52,7 +53,7 @@ class GerritChangeRevisionComments(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/comments")
+        result = self.gerrit.get(self.endpoint)
         comments = []
         for key, value in result.items():
             for item in value:
@@ -70,7 +71,7 @@ class GerritChangeRevisionComments(object):
         :param id_:
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/comments/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritChangeRevisionComment.parse(
             result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )

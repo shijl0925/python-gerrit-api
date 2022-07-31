@@ -7,6 +7,7 @@ from gerrit.utils.models import BaseModel
 class Task(BaseModel):
     def __init__(self, **kwargs):
         super(Task, self).__init__(**kwargs)
+        self.endpoint = "/config/server/tasks"
 
     def delete(self):
         """
@@ -15,12 +16,13 @@ class Task(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/config/server/tasks/{self.id}")
+        self.gerrit.delete(self.endpoint + f"/{self.id}")
 
 
 class Tasks(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/config/server/tasks"
 
     def list(self):
         """
@@ -29,7 +31,7 @@ class Tasks(object):
 
         :return:
         """
-        result = self.gerrit.get("/config/server/tasks/")
+        result = self.gerrit.get(self.endpoint)
         return Task.parse_list(result, gerrit=self.gerrit)
 
     def get(self, id_):
@@ -41,7 +43,7 @@ class Tasks(object):
         :return:
         """
 
-        result = self.gerrit.get(f"/config/server/tasks/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return Task(json=result, gerrit=self.gerrit)
 
     def delete(self, id_):
@@ -52,4 +54,4 @@ class Tasks(object):
         :param id_: task id
         :return:
         """
-        self.gerrit.delete(f"/config/server/tasks/{id_}")
+        self.gerrit.delete(self.endpoint + f"/{id_}")

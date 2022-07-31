@@ -8,6 +8,7 @@ class GerritAccountSSHKey(BaseModel):
     def __init__(self, **kwargs):
         super(GerritAccountSSHKey, self).__init__(**kwargs)
         self.entity_name = "seq"
+        self.endpoint = f"/accounts/{self.username}/sshkeys"
 
     def delete(self):
         """
@@ -15,13 +16,14 @@ class GerritAccountSSHKey(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/sshkeys/{str(self.seq)}")
+        self.gerrit.delete(self.endpoint + f"/{str(self.seq)}")
 
 
 class GerritAccountSSHKeys(object):
     def __init__(self, username, gerrit):
         self.username = username
         self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.username}/sshkeys"
 
     def list(self):
         """
@@ -29,7 +31,7 @@ class GerritAccountSSHKeys(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/sshkeys")
+        result = self.gerrit.get(self.endpoint)
         return GerritAccountSSHKey.parse_list(result, username=self.username, gerrit=self.gerrit)
 
     def get(self, seq):
@@ -39,7 +41,7 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/sshkeys/{str(seq)}")
+        result = self.gerrit.get(self.endpoint + f"/{str(seq)}")
         return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def add(self, ssh_key):
@@ -50,8 +52,8 @@ class GerritAccountSSHKeys(object):
         :param ssh_key: SSH key raw content
         :return:
         """
-        endpoint = f"/accounts/{self.username}/sshkeys"
-        result = self.gerrit.post(endpoint, data=ssh_key, headers={"Content-Type": "plain/text"})
+        result = self.gerrit.post(self.endpoint,
+                                  data=ssh_key, headers={"Content-Type": "plain/text"})
         return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
 
     def delete(self, seq):
@@ -61,4 +63,4 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/sshkeys/{str(seq)}")
+        self.gerrit.delete(self.endpoint + f"/{str(seq)}")

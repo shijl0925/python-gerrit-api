@@ -16,6 +16,7 @@ from gerrit.utils.exceptions import UnsupportMethod
 class GerritProject(BaseModel):
     def __init__(self, **kwargs):
         super(GerritProject, self).__init__(**kwargs)
+        self.endpoint = f"/projects/{self.id}"
 
     def get_description(self):
         """
@@ -23,7 +24,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/description")
+        return self.gerrit.get(self.endpoint + "/description")
 
     def set_description(self, input_):
         """
@@ -42,8 +43,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-description-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/description"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/description",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def delete_description(self):
         """
@@ -51,7 +52,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.id}/description")
+        self.gerrit.delete(self.endpoint + "/description")
 
     def delete(self):
         """
@@ -59,7 +60,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/projects/{self.id}/delete-project~delete")
+        self.gerrit.post(self.endpoint + "/delete-project~delete")
 
     def get_parent(self):
         """
@@ -67,7 +68,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/parent")
+        return self.gerrit.get(self.endpoint + "/parent")
 
     def set_parent(self, input_):
         """
@@ -86,8 +87,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-parent-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/parent"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/parent",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_HEAD(self):
         """
@@ -95,7 +96,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/HEAD")
+        return self.gerrit.get(self.endpoint + "/HEAD")
 
     def set_HEAD(self, input_):
         """
@@ -113,8 +114,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#head-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/HEAD"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/HEAD",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_config(self):
         """
@@ -124,7 +125,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/config")
+        return self.gerrit.get(self.endpoint + "/config")
 
     def set_config(self, input_):
         """
@@ -153,8 +154,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#config-info
         :return:
         """
-        endpoint = f"/projects/{self.id}/config"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/config",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_statistics(self):
         """
@@ -162,7 +163,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/statistics.git")
+        return self.gerrit.get(self.endpoint + "/statistics.git")
 
     def run_garbage_collection(self, input_):
         """
@@ -180,8 +181,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#gc-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/gc"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/gc",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def ban_commits(self, input_):
         """
@@ -203,8 +204,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#ban-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/ban"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/ban",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_access_rights(self):
         """
@@ -212,7 +213,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/access")
+        return self.gerrit.get(self.endpoint + "/access")
 
     def set_access_rights(self, input_):
         """
@@ -223,8 +224,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/access"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/access",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def create_change(self, input_):
         """
@@ -251,8 +252,8 @@ class GerritProject(BaseModel):
         if parse(version) < parse("3.3.0"):
             raise UnsupportMethod("The server does not support this method")
 
-        endpoint = f"/projects/{self.id}/create.change"
-        result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(self.endpoint + "/create.change",
+                                  json=input_, headers=self.gerrit.default_headers)
         return GerritChange(json=result, gerrit=self.gerrit)
 
     def create_access_rights_change(self, input_):
@@ -266,8 +267,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/access:review"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(self.endpoint + "/access:review",
+                                 json=input_, headers=self.gerrit.default_headers)
         return GerritChange(json=result, gerrit=self.gerrit)
 
     def check_access(self, options):
@@ -283,7 +284,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/check.access?{options}")
+        return self.gerrit.get(self.endpoint + f"/check.access?{options}")
 
     def index(self, input_):
         """
@@ -304,8 +305,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#index-project-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/index"
-        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(self.endpoint + "/index",
+                         json=input_, headers=self.gerrit.default_headers)
 
     def index_all_changes(self):
         """
@@ -315,7 +316,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/projects/{self.id}/index.changes")
+        self.gerrit.post(self.endpoint + "/index.changes")
 
     def check_consistency(self, input_):
         """
@@ -338,8 +339,8 @@ class GerritProject(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#check-project-input
         :return:
         """
-        endpoint = f"/projects/{self.id}/check"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/check",
+                                json=input_, headers=self.gerrit.default_headers)
 
     @property
     def branches(self):
@@ -357,7 +358,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.id}/children/")
+        return self.gerrit.get(self.endpoint + "/children/")
 
     @property
     def tags(self):
@@ -374,7 +375,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(f"/projects/{self.id}/commits/{commit}")
+        result = self.gerrit.get(self.endpoint + f"/commits/{commit}")
         return GerritProjectCommit(json=result, project=self.id, gerrit=self.gerrit)
 
     @property
@@ -394,7 +395,7 @@ class GerritProject(BaseModel):
         """
         version = self.gerrit.version
         if parse(version) < parse("3.2.0"):
-            result = self.gerrit.get(f"/projects/{self.id}")
+            result = self.gerrit.get(self.endpoint)
             return result.get("labels")
         else:
             return GerritProjectLabels(project=self.id, gerrit=self.gerrit)

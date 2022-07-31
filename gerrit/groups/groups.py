@@ -8,6 +8,7 @@ from packaging.version import parse
 class GerritGroups(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/groups"
 
     def list(self, pattern_dispatcher=None, options=None, limit=None, skip=None):
         """
@@ -43,7 +44,7 @@ class GerritGroups(object):
             if v is not None
         }
 
-        return self.gerrit.get("/groups/", params=params)
+        return self.gerrit.get(self.endpoint, params=params)
 
     def search(self, query, options=None, limit=None, skip=None):
         """
@@ -63,9 +64,9 @@ class GerritGroups(object):
         """
         version = self.gerrit.version
         if parse(version) < parse("3.2.0"):
-            endpoint = f"/groups/?query2={query}"
+            endpoint = self.endpoint + f"/?query2={query}"
         else:
-            endpoint = f"/groups/?query={query}"
+            endpoint = self.endpoint + f"/?query={query}"
 
         params = {
             k: v
@@ -83,7 +84,7 @@ class GerritGroups(object):
         :param detailed:
         :return:
         """
-        endpoint = f"/groups/{id_}/"
+        endpoint = self.endpoint + f"/{id_}/"
         if detailed:
             endpoint += "detail"
         return GerritGroup(json=self.gerrit.get(endpoint), gerrit=self.gerrit)
@@ -107,6 +108,6 @@ class GerritGroups(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-input
         :return:
         """
-        endpoint = f"/groups/{name}"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
         return GerritGroup(json=result, gerrit=self.gerrit)

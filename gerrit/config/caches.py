@@ -8,6 +8,7 @@ class Cache(BaseModel):
     def __init__(self, **kwargs):
         super(Cache, self).__init__(**kwargs)
         self.entity_name = "name"
+        self.endpoint = "/config/server/caches"
 
     def flush(self):
         """
@@ -15,12 +16,13 @@ class Cache(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/config/server/caches/{self.name}/flush")
+        self.gerrit.post(self.endpoint + f"/{self.name}/flush")
 
 
 class Caches(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
+        self.endpoint = "/config/server/caches"
 
     def list(self):
         """
@@ -28,8 +30,7 @@ class Caches(object):
 
         :return:
         """
-        result = self.gerrit.get("/config/server/caches/")
-
+        result = self.gerrit.get(self.endpoint)
         caches = []
         for key, value in result.items():
             cache = value
@@ -45,7 +46,7 @@ class Caches(object):
         :param name: cache name
         :return:
         """
-        result = self.gerrit.get(f"/config/server/caches/{name}")
+        result = self.gerrit.get(self.endpoint + f"/{name}")
         return Cache(json=result, gerrit=self.gerrit)
 
     def flush(self, name):
@@ -55,7 +56,7 @@ class Caches(object):
         :param name: cache name
         :return:
         """
-        self.gerrit.post(f"/config/server/caches/{name}/flush")
+        self.gerrit.post(self.endpoint + f"/{name}/flush")
 
     def operation(self, input_):
         """
@@ -72,5 +73,4 @@ class Caches(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#cache-operation-input
         :return:
         """
-        endpoint = "/config/server/caches/"
-        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)

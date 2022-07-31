@@ -8,6 +8,7 @@ class GerritAccountEmail(BaseModel):
     def __init__(self, **kwargs):
         super(GerritAccountEmail, self).__init__(**kwargs)
         self.entity_name = "email"
+        self.endpoint = f"/accounts/{self.username}/emails/{self.email}"
 
     def delete(self):
         """
@@ -30,6 +31,7 @@ class GerritAccountEmails(object):
     def __init__(self, username, gerrit):
         self.username = username
         self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.username}/emails"
 
     def list(self):
         """
@@ -37,7 +39,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/emails")
+        result = self.gerrit.get(self.endpoint)
         return GerritAccountEmail.parse_list(result, username=self.username, gerrit=self.gerrit)
 
     def create(self, email):
@@ -46,7 +48,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        return self.gerrit.put(f"/accounts/{self.username}/emails/{email}")
+        return self.gerrit.put(self.endpoint + f"/{email}")
 
     def get(self, email):
         """
@@ -54,7 +56,7 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/accounts/{self.username}/emails/{email}")
+        result = self.gerrit.get(self.endpoint + f"/{email}")
         return GerritAccountEmail(json=result, username=self.username, gerrit=self.gerrit)
 
     def set_preferred(self, email):
@@ -64,7 +66,7 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
-        self.gerrit.put(f"/accounts/{self.username}/emails/{email}/preferred")
+        self.gerrit.put(self.endpoint + f"/{email}/preferred")
 
     def delete(self, email):
         """
@@ -73,4 +75,4 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/emails/{email}")
+        self.gerrit.delete(self.endpoint + f"/{email}")

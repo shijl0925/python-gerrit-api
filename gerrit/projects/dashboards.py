@@ -22,6 +22,7 @@ class GerritProjectDashboards(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
+        self.endpoint = f"/projects/{self.project}/dashboards"
 
     def list(self):
         """
@@ -29,7 +30,7 @@ class GerritProjectDashboards(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/projects/{self.project}/dashboards/")
+        result = self.gerrit.get(self.endpoint)
         return GerritProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, id_, input_):
@@ -50,8 +51,8 @@ class GerritProjectDashboards(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#dashboard-input
         :return:
         """
-        endpoint = f"/projects/{self.project}/dashboards/{id_}"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers)
         return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
 
     def get(self, id_):
@@ -61,7 +62,7 @@ class GerritProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        result = self.gerrit.get(f"/projects/{self.project}/dashboards/{id_}")
+        result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
 
     def delete(self, id_):
@@ -71,4 +72,4 @@ class GerritProjectDashboards(object):
         :param id_: the dashboard id
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/dashboards/{id_}")
+        self.gerrit.delete(self.endpoint + f"/{id_}")

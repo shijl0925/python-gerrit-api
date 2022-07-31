@@ -10,6 +10,7 @@ class GerritGroup(BaseModel):
     def __init__(self, **kwargs):
         super(GerritGroup, self).__init__(**kwargs)
         self.entity_name = "name"
+        self.endpoint = f"/groups/{self.id}"
 
     def get_name(self):
         """
@@ -17,7 +18,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/groups/{self.id}/name")
+        return self.gerrit.get(self.endpoint + "/name")
 
     def set_name(self, input_):
         """
@@ -37,8 +38,8 @@ class GerritGroup(BaseModel):
         :param input_:
         :return:
         """
-        endpoint = f"/groups/{self.id}/name"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers)
 
     def get_description(self):
         """
@@ -46,7 +47,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/groups/{self.id}/description")
+        return self.gerrit.get(self.endpoint + "/description")
 
     def set_description(self, input_):
         """
@@ -65,8 +66,8 @@ class GerritGroup(BaseModel):
         :param input_:
         :return:
         """
-        endpoint = f"/groups/{self.id}/description"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/description", json=input_, headers=self.gerrit.default_headers)
 
     def delete_description(self):
         """
@@ -76,7 +77,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/groups/{self.id}/description")
+        self.gerrit.delete(self.endpoint + "/description")
 
     def get_options(self):
         """
@@ -84,7 +85,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/groups/{self.id}/options")
+        return self.gerrit.get(self.endpoint + "/options")
 
     def set_options(self, input_):
         """
@@ -105,8 +106,8 @@ class GerritGroup(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-options-input
         :return:
         """
-        endpoint = f"/groups/{self.id}/options"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/options", json=input_, headers=self.gerrit.default_headers)
 
     def get_owner(self):
         """
@@ -114,7 +115,7 @@ class GerritGroup(BaseModel):
 
         :return: As response a GroupInfo entity is returned that describes the owner group.
         """
-        return self.gerrit.get(f"/groups/{self.id}/owner")
+        return self.gerrit.get(self.endpoint + "/owner")
 
     def set_owner(self, input_):
         """
@@ -133,8 +134,8 @@ class GerritGroup(BaseModel):
         :param input_: As response a GroupInfo entity is returned that describes the new owner group.
         :return:
         """
-        endpoint = f"/groups/{self.id}/owner"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/owner", json=input_, headers=self.gerrit.default_headers)
 
     def get_audit_log(self):
         """
@@ -144,7 +145,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/groups/{self.id}/log.audit")
+        return self.gerrit.get(self.endpoint + "/log.audit")
 
     def index(self):
         """
@@ -152,7 +153,7 @@ class GerritGroup(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/groups/{self.id}/index")
+        self.gerrit.post(self.endpoint + "/index")
 
     @property
     def members(self):

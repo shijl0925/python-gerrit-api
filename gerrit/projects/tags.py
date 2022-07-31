@@ -15,6 +15,7 @@ class GerritProjectTag(BaseModel):
     def __init__(self, **kwargs):
         super(GerritProjectTag, self).__init__(**kwargs)
         self.entity_name = "ref"
+        self.endpoint = f"/projects/{self.project}/tags"
 
     @property
     def name(self):
@@ -26,7 +27,7 @@ class GerritProjectTag(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/tags/{self.name}")
+        self.gerrit.delete(self.endpoint + f"/{self.name}")
 
 
 class GerritProjectTags(object):
@@ -35,6 +36,7 @@ class GerritProjectTags(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
+        self.endpoint = f"/projects/{self.project}/tags"
 
     def list(self, pattern_dispatcher=None, limit=None, skip=None):
         """
@@ -58,7 +60,7 @@ class GerritProjectTags(object):
                 raise ValueError("Pattern types can be either 'match' or 'regex'.")
 
         params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
-        return self.gerrit.get(f"/projects/{self.project}/tags/", params=params)
+        return self.gerrit.get(self.endpoint, params=params)
 
     def get(self, name):
         """
@@ -67,7 +69,7 @@ class GerritProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        result = self.gerrit.get(f"/projects/{self.project}/tags/{quote_plus(name)}")
+        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
         return GerritProjectTag(json=result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
@@ -89,8 +91,8 @@ class GerritProjectTags(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#tag-input
         :return:
         """
-        endpoint = f"/projects/{self.project}/tags/{name}"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, name):
         """
@@ -99,4 +101,4 @@ class GerritProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/tags/{quote_plus(name)}")
+        self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")

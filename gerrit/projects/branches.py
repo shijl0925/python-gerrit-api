@@ -15,6 +15,7 @@ class GerritProjectBranch(BaseModel):
     def __init__(self, **kwargs):
         super(GerritProjectBranch, self).__init__(**kwargs)
         self.entity_name = "ref"
+        self.endpoint = f"/projects/{self.project}/branches/{self.name}"
 
     @property
     def name(self):
@@ -28,9 +29,7 @@ class GerritProjectBranch(BaseModel):
         :param file: the file path
         :return:
         """
-        return self.gerrit.get(
-            f"/projects/{self.project}/branches/{self.name}/files/{quote_plus(file)}/content"
-        )
+        return self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
 
     def is_mergeable(self, input_):
         """
@@ -48,9 +47,7 @@ class GerritProjectBranch(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-input
         :return:
         """
-        return self.gerrit.get(
-            f"/projects/{self.project}/branches/{self.name}/mergeable", params=input_
-        )
+        return self.gerrit.get(self.endpoint + "/mergeable", params=input_)
 
     def get_reflog(self):
         """
@@ -58,7 +55,7 @@ class GerritProjectBranch(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/projects/{self.project}/branches/{self.name}/reflog")
+        return self.gerrit.get(self.endpoint + "/reflog")
 
     def delete(self):
         """
@@ -66,7 +63,7 @@ class GerritProjectBranch(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/branches/{self.name}")
+        self.gerrit.delete(self.endpoint)
 
 
 class GerritProjectBranches(object):
@@ -75,6 +72,7 @@ class GerritProjectBranches(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
+        self.endpoint = f"/projects/{self.project}/branches/"
 
     def list(self, pattern_dispatcher=None, limit=None, skip=None):
         """
@@ -99,7 +97,7 @@ class GerritProjectBranches(object):
 
         params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
 
-        return self.gerrit.get(f"/projects/{self.project}/branches/", params=params)
+        return self.gerrit.get(self.endpoint, params=params)
 
     def get(self, name):
         """
@@ -108,7 +106,7 @@ class GerritProjectBranches(object):
         :param name: branch ref name
         :return:
         """
-        result = self.gerrit.get(f"/projects/{self.project}/branches/{quote_plus(name)}")
+        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
         return GerritProjectBranch(json=result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
@@ -130,9 +128,7 @@ class GerritProjectBranches(object):
         :return:
         """
         return self.gerrit.put(
-            f"/projects/{self.project}/branches/{name}",
-            json=input_, headers=self.gerrit.default_headers
-        )
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, name):
         """
@@ -141,4 +137,4 @@ class GerritProjectBranches(object):
         :param name: branch ref name
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/branches/{quote_plus(name)}")
+        self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")

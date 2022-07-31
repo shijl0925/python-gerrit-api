@@ -7,6 +7,7 @@ class GerritGroupMembers(object):
     def __init__(self, group_id, gerrit):
         self.group_id = group_id
         self.gerrit = gerrit
+        self.endpoint = f"/groups/{self.group_id}/members"
 
     def list(self):
         """
@@ -16,7 +17,7 @@ class GerritGroupMembers(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/groups/{self.group_id}/members/")
+        result = self.gerrit.get(self.endpoint)
 
         accounts = []
         for item in result:
@@ -34,7 +35,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        result = self.gerrit.get(f"/groups/{self.group_id}/members/{username}")
+        result = self.gerrit.get(self.endpoint + f"/{username}")
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -48,7 +49,7 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        result = self.gerrit.put(f"/groups/{self.group_id}/members/{username}")
+        result = self.gerrit.put(self.endpoint + f"/{username}")
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -62,4 +63,4 @@ class GerritGroupMembers(object):
         :param username: account username
         :return:
         """
-        self.gerrit.delete(f"/groups/{self.group_id}/members/{username}")
+        self.gerrit.delete(self.endpoint + f"/{username}")

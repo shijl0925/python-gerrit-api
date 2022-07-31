@@ -15,6 +15,7 @@ class GerritChange(BaseModel):
         self.revisions = {}
         self.current_revision_number = 0
         super(GerritChange, self).__init__(**kwargs)
+        self.endpoint = f"/changes/{self.id}"
 
     def create_merge_patch_set(self, input_):
         """
@@ -38,8 +39,7 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-patch-set-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/merge"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/merge", json=input_, headers=self.gerrit.default_headers)
 
     def set_commit_message(self, input_):
         """
@@ -58,8 +58,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#commit-message-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/message"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/message",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def list_votes(self, account):
         """
@@ -68,7 +68,7 @@ class GerritChange(BaseModel):
         :param account: account id or username
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/reviewers/{account}/votes")
+        return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes")
 
     def delete_vote(self, account, label, input_=None):
         """
@@ -119,9 +119,9 @@ class GerritChange(BaseModel):
         :param topic: The new topic
         :return:
         """
-        endpoint = f"/changes/{self.id}/topic"
         input_ = {"topic": topic}
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/topic",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def delete_topic(self):
         """
@@ -137,7 +137,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.id}/assignee")
+        result = self.gerrit.get(self.endpoint + "/assignee")
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -159,8 +159,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#assignee-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/assignee"
-        result = self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(self.endpoint + "/assignee",
+                                 json=input_, headers=self.gerrit.default_headers)
         if result:
             username = result.get("username")
             return self.gerrit.accounts.get(username)
@@ -171,7 +171,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.id}/past_assignees")
+        result = self.gerrit.get(self.endpoint + "/past_assignees")
         assignees = []
         if result:
             for item in result:
@@ -187,8 +187,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        endpoint = f"/changes/{self.id}/assignee"
-        response = self.gerrit.delete(endpoint)
+        response = self.gerrit.delete(self.endpoint + "/assignee")
         result = self.gerrit.decode_response(response)
 
         if result:
@@ -202,7 +201,7 @@ class GerritChange(BaseModel):
         :param commit: commit id
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/pure_revert?o={commit}")
+        return self.gerrit.get(self.endpoint + f"/pure_revert?o={commit}")
 
     def abandon(self):
         """
@@ -213,7 +212,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.post(f"/changes/{self.id}/abandon")
+        return self.gerrit.post(self.endpoint + "/abandon")
 
     def restore(self):
         """
@@ -223,7 +222,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.post(f"/changes/{self.id}/restore")
+        return self.gerrit.post(self.endpoint + "/restore")
 
     def rebase(self, input_):
         """
@@ -244,8 +243,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#rebase-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/rebase"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/rebase",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def move(self, input_):
         """
@@ -266,8 +265,9 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#move-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/move"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/move",
+                                json=input_,
+                                headers=self.gerrit.default_headers)
 
     def revert(self, input_=None):
         """
@@ -295,8 +295,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#revert-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/revert"
-        return self.gerrit.post(endpoint, json=input_ or {}, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/revert",
+                                json=input_ or {}, headers=self.gerrit.default_headers)
 
     def revert_submission(self):
         """
@@ -314,7 +314,7 @@ class GerritChange(BaseModel):
         if parse(version) < parse("3.2.0"):
             raise UnsupportMethod("The server does not support this method")
 
-        return self.gerrit.post(f"/changes/{self.id}/revert_submission")
+        return self.gerrit.post(self.endpoint + "/revert_submission")
 
     def submit(self, input_):
         """
@@ -337,8 +337,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#submit-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/submit"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/submit",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def delete(self):
         """
@@ -346,7 +346,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/changes/{self.id}")
+        self.gerrit.delete(self.endpoint)
 
     def get_include_in(self):
         """
@@ -354,7 +354,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/in")
+        return self.gerrit.get(self.endpoint + "/in")
 
     def index(self):
         """
@@ -362,7 +362,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/changes/{self.id}/index")
+        self.gerrit.post(self.endpoint + "/index")
 
     def list_comments(self):
         """
@@ -370,7 +370,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/comments")
+        return self.gerrit.get(self.endpoint + "/comments")
 
     def list_robot_comments(self):
         """
@@ -378,7 +378,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/robotcomments")
+        return self.gerrit.get(self.endpoint + "/robotcomments")
 
     def list_drafts(self):
         """
@@ -386,7 +386,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/drafts")
+        return self.gerrit.get(self.endpoint + "/drafts")
 
     def consistency_check(self):
         """
@@ -395,7 +395,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/check")
+        return self.gerrit.get(self.endpoint + "/check")
 
     def fix(self, input_=None):
         """
@@ -420,7 +420,7 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#fix-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/check"
+        endpoint = self.endpoint + "/check"
         if input_ is None:
             result = self.gerrit.post(endpoint)
         else:
@@ -450,8 +450,9 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/wip"
-        self.gerrit.post(endpoint, json=input_ or {}, headers=self.gerrit.default_headers)
+        self.gerrit.post(self.endpoint + "/wip",
+                         json=input_ or {}, headers=self.gerrit.default_headers
+                         )
 
     def set_ready_for_review(self, input_):
         """
@@ -472,8 +473,7 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/ready"
-        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers)
 
     def mark_private(self, input_):
         """
@@ -492,8 +492,9 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#private-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/private"
-        self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(self.endpoint + "/private",
+                         json=input_, headers=self.gerrit.default_headers
+                         )
 
     def unmark_private(self, input_=None):
         """
@@ -515,11 +516,11 @@ class GerritChange(BaseModel):
         :return:
         """
         if input_ is None:
-            endpoint = f"/changes/{self.id}/private"
-            self.gerrit.delete(endpoint)
+            self.gerrit.delete(self.endpoint + "/private")
         else:
-            endpoint = f"/changes/{self.id}/private.delete"
-            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(self.endpoint + "/private.delete",
+                             json=input_, headers=self.gerrit.default_headers
+                             )
 
     def ignore(self):
         """
@@ -529,7 +530,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.put(f"/changes/{self.id}/ignore")
+        self.gerrit.put(self.endpoint + "/ignore")
 
     def unignore(self):
         """
@@ -537,7 +538,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.put(f"/changes/{self.id}/unignore")
+        self.gerrit.put(self.endpoint + "/unignore")
 
     def mark_as_reviewed(self):
         """
@@ -545,7 +546,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.put(f"/changes/{self.id}/reviewed")
+        self.gerrit.put(self.endpoint + "/reviewed")
 
     def mark_as_unreviewed(self):
         """
@@ -553,7 +554,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.put(f"/changes/{self.id}/unreviewed")
+        self.gerrit.put(self.endpoint + "/unreviewed")
 
     def get_hashtags(self):
         """
@@ -561,7 +562,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/hashtags")
+        return self.gerrit.get(self.endpoint + "/hashtags")
 
     def set_hashtags(self, input_):
         """
@@ -584,8 +585,8 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#hashtags-input
         :return:
         """
-        endpoint = f"/changes/{self.id}/hashtags"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/hashtags",
+                                json=input_, headers=self.gerrit.default_headers)
 
 
     @property
@@ -600,7 +601,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.id}/edit")
+        result = self.gerrit.get(self.endpoint + "/edit")
         return GerritChangeEdit(json=result, change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
@@ -609,7 +610,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.post(f"/changes/{self.id}/edit")
+        self.gerrit.post(self.endpoint + "/edit")
 
     @property
     def reviewers(self):
@@ -695,8 +696,8 @@ class GerritChange(BaseModel):
         if parse(version) < parse("3.3.0"):
             raise UnsupportMethod("The server does not support this method")
 
-        endpoint = f"/changes/{self.id}/attention"
-        result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(self.endpoint + "/attention",
+                                  json=input_, headers=self.gerrit.default_headers)
         return result
 
     def remove_from_attention_set(self, id_, input_=None):
@@ -726,7 +727,7 @@ class GerritChange(BaseModel):
         if parse(version) < parse("3.3.0"):
             raise UnsupportMethod("The server does not support this method")
 
-        endpoint = f"/changes/{self.id}/attention/{id_}"
+        endpoint = self.endpoint + f"/attention/{id_}"
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:

@@ -18,6 +18,7 @@ class GerritChangeRevision(object):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}"
 
     def get_commit(self):
         """
@@ -25,7 +26,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/commit")
+        result = self.gerrit.get(self.endpoint + "/commit")
         commit = result.get("commit")
         if commit:
             project = self.gerrit.projects.get(self.project)
@@ -39,7 +40,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/description")
+        return self.gerrit.get(self.endpoint + "/description")
 
     def set_description(self, input_):
         """
@@ -59,8 +60,8 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#description-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/description"
-        return self.gerrit.put(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/description",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_merge_list(self):
         """
@@ -70,7 +71,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/mergelist")
+        result = self.gerrit.get(self.endpoint + "/mergelist")
         return [
             self.gerrit.projects.get(self.project).get_commit(item.get("commit"))
             for item in result
@@ -82,7 +83,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/actions")
+        return self.gerrit.get(self.endpoint + "/actions")
 
     def get_review(self):
         """
@@ -90,7 +91,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/review")
+        return self.gerrit.get(self.endpoint + "/review")
 
     def get_related_changes(self):
         """
@@ -99,7 +100,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/related")
+        return self.gerrit.get(self.endpoint + "/related")
 
     def set_review(self, input_):
         """
@@ -146,8 +147,8 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#review-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/review"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/review",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def rebase(self, input_):
         """
@@ -168,8 +169,8 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#rebase-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/rebase"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/rebase",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def submit(self):
         """
@@ -180,7 +181,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.post(f"/changes/{self.change}/revisions/{self.revision}/submit")
+        return self.gerrit.post(self.endpoint + "/submit")
 
     def get_patch(self, zip_=False, download=False, path=None, decode=False):
         """
@@ -202,7 +203,7 @@ class GerritChangeRevision(object):
         :param decode: Decode bas64 to plain text.
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/patch"
+        endpoint = self.endpoint + "/patch"
 
         if zip_:
             endpoint += endpoint + "?zip"
@@ -225,7 +226,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/preview_submit")
+        return self.gerrit.get(self.endpoint + "/preview_submit")
 
     def is_mergeable(self):
         """
@@ -234,7 +235,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/mergeable")
+        return self.gerrit.get(self.endpoint + "/mergeable")
 
     def get_submit_type(self):
         """
@@ -242,7 +243,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/submit_type")
+        return self.gerrit.get(self.endpoint + "/submit_type")
 
     def test_submit_type(self, input_):
         """
@@ -252,8 +253,8 @@ class GerritChangeRevision(object):
         :type: str
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/test.submit_type"
-        return self.gerrit.post(endpoint, data=input_, headers={"Content-Type": "plain/text"})
+        return self.gerrit.post(self.endpoint + "/test.submit_type",
+                                data=input_, headers={"Content-Type": "plain/text"})
 
     def test_submit_rule(self, input_):
         """
@@ -263,8 +264,8 @@ class GerritChangeRevision(object):
         :type: str
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/test.submit_rule"
-        return self.gerrit.post(endpoint, data=input_, headers={"Content-Type": "plain/text"})
+        return self.gerrit.post(self.endpoint + "/test.submit_rule",
+                                data=input_, headers={"Content-Type": "plain/text"})
 
     @property
     def drafts(self):
@@ -284,7 +285,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/robotcomments")
+        return self.gerrit.get(self.endpoint + "/robotcomments")
 
     def get_robot_comment(self, commit_id):
         """
@@ -293,8 +294,7 @@ class GerritChangeRevision(object):
         :param commit_id:
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/robotcomments/{commit_id}"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + f"/robotcomments/{commit_id}")
 
     @property
     def files(self):
@@ -321,8 +321,8 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#cherry-pick-commit
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/cherrypick"
-        return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/cherrypick",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def list_reviewers(self):
         """
@@ -330,8 +330,7 @@ class GerritChangeRevision(object):
 
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/reviewers"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + "/reviewers")
 
     def list_votes(self, account):
         """
@@ -340,8 +339,7 @@ class GerritChangeRevision(object):
         :param account: account id or username
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/reviewers/{account}/votes/"
-        return self.gerrit.get(endpoint)
+        return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes/")
 
     def delete_vote(self, account, label, input_=None):
         """
@@ -368,7 +366,7 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/revisions/{self.revision}/reviewers/{account}/votes/{label}"
+        endpoint = self.endpoint + f"/reviewers/{account}/votes/{label}"
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
