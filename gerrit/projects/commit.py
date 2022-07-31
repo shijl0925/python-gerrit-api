@@ -9,9 +9,9 @@ except ImportError:
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectCommit(BaseModel):
+class GerritProjectCommit(BaseModel):
     def __init__(self, **kwargs):
-        super(GerrirProjectCommit, self).__init__(**kwargs)
+        super(GerritProjectCommit, self).__init__(**kwargs)
         self.entity_name = "commit"
 
     def get_include_in(self):

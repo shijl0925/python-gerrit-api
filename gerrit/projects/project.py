@@ -2,12 +2,12 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from packaging.version import parse
-from gerrit.projects.branches import GerrirProjectBranches
-from gerrit.projects.tags import GerrirProjectTags
-from gerrit.projects.commit import GerrirProjectCommit
-from gerrit.projects.dashboards import GerrirProjectDashboards
-from gerrit.projects.labels import GerrirProjectLabels
-from gerrit.projects.webhooks import GerrirProjectWebHooks
+from gerrit.projects.branches import GerritProjectBranches
+from gerrit.projects.tags import GerritProjectTags
+from gerrit.projects.commit import GerritProjectCommit
+from gerrit.projects.dashboards import GerritProjectDashboards
+from gerrit.projects.labels import GerritProjectLabels
+from gerrit.projects.webhooks import GerritProjectWebHooks
 from gerrit.changes.change import GerritChange
 from gerrit.utils.models import BaseModel
 from gerrit.utils.exceptions import UnsupportMethod
@@ -423,7 +423,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return GerrirProjectBranches(self.id, self.gerrit)
+        return GerritProjectBranches(self.id, self.gerrit)
 
     @property
     def child_projects(self):
@@ -444,7 +444,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return GerrirProjectTags(self.id, self.gerrit)
+        return GerritProjectTags(self.id, self.gerrit)
 
     def get_commit(self, commit):
         """
@@ -455,7 +455,7 @@ class GerritProject(BaseModel):
         endpoint = "/projects/%s/commits/%s" % (self.id, commit)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectCommit.parse(result, project=self.id, gerrit=self.gerrit)
+        return GerritProjectCommit.parse(result, project=self.id, gerrit=self.gerrit)
 
     @property
     def dashboards(self):
@@ -464,7 +464,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return GerrirProjectDashboards(project=self.id, gerrit=self.gerrit)
+        return GerritProjectDashboards(project=self.id, gerrit=self.gerrit)
 
     def get_labels(self):
         """
@@ -479,7 +479,7 @@ class GerritProject(BaseModel):
             result = self.gerrit.decode_response(response)
             return result.get("labels")
         else:
-            return GerrirProjectLabels(project=self.id, gerrit=self.gerrit)
+            return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):
@@ -488,4 +488,4 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        return GerrirProjectWebHooks(project=self.id, gerrit=self.gerrit)
+        return GerritProjectWebHooks(project=self.id, gerrit=self.gerrit)

@@ -9,11 +9,11 @@ except ImportError:
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectBranch(BaseModel):
+class GerritProjectBranch(BaseModel):
     branch_prefix = "refs/heads/"
 
     def __init__(self, **kwargs):
-        super(GerrirProjectBranch, self).__init__(**kwargs)
+        super(GerritProjectBranch, self).__init__(**kwargs)
         self.entity_name = "ref"
 
     @property
@@ -81,7 +81,7 @@ class GerrirProjectBranch(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class GerrirProjectBranches(object):
+class GerritProjectBranches(object):
     branch_prefix = "refs/heads/"
 
     def __init__(self, project, gerrit):
@@ -127,7 +127,7 @@ class GerrirProjectBranches(object):
         endpoint = "/projects/%s/branches/%s" % (self.project, quote_plus(name))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectBranch.parse(
+        return GerritProjectBranch.parse(
             result, project=self.project, gerrit=self.gerrit
         )
 

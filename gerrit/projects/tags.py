@@ -9,11 +9,11 @@ except ImportError:
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectTag(BaseModel):
+class GerritProjectTag(BaseModel):
     tag_prefix = "refs/tags/"
 
     def __init__(self, **kwargs):
-        super(GerrirProjectTag, self).__init__(**kwargs)
+        super(GerritProjectTag, self).__init__(**kwargs)
         self.entity_name = "ref"
 
     @property
@@ -30,7 +30,7 @@ class GerrirProjectTag(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class GerrirProjectTags(object):
+class GerritProjectTags(object):
     tag_prefix = "refs/tags/"
 
     def __init__(self, project, gerrit):
@@ -76,7 +76,7 @@ class GerrirProjectTags(object):
         endpoint = "/projects/%s/tags/%s" % (self.project, quote_plus(name))
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectTag.parse(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectTag.parse(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """

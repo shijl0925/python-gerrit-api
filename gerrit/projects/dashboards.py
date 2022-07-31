@@ -5,9 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectDashboard(BaseModel):
+class GerritProjectDashboard(BaseModel):
     def __init__(self, **kwargs):
-        super(GerrirProjectDashboard, self).__init__(**kwargs)
+        super(GerritProjectDashboard, self).__init__(**kwargs)
 
     def delete(self):
         """
@@ -19,7 +19,7 @@ class GerrirProjectDashboard(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class GerrirProjectDashboards(object):
+class GerritProjectDashboards(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -33,7 +33,7 @@ class GerrirProjectDashboards(object):
         endpoint = "/projects/%s/dashboards/" % self.project
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse_list(
+        return GerritProjectDashboard.parse_list(
             result, project=self.project, gerrit=self.gerrit
         )
 
@@ -61,7 +61,7 @@ class GerrirProjectDashboards(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(
+        return GerritProjectDashboard.parse(
             result, project=self.project, gerrit=self.gerrit
         )
 
@@ -75,7 +75,7 @@ class GerrirProjectDashboards(object):
         endpoint = "/projects/%s/dashboards/%s" % (self.project, id_)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectDashboard.parse(
+        return GerritProjectDashboard.parse(
             result, project=self.project, gerrit=self.gerrit
         )
 

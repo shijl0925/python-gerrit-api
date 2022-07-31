@@ -5,9 +5,9 @@
 from gerrit.utils.models import BaseModel
 
 
-class GerrirProjectLabel(BaseModel):
+class GerritProjectLabel(BaseModel):
     def __init__(self, **kwargs):
-        super(GerrirProjectLabel, self).__init__(**kwargs)
+        super(GerritProjectLabel, self).__init__(**kwargs)
         self.entity_name = "name"
 
     def set(self, input_):
@@ -50,7 +50,7 @@ class GerrirProjectLabel(BaseModel):
         self.gerrit.requester.delete(self.gerrit.get_endpoint_url(endpoint))
 
 
-class GerrirProjectLabels(object):
+class GerritProjectLabels(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -64,7 +64,7 @@ class GerrirProjectLabels(object):
         endpoint = "/projects/%s/labels/" % self.project
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectLabel.parse_list(result, gerrit=self.gerrit)
+        return GerritProjectLabel.parse_list(result, gerrit=self.gerrit)
 
     def get(self, name):
         """
@@ -77,7 +77,7 @@ class GerrirProjectLabels(object):
         endpoint = "/projects/%s/labels/%s" % (self.project, name)
         response = self.gerrit.requester.get(self.gerrit.get_endpoint_url(endpoint))
         result = self.gerrit.decode_response(response)
-        return GerrirProjectLabel.parse(result, gerrit=self.gerrit)
+        return GerritProjectLabel.parse(result, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -110,7 +110,7 @@ class GerrirProjectLabels(object):
             base_url, json=input_, headers=self.gerrit.default_headers
         )
         result = self.gerrit.decode_response(response)
-        return GerrirProjectLabel.parse(result, gerrit=self.gerrit)
+        return GerritProjectLabel.parse(result, gerrit=self.gerrit)
 
     def delete(self, name):
         """
