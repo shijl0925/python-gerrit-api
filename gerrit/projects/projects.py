@@ -6,6 +6,7 @@ try:
 except ImportError:
     from urllib import quote_plus
 from gerrit.projects.project import GerritProject
+from gerrit.utils.common import params_creator
 
 
 class GerritProjects(object):
@@ -47,34 +48,12 @@ class GerritProjects(object):
 
         :return:
         """
-        pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-
-        p, v = None, None
-        if pattern_dispatcher is not None and pattern_dispatcher:
-            for item in pattern_types:
-                if item in pattern_dispatcher:
-                    p, v = pattern_types[item], pattern_dispatcher[item]
-                    break
-            else:
-                raise ValueError(
-                    "Pattern types can be either 'prefix', 'match' or 'regex'."
-                )
-
         if is_all and state:
             raise ValueError("is_all can not be used together with the state option.")
-
-        params = {
-            k: v
-            for k, v in (
-                ("n", limit),
-                ("S", skip),
-                (p, v),
-                ("type", project_type),
-                ("b", branch),
-                ("state", state),
-            )
-            if v is not None
-        }
+        
+        pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
+        tuples = (("n", limit),("S", skip),("type", project_type),("b", branch),("state", state))
+        params = params_creator(tuples, pattern_types, pattern_dispatcher)
         params["all"] = int(is_all)
         params["d"] = int(description)
 

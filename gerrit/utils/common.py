@@ -6,6 +6,26 @@ import logging
 from functools import wraps
 
 
+def params_creator(tuples, pattern_types, pattern_dispatcher):
+    p, v = None, None
+    if pattern_dispatcher is not None and pattern_dispatcher:
+        for item in pattern_types:
+            if item in pattern_dispatcher:
+                p, v = pattern_types[item], pattern_dispatcher[item]
+                break
+        else:
+            k = list(pattern_types.keys())
+            raise ValueError("Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1])
+
+    params = {
+        k: v
+        for k, v in tuples + ((p, v),)
+        if v is not None
+    }
+
+    return params
+
+
 def check(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):

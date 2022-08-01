@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from gerrit.utils.models import BaseModel
+from gerrit.utils.common import params_creator
 
 
 class GerritPlugin(BaseModel):
@@ -56,20 +57,8 @@ class GerritPlugins(object):
                      pattern value: {('prefix'|'match'|'regex') : value}
         :return:
         """
-        pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-
-        p, v = None, None
-        if pattern_dispatcher is not None and pattern_dispatcher:
-            for item in pattern_types:
-                if item in pattern_dispatcher:
-                    p, v = pattern_types[item], pattern_dispatcher[item]
-                    break
-            else:
-                raise ValueError(
-                    "Pattern types can be either 'prefix', 'match' or 'regex'."
-                )
-
-        params = {k: v for k, v in (("n", limit), ("S", skip), (p, v)) if v is not None}
+        params = params_creator((("n", limit), ("S", skip)),
+                                {"prefix": "p", "match": "m", "regex": "r"}, pattern_dispatcher)
         params["all"] = int(is_all)
 
         return self.gerrit.get(self.endpoint, params=params)

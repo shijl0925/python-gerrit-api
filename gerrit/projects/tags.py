@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.common import params_creator
 try:
     from urllib.parse import quote_plus
 except ImportError:
@@ -48,18 +49,8 @@ class GerritProjectTags(object):
         :param skip: Skip the given number of tags from the beginning of the list.
         :return:
         """
-        pattern_types = {"match": "m", "regex": "r"}
-
-        p, v = None, None
-        if pattern_dispatcher is not None and pattern_dispatcher:
-            for item in pattern_types:
-                if item in pattern_dispatcher:
-                    p, v = pattern_types[item], pattern_dispatcher[item]
-                    break
-            else:
-                raise ValueError("Pattern types can be either 'match' or 'regex'.")
-
-        params = {k: v for k, v in (("n", limit), ("s", skip), (p, v)) if v is not None}
+        params = params_creator((("n", limit), ("s", skip)),
+                                {"match": "m", "regex": "r"}, pattern_dispatcher)
         return self.gerrit.get(self.endpoint, params=params)
 
     def get(self, name):
