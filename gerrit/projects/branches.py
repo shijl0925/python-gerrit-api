@@ -13,7 +13,7 @@ class GerritProjectBranch(BaseModel):
     branch_prefix = "refs/heads/"
 
     def __init__(self, **kwargs):
-        super(GerritProjectBranch, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "ref"
         self.endpoint = f"/projects/{self.project}/branches/{self.name}"
 

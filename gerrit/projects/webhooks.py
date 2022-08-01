@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritProjectWebHook(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritProjectWebHook, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "name"
         self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes"
 

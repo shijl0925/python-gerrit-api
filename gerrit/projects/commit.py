@@ -11,7 +11,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritProjectCommit(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritProjectCommit, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "commit"
         self.endpoint = f"/projects/{self.project}/commits/{self.commit}"
 

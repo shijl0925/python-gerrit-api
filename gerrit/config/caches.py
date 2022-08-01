@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class Cache(BaseModel):
     def __init__(self, **kwargs):
-        super(Cache, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "name"
         self.endpoint = "/config/server/caches"
 

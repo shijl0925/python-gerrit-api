@@ -13,7 +13,7 @@ class GerritProjectTag(BaseModel):
     tag_prefix = "refs/tags/"
 
     def __init__(self, **kwargs):
-        super(GerritProjectTag, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "ref"
         self.endpoint = f"/projects/{self.project}/tags"
 

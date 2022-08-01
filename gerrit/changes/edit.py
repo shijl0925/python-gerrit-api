@@ -11,7 +11,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritChangeEdit(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeEdit, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "ref"
         self.endpoint = f"/changes/{self.change}/edit"
 

@@ -14,7 +14,7 @@ class GerritChange(BaseModel):
     def __init__(self, **kwargs):
         self.revisions = {}
         self.current_revision_number = 0
-        super(GerritChange, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/changes/{self.id}"
 
     def create_merge_patch_set(self, input_):

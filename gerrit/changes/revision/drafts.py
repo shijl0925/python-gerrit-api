@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritChangeRevisionDraft(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeRevisionDraft, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
 
     def update(self, input_):

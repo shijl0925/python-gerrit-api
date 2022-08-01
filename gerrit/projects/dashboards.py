@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritProjectDashboard(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritProjectDashboard, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def delete(self):
         """

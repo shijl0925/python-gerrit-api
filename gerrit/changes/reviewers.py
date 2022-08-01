@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritChangeReviewer(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeReviewer, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "username"
         self.endpoint = f"/changes/{self.change}/reviewers/{self.username}"
 

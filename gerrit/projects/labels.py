@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritProjectLabel(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritProjectLabel, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "name"
         self.endpoint = f"/projects/{self.project}/labels/{self.name}"
 

@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritChangeRevisionComment(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeRevisionComment, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
 
     def delete(self, input_=None):

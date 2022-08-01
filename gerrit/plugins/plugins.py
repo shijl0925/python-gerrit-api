@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritPlugin(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritPlugin, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/plugins/{self.id}"
 
     def enable(self):

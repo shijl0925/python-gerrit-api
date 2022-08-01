@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritAccountGPGKey(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritAccountGPGKey, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/accounts/{self.username}/gpgkeys"
 
     def delete(self):

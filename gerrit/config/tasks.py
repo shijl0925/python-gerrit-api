@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class Task(BaseModel):
     def __init__(self, **kwargs):
-        super(Task, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = "/config/server/tasks"
 
     def delete(self):

@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritAccountSSHKey(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritAccountSSHKey, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "seq"
         self.endpoint = f"/accounts/{self.username}/sshkeys"
 

@@ -15,7 +15,7 @@ from gerrit.utils.exceptions import UnsupportMethod
 
 class GerritProject(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritProject, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/projects/{self.id}"
 
     def get_description(self):

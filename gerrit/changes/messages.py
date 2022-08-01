@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritChangeMessage(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeMessage, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.endpoint = f"/changes/{self.change}/messages/{self.id}"
 
     def delete(self, input_=None):

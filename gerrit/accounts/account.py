@@ -11,7 +11,7 @@ from gerrit.utils.exceptions import UnsupportMethod
 
 class GerritAccount(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritAccount, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "username"
         self.endpoint = f"/accounts/{self.username}"
 

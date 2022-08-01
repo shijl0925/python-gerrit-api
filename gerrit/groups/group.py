@@ -8,7 +8,7 @@ from gerrit.groups.subgroups import GerritGroupSubGroups
 
 class GerritGroup(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritGroup, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "name"
         self.endpoint = f"/groups/{self.id}"
 

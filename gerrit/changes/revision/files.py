@@ -12,7 +12,7 @@ from gerrit.utils.exceptions import UnknownFile
 
 class GerritChangeRevisionFile(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritChangeRevisionFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "path"
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}" \
                         f"/files/{quote_plus(self.path)}"

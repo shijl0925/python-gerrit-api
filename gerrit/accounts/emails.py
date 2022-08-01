@@ -6,7 +6,7 @@ from gerrit.utils.models import BaseModel
 
 class GerritAccountEmail(BaseModel):
     def __init__(self, **kwargs):
-        super(GerritAccountEmail, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.entity_name = "email"
         self.endpoint = f"/accounts/{self.username}/emails/{self.email}"
 
