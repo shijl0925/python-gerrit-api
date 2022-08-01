@@ -42,7 +42,8 @@ class GerritProjects(object):
                             added to the output result
         :param branch: Limit the results to the projects having the specified branch
                        and include the sha1 of the branch in the results.
-        :param state: Get all projects with the given state. May not be used together with the all option.
+        :param state: Get all projects with the given state. May not be used together with the all
+        option.
 
         :return:
         """
@@ -81,14 +82,17 @@ class GerritProjects(object):
 
     def search(self, query, limit=None, skip=None):
         """
-        Queries projects visible to the caller. The query string must be provided by the query parameter.
+        Queries projects visible to the caller. The query string must be provided by the
+        query parameter.
         The start and limit parameters can be used to skip/limit results.
 
         query parameter
           * name:'NAME' Matches projects that have exactly the name 'NAME'.
           * parent:'PARENT' Matches projects that have 'PARENT' as parent project.
-          * inname:'NAME' Matches projects that a name part that starts with 'NAME' (case insensitive).
-          * description:'DESCRIPTION' Matches projects whose description contains 'DESCRIPTION', using a full-text search.
+          * inname:'NAME' Matches projects that a name part that starts with
+           'NAME' (case insensitive).
+          * description:'DESCRIPTION' Matches projects whose description contains 'DESCRIPTION',
+          using a full-text search.
           * state:'STATE' Matches project’s state. Can be either 'active' or 'read-only'.
 
         :param query:

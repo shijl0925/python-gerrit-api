@@ -29,7 +29,8 @@ class GerritProjectLabel(BaseModel):
             result = label.set(input_)
 
         :param input_: the LabelDefinitionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #label-definition-input
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
@@ -75,7 +76,8 @@ class GerritProjectLabels(object):
         """
         Creates a new label definition in this project.
         The calling user must have write access to the refs/meta/config branch of the project.
-        If a label with this name is already defined in this project, this label definition is updated (see Set Label).
+        If a label with this name is already defined in this project, this label definition is
+        updated (see Set Label).
 
         .. code-block:: python
 
@@ -93,7 +95,8 @@ class GerritProjectLabels(object):
 
         :param name: label name
         :param input_: the LabelDefinitionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #label-definition-input
         :return:
         """
         result = self.gerrit.put(

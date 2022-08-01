@@ -82,15 +82,17 @@ class GerritChangeEdit(BaseModel):
         .. code-block:: python
 
             input_ = {
-                "message": "New commit message\\n\\nChange-Id: I10394472cbd17dd12454f229e4f6de00b143a444"
+                "message": "New commit message\\n\\n
+                Change-Id: I10394472cbd17dd12454f229e4f6de00b143a444"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             edit = change.get_edit()
             edit.change_commit_message(input_)
 
         :param input_: the ChangeEditMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-edit-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #change-edit-message-input
         :return:
         """
         self.gerrit.put(self.endpoint + ":message",
@@ -115,12 +117,13 @@ class GerritChangeEdit(BaseModel):
                 "notify": "NONE"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             edit = change.get_edit()
             edit.publish(input_)
 
         :param input_: the PublishChangeEditInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#publish-change-edit-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #publish-change-edit-input
         :return:
         """
         self.gerrit.post(self.endpoint + ":publish",
@@ -128,9 +131,11 @@ class GerritChangeEdit(BaseModel):
 
     def rebase(self):
         """
-        Rebases change edit on top of latest patch set.
-        When change was rebased on top of latest patch set, response '204 No Content' is returned.
-        When change edit is already based on top of the latest patch set, the response '409 Conflict' is returned.
+        Rebase change edit on top of the latest patch set.
+        When change was rebased on top of the latest patch set, response '204 No Content'
+        is returned.
+        When change edit is already based on top of the latest patch set,
+        the response '409 Conflict' is returned.
 
         :return:
         """

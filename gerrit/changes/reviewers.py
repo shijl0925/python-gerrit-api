@@ -22,14 +22,15 @@ class GerritChangeReviewer(BaseModel):
                 "notify": "NONE"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             reviewer = change.reviewers.get('john.doe')
             reviewer.delete(input_)
             # or
             reviewer.delete()
 
         :param input_: the DeleteReviewerInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-reviewer-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #delete-reviewer-input
         :return:
         """
         if input_ is None:
@@ -49,7 +50,8 @@ class GerritChangeReviewer(BaseModel):
     def delete_vote(self, label, input_=None):
         """
         Deletes a single vote from a change.
-        Note, that even when the last vote of a reviewer is removed the reviewer itself is still listed on the change.
+        Note, that even when the last vote of a reviewer is removed the reviewer itself is still
+        listed on the change.
 
         .. code-block:: python
 
@@ -57,7 +59,7 @@ class GerritChangeReviewer(BaseModel):
                 "notify": "NONE"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             reviewer = change.reviewers.get('john.doe')
             reviewer.delete_vote('Code-Review', input_)
             # or
@@ -65,7 +67,8 @@ class GerritChangeReviewer(BaseModel):
 
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #delete-vote-input
         :return:
         """
         endpoint = self.endpoint + f"/votes/{label}"
@@ -105,12 +108,13 @@ class GerritChangeReviewers(object):
         """
         Adds one user or all members of one group as reviewer to the change.
 
-        Users can be moved from reviewer to CC and vice versa. This means if a user is added as CC that is already a
-        reviewer on the change, the reviewer state of that user is updated to CC. If a user that is already a CC on the
-        change is added as reviewer, the reviewer state of that user is updated to reviewer.
+        Users can be moved from reviewer to CC and vice versa. This means if a user is added as
+        CC that is already a reviewer on the change, the reviewer state of that user is updated
+        to CC. If a user that is already a CC on the change is added as reviewer, the reviewer
+        state of that user is updated to reviewer.
 
-        Adding a new reviewer also adds that reviewer to the attention set, unless the change is work in progress.
-        Also, moving a reviewer to CC removes that user from the attention set.
+        Adding a new reviewer also adds that reviewer to the attention set, unless the change is
+        work in progress. Also, moving a reviewer to CC removes that user from the attention set.
 
         .. code-block:: python
 
@@ -118,7 +122,7 @@ class GerritChangeReviewers(object):
                 "reviewer": "john.doe"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             new_reviewer = change.reviewers.add(input_)
 
         :param input_: the ReviewerInput entity,

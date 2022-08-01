@@ -52,12 +52,13 @@ class GerritChangeRevision(object):
                 "description": "Added Documentation"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.set_description(input_)
 
         :param input_: the DescriptionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#description-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #description-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/description",
@@ -65,9 +66,9 @@ class GerritChangeRevision(object):
 
     def get_merge_list(self):
         """
-        Returns the list of commits that are being integrated into a target branch by a merge commit.
-        By default the first parent is assumed to be uninteresting. By using the parent option another
-        parent can be set as uninteresting (parents are 1-based).
+        Returns the list of commits that are being integrated into a target branch by a merge
+        commit. By default, the first parent is assumed to be uninteresting. By using the parent
+        option another parent can be set as uninteresting (parents are 1-based).
 
         :return:
         """
@@ -104,9 +105,10 @@ class GerritChangeRevision(object):
 
     def set_review(self, input_):
         """
-        Sets a review on a revision, optionally also publishing draft comments, setting labels, adding reviewers or CCs,
-        and modifying the work in progress property.
-        A review cannot be set on a change edit. Trying to post a review for a change edit fails with 409 Conflict.
+        Sets a review on a revision, optionally also publishing draft comments, setting labels,
+        adding reviewers or CCs, and modifying the work in progress property.
+        A review cannot be set on a change edit. Trying to post a review for a change edit fails
+        with 409 Conflict.
 
         .. code-block:: python
 
@@ -139,7 +141,7 @@ class GerritChangeRevision(object):
                 }
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.set_review(input_)
 
@@ -153,7 +155,8 @@ class GerritChangeRevision(object):
     def rebase(self, input_):
         """
         Rebases a revision.
-        Optionally, the parent revision can be changed to another patch set through the RebaseInput entity.
+        Optionally, the parent revision can be changed to another patch set through the RebaseInput
+        entity.
 
         .. code-block:: python
 
@@ -161,7 +164,7 @@ class GerritChangeRevision(object):
                 "base" : "1234"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.rebase(input_)
 
@@ -175,9 +178,9 @@ class GerritChangeRevision(object):
     def submit(self):
         """
         Submits a revision.
-        If the revision cannot be submitted, e.g. because the submit rule doesn’t allow submitting the revision or the
-        revision is not the current revision, the response is 409 Conflict and the error message is contained in the
-        response body.
+        If the revision cannot be submitted, e.g. because the submit rule doesn’t allow submitting
+        the revision or the revision is not the current revision, the response is 409 Conflict and
+        the error message is contained in the response body.
 
         :return:
         """
@@ -188,14 +191,15 @@ class GerritChangeRevision(object):
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.
 
-        Adding query parameter zip (for example /changes/…​/patch?zip) returns the patch as a single file inside of a
-        ZIP archive. Clients can expand the ZIP to obtain the plain text patch, avoiding the need for a base64 decoding
-        step. This option implies download.
+        Adding query parameter zip (for example /changes/…​/patch?zip) returns the patch as a
+        single file inside of a ZIP archive. Clients can expand the ZIP to obtain the plain text
+        patch, avoiding the need for a base64 decoding step. This option implies download.
 
-        Query parameter download (e.g. /changes/…​/patch?download) will suggest the browser save the patch as
-        commitsha1.diff.base64, for later processing by command line tools.
+        Query parameter download (e.g. /changes/…​/patch?download) will suggest the browser
+        save the patch as commitsha1.diff.base64, for later processing by command line tools.
 
-        If the path parameter is set, the returned content is a diff of the single file that the path refers to.
+        If the path parameter is set, the returned content is a diff of the single file that
+        the path refers to.
 
         :param zip_:
         :param download:
@@ -313,12 +317,13 @@ class GerritChangeRevision(object):
                 "destination" : "release-branch"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision('3848807f587dbd3a7e61723bbfbf1ad13ad5a00a')
             result = revision.cherry_pick(input_)
 
         :param input_: the CherryPickInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#cherry-pick-commit
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #cherry-pick-commit
         :return:
         """
         return self.gerrit.post(self.endpoint + "/cherrypick",
@@ -346,7 +351,8 @@ class GerritChangeRevision(object):
         Deletes a single vote from a revision. The deletion will be possible only
         if the revision is the current revision. By using this endpoint you can prevent
         deleting the vote (with same label) from a newer patch set by mistake.
-        Note, that even when the last vote of a reviewer is removed the reviewer itself is still listed on the change.
+        Note, that even when the last vote of a reviewer is removed the reviewer itself is
+        still listed on the change.
 
         .. code-block:: python
 
@@ -354,7 +360,7 @@ class GerritChangeRevision(object):
                 "notify": "NONE"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             revision = change.get_revision("0f4f97b5af9a965e082fb8cde082c5f1ba2fe930")
             revision.delete_vote('John', 'Code-Review', input_)
             # or
@@ -363,7 +369,8 @@ class GerritChangeRevision(object):
         :param account:
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #delete-vote-input
         :return:
         """
         endpoint = self.endpoint + f"/reviewers/{account}/votes/{label}"

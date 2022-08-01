@@ -26,8 +26,8 @@ class Tasks(object):
 
     def list(self):
         """
-        Lists the tasks from the background work queues that the Gerrit daemon is currently performing,
-        or will perform in the near future.
+        Lists the tasks from the background work queues that the Gerrit daemon is currently
+        performing, or will perform in the near future.
 
         :return:
         """
@@ -36,8 +36,8 @@ class Tasks(object):
 
     def get(self, id_):
         """
-        Retrieves a task from the background work queue that the Gerrit daemon is currently performing,
-        or will perform in the near future.
+        Retrieves a task from the background work queue that the Gerrit daemon is currently
+        performing, or will perform in the near future.
 
         :param id_: task id
         :return:

@@ -13,21 +13,23 @@ class GerritChangeMessage(BaseModel):
     def delete(self, input_=None):
         """
         Deletes a change message.
-        Note that only users with the Administrate Server global capability are permitted to delete a change message.
+        Note that only users with the Administrate Server global capability are permitted to
+        delete a change message.
 
         .. code-block:: python
 
             input_ = {
                 "reason": "spam"
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             message = change.messages.get("babf4c5dd53d7a11080696efa78830d0a07762e6")
             result = message.delete(input_)
             # or
             result = message.delete()
 
         :param input_: the DeleteChangeMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-change-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #delete-change-message-input
         :return:
         """
         if input_ is None:

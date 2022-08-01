@@ -40,7 +40,8 @@ class GerritProject(BaseModel):
             result = project.set_description(input_)
 
         :param input_: the ProjectDescriptionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-description-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #project-description-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/description",
@@ -64,7 +65,8 @@ class GerritProject(BaseModel):
 
     def get_parent(self):
         """
-        Retrieves the name of a project’s parent project. For the All-Projects root project an empty string is returned.
+        Retrieves the name of a project’s parent project. For the All-Projects root project an empty
+        string is returned.
 
         :return:
         """
@@ -84,7 +86,8 @@ class GerritProject(BaseModel):
             result = project.set_parent(input_)
 
         :param input_: The ProjectParentInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-parent-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #project-parent-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/parent",
@@ -120,7 +123,8 @@ class GerritProject(BaseModel):
     def get_config(self):
         """
         Gets some configuration information about a project.
-        Note that this config info is not simply the contents of project.config; it generally contains fields that may
+        Note that this config info is not simply the contents of project.config; it generally
+        contains fields that may
         have been inherited from parent projects.
 
         :return:
@@ -221,7 +225,8 @@ class GerritProject(BaseModel):
         https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#set-access
 
         :param input_: the ProjectAccessInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #project-access-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/access",
@@ -229,8 +234,9 @@ class GerritProject(BaseModel):
 
     def create_change(self, input_):
         """
-        Create Change for review. This endpoint is functionally equivalent to create change in the change API,
-        but it has the project name in the URL, which is easier to route in sharded deployments.
+        Create Change for review. This endpoint is functionally equivalent to create change in the
+        change API, but it has the project name in the URL, which is easier to route in sharded
+        deployments.
         support this method since v3.3.0
 
         .. code-block:: python
@@ -259,12 +265,14 @@ class GerritProject(BaseModel):
     def create_access_rights_change(self, input_):
         """
         Sets access rights for the project using the diff schema provided by ProjectAccessInput
-        This takes the same input as Update Access Rights, but creates a pending change for review. Like Create Change,
-        it returns a ChangeInfo entity describing the resulting change.
-        https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#create-access-change
+        This takes the same input as Update Access Rights, but creates a pending change for review.
+        Like Create Change, it returns a ChangeInfo entity describing the resulting change.
+        https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+        #create-access-change
 
         :param input_: the ProjectAccessInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #project-access-input
         :return:
         """
         result = self.gerrit.put(self.endpoint + "/access:review",
@@ -280,7 +288,8 @@ class GerritProject(BaseModel):
             * Account(account): The account for which to check access. Mandatory.
             * Permission(perm): The ref permission for which to check access.
               If not specified, read access to at least branch is checked.
-            * Ref(ref): The branch for which to check access. This must be given if perm is specified.
+            * Ref(ref): The branch for which to check access. This must be given if perm is
+            specified.
 
         :return:
         """
@@ -289,8 +298,8 @@ class GerritProject(BaseModel):
     def index(self, input_):
         """
         Adds or updates the current project (and children, if specified) in the secondary index.
-        The indexing task is executed asynchronously in background and this command returns immediately
-        if async is specified in the input.
+        The indexing task is executed asynchronously in background and this command returns
+        immediately if async is specified in the input.
 
         .. code-block:: python
 
@@ -302,7 +311,8 @@ class GerritProject(BaseModel):
             result = project.index(input_)
 
         :param input_: the IndexProjectInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#index-project-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #index-project-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/index",
@@ -311,8 +321,8 @@ class GerritProject(BaseModel):
     def index_all_changes(self):
         """
         Adds or updates the current project (and children, if specified) in the secondary index.
-        The indexing task is executed asynchronously in background and this command returns immediately
-        if async is specified in the input.
+        The indexing task is executed asynchronously in background and this command returns
+        immediately if async is specified in the input.
 
         :return:
         """
@@ -336,7 +346,8 @@ class GerritProject(BaseModel):
             result = project.check_consistency(input_)
 
         :param input_: the CheckProjectInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#check-project-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #check-project-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/check",

@@ -40,7 +40,8 @@ class GerritAccount(BaseModel):
 
 
         :param input_: the AccountNameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-name-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #account-name-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/name",
@@ -95,7 +96,8 @@ class GerritAccount(BaseModel):
             result = account.set_username(input_)
 
         :param input_: the UsernameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#username-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #username-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/username",
@@ -116,7 +118,8 @@ class GerritAccount(BaseModel):
             result = account.set_displayname(input_)
 
         :param input_: the DisplayNameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#display-name-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #display-name-input
         :return:
         """
         version = self.gerrit.version
@@ -166,7 +169,8 @@ class GerritAccount(BaseModel):
             result = account.set_http_password(input_)
 
         :param input_: the HttpPasswordInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#http-password-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #http-password-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/password.http",
@@ -183,7 +187,8 @@ class GerritAccount(BaseModel):
     def get_oauth_token(self):
         """
         Returns a previously obtained OAuth access token.
-        If there is no token available, or the token has already expired, '404 Not Found' is returned as response.
+        If there is no token available, or the token has already expired, '404 Not Found' is
+        returned as response.
         Requests to obtain an access token of another user are rejected with '403 Forbidden'.
 
         :return:
@@ -277,7 +282,8 @@ class GerritAccount(BaseModel):
             result = account.set_user_preferences(input_)
 
         :param input_: the PreferencesInput entity，
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #preferences-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/preferences",
@@ -316,7 +322,8 @@ class GerritAccount(BaseModel):
             result = account.set_diff_preferences(input_)
 
         :param input_: the DiffPreferencesInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #diff-preferences-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/preferences.diff",
@@ -357,10 +364,12 @@ class GerritAccount(BaseModel):
             result = account.set_edit_preferences(input_)
 
         :param input_: the EditPreferencesInfo entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-info
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #edit-preferences-info
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/preferences.edit", json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(self.endpoint + "/preferences.edit",
+                               json=input_, headers=self.gerrit.default_headers)
 
     def get_watched_projects(self):
         """
@@ -420,7 +429,8 @@ class GerritAccount(BaseModel):
     def get_external_ids(self):
         """
         Retrieves the external ids of a user account.
-        Only external ids belonging to the caller may be requested. Users that have Modify Account can request external
+        Only external ids belonging to the caller may be requested.
+        Users that have Modify Account can request external
         ids that belong to other accounts.
 
         :return:
@@ -430,8 +440,8 @@ class GerritAccount(BaseModel):
     def delete_external_ids(self, input_):
         """
         Delete a list of external ids for a user account.
-        Only external ids belonging to the caller may be deleted. Users that have Modify Account can delete external
-        ids that belong to other accounts.
+        Only external ids belonging to the caller may be deleted. Users that have Modify Account
+        can delete external ids that belong to other accounts.
 
         .. code-block:: python
 
@@ -470,7 +480,8 @@ class GerritAccount(BaseModel):
             result = account.sign_contributor_agreement(input_)
 
         :param input_: the ContributorAgreementInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#contributor-agreement-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #contributor-agreement-input
         :return:
         """
         self.endpoint + "/agreements"
@@ -491,7 +502,8 @@ class GerritAccount(BaseModel):
             result = account.delete_draft_comments(input_)
 
         :param input_: the DeleteDraftCommentsInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#delete-draft-comments-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #delete-draft-comments-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/drafts:delete",

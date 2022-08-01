@@ -28,12 +28,13 @@ class GerritChangeRevisionFile(BaseModel):
 
     def download_content(self):
         """
-        Downloads the content of a file from a certain revision, in a safe format that poses no risk for inadvertent
-        execution of untrusted code.
+        Downloads the content of a file from a certain revision, in a safe format that poses no
+        risk for inadvertent execution of untrusted code.
 
-        If the content type is defined as safe, the binary file content is returned verbatim. If the content type is
-        not safe, the file is stored inside a ZIP file, containing a single entry with a random, unpredictable name
-        having the same base and suffix as the true filename. The ZIP file is returned in verbatim binary form.
+        If the content type is defined as safe, the binary file content is returned verbatim.
+        If the content type is not safe, the file is stored inside a ZIP file, containing a
+        single entry with a random, unpredictable name having the same base and suffix as the
+        true filename. The ZIP file is returned in verbatim binary form.
 
         :return:
         """
@@ -43,7 +44,8 @@ class GerritChangeRevisionFile(BaseModel):
         """
         Gets the diff of a file from a certain revision.
 
-        :param intraline: If the intraline parameter is specified, intraline differences are included in the diff.
+        :param intraline: If the intraline parameter is specified, intraline differences are
+        included in the diff.
         :return:
         """
         endpoint = self.endpoint + "/diff"

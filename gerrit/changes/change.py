@@ -20,8 +20,8 @@ class GerritChange(BaseModel):
     def create_merge_patch_set(self, input_):
         """
         Update an existing change by using a MergePatchSetInput entity.
-        Gerrit will create a merge commit based on the information of MergePatchSetInput and add a new patch set to
-        the change corresponding to the new merge commit.
+        Gerrit will create a merge commit based on the information of MergePatchSetInput and add
+        a new patch set to the change corresponding to the new merge commit.
 
         .. code-block:: python
 
@@ -32,14 +32,16 @@ class GerritChange(BaseModel):
                 }
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.update(input_)
 
         :param input_: the MergePatchSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-patch-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #merge-patch-set-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/merge", json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint + "/merge",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def set_commit_message(self, input_):
         """
@@ -48,14 +50,15 @@ class GerritChange(BaseModel):
         .. code-block:: python
 
             input_ = {
-                "message": "New Commit message \\n\\nChange-Id: I10394472cbd17dd12454f229e4f6de00b143a444\\n"
+                "message": "New Commit message \\n\\nChange-Id: I10394472cbd17dd12454f22b143a444\\n"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_commit_message(input_)
 
         :param input_: the CommitMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#commit-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #commit-message-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/message",
@@ -72,9 +75,10 @@ class GerritChange(BaseModel):
 
     def delete_vote(self, account, label, input_=None):
         """
-        Deletes a single vote from a change. Note, that even when the last vote of a reviewer is removed the reviewer
-        itself is still listed on the change.
-        If another user removed a user’s vote, the user with the deleted vote will be added to the attention set.
+        Deletes a single vote from a change. Note, that even when the last vote of a reviewer is
+        removed the reviewer itself is still listed on the change.
+        If another user removed a user’s vote, the user with the deleted vote will be added to
+        the attention set.
 
         .. code-block:: python
 
@@ -82,7 +86,7 @@ class GerritChange(BaseModel):
                 "notify": "NONE"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.delete_vote('John', 'Code-Review', input_)
             # or
             change.delete_vote('John', 'Code-Review')
@@ -90,7 +94,8 @@ class GerritChange(BaseModel):
         :param account:
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #delete-vote-input
         :return:
         """
         endpoint = f"/changes/{self.change}/reviewers/{account}/votes/{label}"
@@ -152,7 +157,7 @@ class GerritChange(BaseModel):
                 "assignee": "jhon.doe"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_assignee(input_)
 
         :param input_: the AssigneeInput entity,
@@ -167,7 +172,8 @@ class GerritChange(BaseModel):
 
     def get_past_assignees(self):
         """
-        Returns a list of every user ever assigned to a change, in the order in which they were first assigned.
+        Returns a list of every user ever assigned to a change, in the order in which they were
+        first assigned.
 
         :return:
         """
@@ -207,8 +213,9 @@ class GerritChange(BaseModel):
         """
         Abandons a change.
         Abandoning a change also removes all users from the attention set.
-        If the change cannot be abandoned because the change state doesn’t allow abandoning of the change,
-        the response is “409 Conflict” and the error message is contained in the response body.
+        If the change cannot be abandoned because the change state doesn't allow abandoning of
+        the change, the response is “409 Conflict” and the error message is contained in the
+        response body.
 
         :return:
         """
@@ -217,8 +224,9 @@ class GerritChange(BaseModel):
     def restore(self):
         """
         Restores a change.
-        If the change cannot be restored because the change state doesn’t allow restoring the change,
-        the response is “409 Conflict” and the error message is contained in the response body.
+        If the change cannot be restored because the change state doesn't allow restoring the
+        change, the response is “409 Conflict” and the error message is contained in the
+        response body.
 
         :return:
         """
@@ -226,7 +234,7 @@ class GerritChange(BaseModel):
 
     def rebase(self, input_):
         """
-        Rebases a change.
+        Rebase a change.
         If the change cannot be rebased, e.g. due to conflicts, the response is '409 Conflict'
         and the error message is contained in the response body.
 
@@ -236,7 +244,7 @@ class GerritChange(BaseModel):
                 "base" : "1234",
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.rebase(input_)
 
         :param input_: the RebaseInput entity,
@@ -258,7 +266,7 @@ class GerritChange(BaseModel):
                 "destination_branch" : "release-branch"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.move(input_)
 
         :param input_: the MoveInput entity,
@@ -272,21 +280,25 @@ class GerritChange(BaseModel):
     def revert(self, input_=None):
         """
         Reverts a change.
-        The request body does not need to include a RevertInput entity if no review comment is added.
+        The request body does not need to include a RevertInput entity if no review comment is
+        added.
 
-        If the user doesn’t have revert permission on the change or upload permission on the destination branch,
-        the response is '403 Forbidden', and the error message is contained in the response body.
+        If the user doesn't have revert permission on the change or upload permission on the
+        destination branch, the response is '403 Forbidden', and the error message is contained in
+        the response body.
 
-        If the change cannot be reverted because the change state doesn't allow reverting the change,
-        the response is 409 Conflict and the error message is contained in the response body.
+        If the change cannot be reverted because the change state doesn't allow reverting the
+        change, the response is 409 Conflict and the error message is contained in the
+        response body.
 
         .. code-block:: python
 
             input_ = {
-                "message" : "Message to be added as review comment to the change when reverting the change."
+                "message" : "Message to be added as review comment to the change when reverting the
+                change."
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.revert()
             # or
             result = change.revert(input_)
@@ -302,10 +314,11 @@ class GerritChange(BaseModel):
         """
         Creates open revert changes for all of the changes of a certain submission.
 
-        If the user doesn’t have revert permission on the change or upload permission on the destination,
-        the response is '403 Forbidden', and the error message is contained in the response body.
+        If the user doesn't have revert permission on the change or upload permission on the
+        destination, the response is '403 Forbidden', and the error message is contained in the
+        response body.
 
-        If the change cannot be reverted because the change state doesn’t allow reverting the change
+        If the change cannot be reverted because the change state doesn't allow reverting the change
         the response is '409 Conflict', and the error message is contained in the response body.
 
         :return:
@@ -321,8 +334,9 @@ class GerritChange(BaseModel):
         Submits  a change.
         Submitting a change also removes all users from the attention set.
 
-        If the change cannot be submitted because the submit rule doesn't allow submitting the change,
-        the response is 409 Conflict and the error message is contained in the response body.
+        If the change cannot be submitted because the submit rule doesn't allow submitting
+        the change, the response is 409 Conflict and the error message is contained in the
+        response body.
 
         .. code-block:: python
 
@@ -330,7 +344,7 @@ class GerritChange(BaseModel):
                 "on_behalf_of": 1001439
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.submit(input_)
 
         :param input_: the SubmitInput entity,
@@ -390,8 +404,8 @@ class GerritChange(BaseModel):
 
     def consistency_check(self):
         """
-        Performs consistency checks on the change, and returns a ChangeInfo entity with the problems field set to
-        a list of ProblemInfo entities.
+        Performs consistency checks on the change, and returns a ChangeInfo entity with the problems
+        field set to a list of ProblemInfo entities.
 
         :return:
         """
@@ -400,9 +414,10 @@ class GerritChange(BaseModel):
     def fix(self, input_=None):
         """
         Performs consistency checks on the change as with GET /check,
-        and additionally fixes any problems that can be fixed automatically. The returned field values reflect any fixes.
-        Some fixes have options controlling their behavior, which can be set in the FixInput entity body.
-        Only the change owner, a project owner, or an administrator may fix changes.
+        and additionally fixes any problems that can be fixed automatically. The returned field
+        values reflect any fixes.
+        Some fixes have options controlling their behavior, which can be set in the FixInput
+        entity body. Only the change owner, a project owner, or an administrator may fix changes.
 
         .. code-block:: python
 
@@ -411,7 +426,7 @@ class GerritChange(BaseModel):
                 "expect_merged_as": "something"
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.fix()
             # or
             result = change.fix(input_)
@@ -433,7 +448,8 @@ class GerritChange(BaseModel):
         Changes may only be marked not ready by the owner, project owners or site administrators.
         Marking a change work in progress also removes all users from the attention set.
 
-        The request body does not need to include a WorkInProgressInput entity if no review comment is added.
+        The request body does not need to include a WorkInProgressInput entity if no review comment
+        is added.
 
         .. code-block:: python
 
@@ -441,13 +457,14 @@ class GerritChange(BaseModel):
                 "message": "Refactoring needs to be done before we can proceed here."
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_work_in_progress(input_)
             # or
             result = change.set_work_in_progress()
 
         :param input_: the WorkInProgressInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #work-in-progress-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/wip",
@@ -458,7 +475,8 @@ class GerritChange(BaseModel):
         """
         Marks the change as ready for review (set WIP property to false).
         Changes may only be marked ready by the owner, project owners or site administrators.
-        Marking a change ready for review also adds all of the reviewers of the change to the attention set.
+        Marking a change ready for review also adds all of the reviewers of the change to the
+        attention set.
 
         .. code-block:: python
 
@@ -466,11 +484,12 @@ class GerritChange(BaseModel):
                 'message': 'Refactoring is done.'
             }
 
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.set_ready_for_review(input_)
 
         :param input_: the WorkInProgressInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #work-in-progress-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers)
@@ -485,7 +504,7 @@ class GerritChange(BaseModel):
             input_ = {
                 "message": "After this security fix has been released we can make it public now."
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.mark_private(input_)
 
         :param input_: the PrivateInput entity,
@@ -506,7 +525,7 @@ class GerritChange(BaseModel):
             input_ = {
                 "message": "This is a security fix that must not be public."
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.unmark_private(input_)
             # or
             change.unmark_private()
@@ -524,9 +543,9 @@ class GerritChange(BaseModel):
 
     def ignore(self):
         """
-        Marks a change as ignored. The change will not be shown in the incoming reviews dashboard, and email
-        notifications will be suppressed. Ignoring a change does not cause the change’s "updated" timestamp to be
-        modified, and the owner is not notified.
+        Marks a change as ignored. The change will not be shown in the incoming reviews' dashboard,
+        and email notifications will be suppressed. Ignoring a change does not cause the change’s
+        "updated" timestamp to be modified, and the owner is not notified.
 
         :return:
         """
@@ -578,7 +597,7 @@ class GerritChange(BaseModel):
                     "hashtag2"
                 ]
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.set_hashtags(input_)
 
         :param input_: the HashtagsInput entity,
@@ -685,11 +704,12 @@ class GerritChange(BaseModel):
                 "user": "John Doe",
                 "reason": "reason"
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             result = change.add_to_attention_set(input_)
 
         :param input_: the AttentionSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#attention-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #attention-set-input
         :return:
         """
         version = self.gerrit.version
@@ -713,14 +733,15 @@ class GerritChange(BaseModel):
             input_ = {
                 "reason": "reason"
             }
-            change = client.changes.get('myProject~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
             change.remove_from_attention_set('kevin.shi', input_)
             # or
             change.remove_from_attention_set('kevin.shi')
 
         :param id_: account id
         :param input_: the AttentionSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#attention-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
+          #attention-set-input
         :return:
         """
         version = self.gerrit.version

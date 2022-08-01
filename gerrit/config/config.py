@@ -39,7 +39,8 @@ class GerritConfig(object):
             result = client.config.check_consistency(input_)
 
         :param input_: the ConsistencyCheckInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#consistency-check-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html
+          #consistency-check-input
         :return:
         """
         return self.gerrit.post(
@@ -56,8 +57,8 @@ class GerritConfig(object):
     def confirm_email(self, input_):
         """
         Confirms that the user owns an email address.
-        If the token is invalid or if it's the token of another user the request fails and the response is
-        '422 Unprocessable Entity'.
+        If the token is invalid or if it's the token of another user the request fails and the
+        response is '422 Unprocessable Entity'.
 
         .. code-block:: python
 
@@ -67,7 +68,8 @@ class GerritConfig(object):
             result = client.config.confirm_email(input_)
 
         :param input_: the EmailConfirmationInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#email-confirmation-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html
+          #email-confirmation-input
         :return:
         """
         self.gerrit.put(
@@ -131,7 +133,8 @@ class GerritConfig(object):
             result = client.config.set_default_user_preferences(input_)
 
         :param input_: the PreferencesInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #preferences-input
         :return:
         """
         return self.gerrit.put(
@@ -169,7 +172,8 @@ class GerritConfig(object):
             result = client.config.set_default_diff_preferences(input_)
 
         :param input_: the DiffPreferencesInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #diff-preferences-input
         :return:
         """
         return self.gerrit.put(
@@ -205,7 +209,8 @@ class GerritConfig(object):
             result = client.config.set_default_edit_preferences(input_)
 
         :param input_: the EditPreferencesInfo entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
+          #edit-preferences-input
         :return:
         """
         return self.gerrit.put(
@@ -222,7 +227,8 @@ class GerritConfig(object):
             gerrit.config.index_changes(input_)
 
         :param input_: the IndexChangesInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#index-changes-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html
+          #index-changes-input
         :return:
         """
         self.gerrit.post(

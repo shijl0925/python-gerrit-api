@@ -35,7 +35,8 @@ class GerritProjectDashboards(object):
 
     def create(self, id_, input_):
         """
-        Creates a project dashboard, if a project dashboard with the given dashboard ID doesn't exist yet.
+        Creates a project dashboard, if a project dashboard with the given dashboard ID doesn't
+        exist yet.
 
         .. code-block:: python
 
@@ -48,7 +49,8 @@ class GerritProjectDashboards(object):
 
         :param id_: the dashboard id
         :param input_: the DashboardInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#dashboard-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
+          #dashboard-input
         :return:
         """
         result = self.gerrit.put(
@@ -57,7 +59,8 @@ class GerritProjectDashboards(object):
 
     def get(self, id_):
         """
-        Retrieves a project dashboard. The dashboard can be defined on that project or be inherited from a parent project.
+        Retrieves a project dashboard. The dashboard can be defined on that project or be inherited
+        from a parent project.
 
         :param id_: the dashboard id
         :return:

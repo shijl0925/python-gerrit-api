@@ -103,7 +103,8 @@ class GerritGroup(BaseModel):
 
 
         :param input_: the GroupOptionsInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-options-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html
+          #group-options-input
         :return:
         """
         return self.gerrit.put(
@@ -131,7 +132,8 @@ class GerritGroup(BaseModel):
             group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
             result = group.set_owner(input_)
 
-        :param input_: As response a GroupInfo entity is returned that describes the new owner group.
+        :param input_: As response a GroupInfo entity is returned that describes the new owner
+        group.
         :return:
         """
         return self.gerrit.put(
