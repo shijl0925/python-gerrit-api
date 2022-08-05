@@ -23,7 +23,7 @@ with open("requirements.txt") as f:
 setup(
     name="python-gerrit-api",
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.0.5",
+    version="2.0.6",
     description="Python wrapper for the Gerrit REST API.",
     long_description=long_description,
     url="https://github.com/shijl0925/python-gerrit-api",
@@ -37,11 +37,11 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Topic :: Software Development",
     ],
     keywords="api gerrit client wrapper",
