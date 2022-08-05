@@ -15,7 +15,7 @@ class GerritChanges(object):
 
         .. code-block:: python
 
-            query = ["is:open+owner:self", "is:open+reviewer:self+-owner:self", "is:closed+owner:self+limit:5"]
+            query = "is:open+owner:self+is:mergeable"
             result = client.changes.search(query=query, options=["LABELS"])
 
         :param query: Queries as a list of string
@@ -32,7 +32,7 @@ class GerritChanges(object):
             if v is not None
         }
 
-        return self.gerrit.get(self.endpoint + f"/?q={'&q='.join(query)}", params=params)
+        return self.gerrit.get(self.endpoint + f"/?q={query}", params=params)
 
     def get(self, id_, detailed=False, options=None):
         """
