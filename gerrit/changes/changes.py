@@ -50,7 +50,7 @@ class GerritChanges(object):
         if detailed:
             endpoint += "detail"
 
-        result = self.gerrit.get(endpoint, {"o": options})
+        result = self.gerrit.get(endpoint, params={"o": options})
         return GerritChange(json=result, gerrit=self.gerrit)
 
     def create(self, input_):
