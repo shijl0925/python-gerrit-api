@@ -455,7 +455,6 @@ class GerritAccount(BaseModel):
         :param input_: the external ids as list
         :return:
         """
-        self.endpoint + "/external.ids:delete"
         self.gerrit.post(self.endpoint + "/external.ids:delete",
                          json=input_, headers=self.gerrit.default_headers)
 
@@ -484,7 +483,6 @@ class GerritAccount(BaseModel):
           #contributor-agreement-input
         :return:
         """
-        self.endpoint + "/agreements"
         return self.gerrit.put(self.endpoint + "/agreements",
                                json=input_, headers=self.gerrit.default_headers)
 
