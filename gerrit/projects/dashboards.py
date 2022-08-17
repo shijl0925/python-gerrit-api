@@ -30,7 +30,7 @@ class GerritProjectDashboards(object):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.gerrit.get(self.endpoint + "/")
         return GerritProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
 
     def create(self, id_, input_):

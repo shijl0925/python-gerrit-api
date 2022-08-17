@@ -32,7 +32,7 @@ class GerritProjectWebHooks(object):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.gerrit.get(self.endpoint + "/")
 
         webhooks = []
         for key, value in result.items():

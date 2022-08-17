@@ -12,7 +12,7 @@ from gerrit.utils.common import params_creator
 class GerritProjects(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
-        self.endpoint = "/projects/"
+        self.endpoint = "/projects"
 
     def list(
         self,
@@ -57,7 +57,7 @@ class GerritProjects(object):
         params["all"] = int(is_all)
         params["d"] = int(description)
 
-        return self.gerrit.get(self.endpoint, params=params)
+        return self.gerrit.get(self.endpoint + "/", params=params)
 
     def search(self, query, limit=None, skip=None):
         """

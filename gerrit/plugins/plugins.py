@@ -61,7 +61,7 @@ class GerritPlugins(object):
                                 {"prefix": "p", "match": "m", "regex": "r"}, pattern_dispatcher)
         params["all"] = int(is_all)
 
-        return self.gerrit.get(self.endpoint, params=params)
+        return self.gerrit.get(self.endpoint + "/", params=params)
 
     def get(self, id_):
         """

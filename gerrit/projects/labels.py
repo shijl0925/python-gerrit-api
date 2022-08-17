@@ -58,7 +58,7 @@ class GerritProjectLabels(object):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.gerrit.get(self.endpoint + "/")
         return GerritProjectLabel.parse_list(result, gerrit=self.gerrit)
 
     def get(self, name):

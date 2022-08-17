@@ -16,7 +16,7 @@ class GerritAccountEmail(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/accounts/{self.username}/emails/{self.email}")
+        self.gerrit.delete(self.endpoint)
 
     def set_preferred(self):
         """
@@ -24,7 +24,7 @@ class GerritAccountEmail(BaseModel):
 
         :return:
         """
-        self.gerrit.put(f"/accounts/{self.username}/emails/{self.email}/preferred")
+        self.gerrit.put(self.endpoint + "/preferred")
 
 
 class GerritAccountEmails(object):

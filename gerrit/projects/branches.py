@@ -73,7 +73,7 @@ class GerritProjectBranches(object):
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
-        self.endpoint = f"/projects/{self.project}/branches/"
+        self.endpoint = f"/projects/{self.project}/branches"
 
     def list(self, pattern_dispatcher=None, limit=None, skip=None):
         """
@@ -88,7 +88,7 @@ class GerritProjectBranches(object):
         params = params_creator((("n", limit), ("s", skip)),
                                 {"match": "m", "regex": "r"}, pattern_dispatcher)
 
-        return self.gerrit.get(self.endpoint, params=params)
+        return self.gerrit.get(self.endpoint + "/", params=params)
 
     def get(self, name):
         """

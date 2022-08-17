@@ -82,7 +82,7 @@ class GerritChangeReviewers(object):
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
-        self.endpoint = f"/changes/{self.change}/reviewers/"
+        self.endpoint = f"/changes/{self.change}/reviewers"
 
     def list(self):
         """
@@ -90,7 +90,7 @@ class GerritChangeReviewers(object):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.gerrit.get(self.endpoint + "/")
         return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
 
     def get(self, account):

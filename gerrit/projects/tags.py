@@ -51,7 +51,7 @@ class GerritProjectTags(object):
         """
         params = params_creator((("n", limit), ("s", skip)),
                                 {"match": "m", "regex": "r"}, pattern_dispatcher)
-        return self.gerrit.get(self.endpoint, params=params)
+        return self.gerrit.get(self.endpoint + "/", params=params)
 
     def get(self, name):
         """
