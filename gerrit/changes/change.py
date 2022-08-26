@@ -17,6 +17,28 @@ class GerritChange(BaseModel):
         super().__init__(**kwargs)
         self.endpoint = f"/changes/{self.id}"
 
+    def get_meta_diff(self, old=None, meta=None):
+        """
+        Retrieves the difference between two historical states of a change by
+        specifying the and the parameters. old=SHA-1,meta=SHA-1.
+        If the parameter is not provided, the parent of the SHA-1 is used.
+        If the parameter is not provided, the current state of the change is used.
+        If neither are provided, the difference between the current state of the change and
+        its previous state is returned.
+
+        :param old:
+        :param meta:
+        :return:
+        """
+        params = {}
+        if old:
+            params.update({"old": old})
+
+        if meta:
+            params.update({"meta": meta})
+
+        return self.gerrit.get(self.endpoint + "/meta_diff", params=params)
+
     def create_merge_patch_set(self, input_):
         """
         Update an existing change by using a MergePatchSetInput entity.
@@ -354,6 +376,14 @@ class GerritChange(BaseModel):
         return self.gerrit.post(self.endpoint + "/submit",
                                 json=input_, headers=self.gerrit.default_headers)
 
+    def list_submitted_together_changes(self):
+        """
+        Computes list of all changes which are submitted when Submit is called for this change,
+        including the current change itself.
+
+        """
+        return self.gerrit.get(self.endpoint + "/submitted_together?o=NON_VISIBLE_CHANGES")
+
     def delete(self):
         """
         Deletes a change.
@@ -611,6 +641,17 @@ class GerritChange(BaseModel):
     @property
     def messages(self):
         return GerritChangeMessages(change=self.id, gerrit=self.gerrit)
+
+    def check_submit_requirement(self, input_):
+        """
+        Tests a submit requirement.
+
+        :param input_: the SubmitRequirementInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#submit-requirement-input
+        :return:
+        """
+        return self.gerrit.post(self.endpoint + "/check.submit_requirement",
+                                json=input_, headers=self.gerrit.default_headers)
 
     def get_edit(self):
         """
