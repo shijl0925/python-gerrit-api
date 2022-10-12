@@ -21,7 +21,7 @@ class GerritAccount(BaseModel):
 
         :return:
         """
-        return self.gerrit.get_endpoint_url(self.endpoint + "/name")
+        return self.gerrit.get(self.endpoint + "/name")
 
     def set_name(self, input_):
         """
