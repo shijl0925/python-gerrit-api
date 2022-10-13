@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 from requests import Session
 from requests.adapters import HTTPAdapter
+import six.moves.urllib.parse as urlparse
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
@@ -34,6 +35,8 @@ class Requester(object):
         :param kwargs:
         """
         timeout = 10
+        base_url = kwargs.get('base_url')
+        self.base_scheme = urlparse.urlsplit(base_url).scheme if base_url else None
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
         self.ssl_verify = kwargs.get("ssl_verify")
@@ -46,6 +49,23 @@ class Requester(object):
             retry_adapter = HTTPAdapter(max_retries=self.max_retries)
             self.session.mount("http://", retry_adapter)
             self.session.mount("https://", retry_adapter)
+
+    def _update_url_scheme(self, url):
+        """
+        Updates scheme of given url to the one used in Gerrit base_url.
+        """
+        if self.base_scheme and not url.startswith("%s://" % self.base_scheme):
+            url_split = urlparse.urlsplit(url)
+            url = urlparse.urlunsplit(
+                [
+                    self.base_scheme,
+                    url_split.netloc,
+                    url_split.path,
+                    url_split.query,
+                    url_split.fragment
+                ]
+            )
+        return url
 
     def get_request_dict(
         self, params=None, data=None, json=None, headers=None, **kwargs
@@ -116,7 +136,7 @@ class Requester(object):
             stream=stream,
             **kwargs
         )
-        return self.confirm_status(self.session.get(url, **request_kwargs))
+        return self.confirm_status(self.session.get(self._update_url_scheme(url), **request_kwargs))
 
     def post(
         self,
@@ -149,7 +169,7 @@ class Requester(object):
             allow_redirects=allow_redirects,
             **kwargs
         )
-        return self.confirm_status(self.session.post(url, **request_kwargs))
+        return self.confirm_status(self.session.post(self._update_url_scheme(url), **request_kwargs))
 
     def put(
         self,
@@ -182,7 +202,7 @@ class Requester(object):
             allow_redirects=allow_redirects,
             **kwargs
         )
-        return self.confirm_status(self.session.put(url, **request_kwargs))
+        return self.confirm_status(self.session.put(self._update_url_scheme(url), **request_kwargs))
 
     def delete(self, url, headers=None, allow_redirects=True, **kwargs):
         """
@@ -195,7 +215,7 @@ class Requester(object):
         request_kwargs = self.get_request_dict(
             headers=headers, allow_redirects=allow_redirects, **kwargs
         )
-        return self.confirm_status(self.session.delete(url, **request_kwargs))
+        return self.confirm_status(self.session.delete(self._update_url_scheme(url), **request_kwargs))
 
     @staticmethod
     def confirm_status(res):
