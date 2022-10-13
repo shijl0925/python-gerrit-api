@@ -345,7 +345,7 @@ class GerritChange(BaseModel):
         """
         return self.gerrit.post(self.endpoint + "/revert_submission")
 
-    def submit(self, input_):
+    def submit(self, input_=None):
         """
         Submits  a change.
         Submitting a change also removes all users from the attention set.
