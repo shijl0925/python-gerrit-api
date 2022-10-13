@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from packaging.version import parse
 from gerrit.utils.models import BaseModel
 from gerrit.accounts.emails import GerritAccountEmails
 from gerrit.accounts.ssh_keys import GerritAccountSSHKeys
 from gerrit.accounts.gpg_keys import GerritAccountGPGKeys
-from gerrit.utils.exceptions import UnsupportMethod
 
 
 class GerritAccount(BaseModel):
@@ -122,10 +120,6 @@ class GerritAccount(BaseModel):
           #display-name-input
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         return self.gerrit.put(self.endpoint + "/displayname",
                                json=input_, headers=self.gerrit.default_headers)
 
