@@ -82,10 +82,3 @@ class UnknownFile(KeyError, NotFoundError):
     """
     Gerrit does not recognize the revision file requested.
     """
-
-
-class UnsupportMethod(Exception):
-    """
-    This Error will be raised when program calls methods or parameters that are currently
-    unsupported
-    """
