@@ -26,6 +26,9 @@ class BaseModel(object):
                 except AttributeError:
                     pass
 
+    def to_dict(self):
+        return self.content
+
     def __getattr__(self, key):
         if key in self.__dict__:
             return self.__dict__.get(key)
