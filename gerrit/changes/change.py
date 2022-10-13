@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from packaging.version import parse
 from gerrit.changes.reviewers import GerritChangeReviewers
 from gerrit.changes.revision import GerritChangeRevision
 from gerrit.changes.edit import GerritChangeEdit
 from gerrit.changes.messages import GerritChangeMessages
 from gerrit.utils.models import BaseModel
-from gerrit.utils.exceptions import UnsupportMethod
 
 
 class GerritChange(BaseModel):
@@ -345,10 +343,6 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         return self.gerrit.post(self.endpoint + "/revert_submission")
 
     def submit(self, input_):
@@ -725,10 +719,6 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.3.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         return self.gerrit.get(f"/changes/{self.id}/attention")
 
     def add_to_attention_set(self, input_):
@@ -753,10 +743,6 @@ class GerritChange(BaseModel):
           #attention-set-input
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.3.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         result = self.gerrit.post(self.endpoint + "/attention",
                                   json=input_, headers=self.gerrit.default_headers)
         return result
@@ -785,10 +771,6 @@ class GerritChange(BaseModel):
           #attention-set-input
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.3.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         endpoint = self.endpoint + f"/attention/{id_}"
         if input_ is None:
             self.gerrit.delete(endpoint)
