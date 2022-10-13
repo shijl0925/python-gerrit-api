@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from packaging.version import parse
 from gerrit.projects.branches import GerritProjectBranches
 from gerrit.projects.tags import GerritProjectTags
 from gerrit.projects.commit import GerritProjectCommit
@@ -10,7 +9,6 @@ from gerrit.projects.labels import GerritProjectLabels
 from gerrit.projects.webhooks import GerritProjectWebHooks
 from gerrit.changes.change import GerritChange
 from gerrit.utils.models import BaseModel
-from gerrit.utils.exceptions import UnsupportMethod
 
 
 class GerritProject(BaseModel):
@@ -254,10 +252,6 @@ class GerritProject(BaseModel):
         :param input_:
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.3.0"):
-            raise UnsupportMethod("The server does not support this method")
-
         result = self.gerrit.post(self.endpoint + "/create.change",
                                   json=input_, headers=self.gerrit.default_headers)
         return GerritChange(json=result, gerrit=self.gerrit)
