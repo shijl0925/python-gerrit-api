@@ -43,6 +43,7 @@ class GerritClient(object):
             password = self.get_password_from_netrc_file()
 
         self.requester = Requester(
+            base_url=base_url,
             username=username,
             password=password,
             ssl_verify=ssl_verify,
