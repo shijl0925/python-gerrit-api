@@ -367,8 +367,13 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#submit-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/submit",
-                                json=input_, headers=self.gerrit.default_headers)
+        endpoint = self.endpoint + "/submit"
+        if input_ is None:
+            result = self.gerrit.post(endpoint)
+        else:
+            result = self.gerrit.post(endpoint,
+                                    json=input_, headers=self.gerrit.default_headers)
+        return result
 
     def list_submitted_together_changes(self):
         """
