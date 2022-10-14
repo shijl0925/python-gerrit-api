@@ -18,6 +18,7 @@ What is it?
 -----------
 python-gerrit-api provides a simple interface for clients to interact with Gerrit Code Review via the REST API.
 
+
 Installation
 ------------
 
@@ -43,6 +44,15 @@ You may also use Git to clone the repository from Github and install it manually
     git clone https://github.com/shijl0925/python-gerrit-api.git
     cd python-gerrit-api
     python setup.py install
+
+Donate/捐赠
+----------
+
+* python-gerrit-api项目是开源项目，为维持项目持续发展运行，请积极捐赠.
+* The project is an open source project. In order to maintain the sustainable development and operation of the project, please actively donate for me.
+
+.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/wechat.jpg
+.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/alipay.jpg
 
 Usage
 -----
