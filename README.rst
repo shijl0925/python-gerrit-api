@@ -48,10 +48,8 @@ You may also use Git to clone the repository from Github and install it manually
 Donate
 ------
 
-* The project is an open source project. In order to maintain the sustainable development and operation of the project, please actively donate for me.
-
-Thank you for your support!
----------------------------
+donations are not mandatory but very welcomed
+If you like my work and want to support development or buy me a coffee `PayPal Donate <https://paypal.me/shijialiang0925>`_
 
 Paypal
 ------
