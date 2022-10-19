@@ -677,12 +677,22 @@ class GerritChange(BaseModel):
 
     def __get_revisions(self):
         endpoint = f"/changes/?q={self.number}&o=ALL_REVISIONS"
-        [result] = self.gerrit.get(endpoint)
-        self.revisions = {}
-        for revision_sha, revision in result["revisions"].items():
-            if result["current_revision"] == revision_sha:
-                self.current_revision_number = revision["_number"]
-            self.revisions[revision["_number"]] = revision_sha
+        results = self.gerrit.get(endpoint)
+
+        result = {}
+        for item in results:
+            if item.get("_number") == self.number:
+                result = item
+                break
+
+        revisions = result.get("revisions")
+
+        if revisions is not None:
+            for revision_sha, revision in revisions.items():
+                if result["current_revision"] == revision_sha:
+                    self.current_revision_number = revision["_number"]
+
+                self.revisions[revision["_number"]] = revision_sha
 
     def __revision_number_to_sha(self, number):
         if number in self.revisions:
