@@ -31,8 +31,8 @@ class GerritChangeRevisionDraft(BaseModel):
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChangeRevisionDraft.parse(
-            result, change=self.change, revision=self.revision, gerrit=self.gerrit
+        return GerritChangeRevisionDraft(
+            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
     def delete(self):
@@ -76,8 +76,8 @@ class GerritChangeRevisionDrafts(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritChangeRevisionDraft.parse(
-            result, change=self.change, revision=self.revision, gerrit=self.gerrit
+        return GerritChangeRevisionDraft(
+            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
     def create(self, input_):
@@ -100,8 +100,8 @@ class GerritChangeRevisionDrafts(object):
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChangeRevisionDraft.parse(
-            result, change=self.change, revision=self.revision, gerrit=self.gerrit
+        return GerritChangeRevisionDraft(
+            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
     def delete(self, id_):
