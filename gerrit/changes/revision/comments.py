@@ -73,6 +73,6 @@ class GerritChangeRevisionComments(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritChangeRevisionComment.parse(
-            result, change=self.change, revision=self.revision, gerrit=self.gerrit
+        return GerritChangeRevisionComment(
+            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
