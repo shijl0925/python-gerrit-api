@@ -145,8 +145,8 @@ class GerritChangeRevisionFiles(object):
             self._data = self.poll()
 
         for file in self._data:
-            yield GerritChangeRevisionFile.parse(
-                file, change=self.change, revision=self.revision, gerrit=self.gerrit
+            yield GerritChangeRevisionFile(
+                json=file, change=self.change, revision=self.revision, gerrit=self.gerrit
             )
 
     def __getitem__(self, path):
@@ -161,8 +161,8 @@ class GerritChangeRevisionFiles(object):
 
         result = [file for file in self._data if file["path"] == path]
         if result:
-            return GerritChangeRevisionFile.parse(
-                result[0],
+            return GerritChangeRevisionFile(
+                json=result[0],
                 change=self.change,
                 revision=self.revision,
                 gerrit=self.gerrit,
