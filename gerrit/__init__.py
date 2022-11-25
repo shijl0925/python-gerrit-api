@@ -10,6 +10,7 @@ from gerrit.accounts.accounts import GerritAccounts
 from gerrit.groups.groups import GerritGroups
 from gerrit.plugins.plugins import GerritPlugins
 from gerrit.changes.changes import GerritChanges
+from gerrit.gitiles import GerritGitiles
 
 
 class GerritClient(object):
@@ -181,6 +182,11 @@ class GerritClient(object):
         :return:
         """
         return self.config.get_server_info()
+
+    @property
+    def gitiles(self):
+        """gitiles plugin rest api"""
+        return GerritGitiles(gerrit=self)
 
     def get(self, endpoint, **kwargs):
         """
