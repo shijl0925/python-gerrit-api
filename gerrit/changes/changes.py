@@ -18,7 +18,8 @@ class GerritChanges(object):
             query = "is:open+owner:self+is:mergeable"
             result = client.changes.search(query=query, options=["LABELS"])
 
-        :param query: Queries as a list of string
+        :param query: Query string, it can contain multiple search operators
+                      concatenated by '+' character
         :param options: List of options to fetch additional data about changes
         :param limit: Int value that allows to limit the number of changes
                       to be included in the output results
