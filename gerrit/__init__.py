@@ -24,7 +24,7 @@ class GerritClient(object):
     def __init__(
         self,
         base_url,
-        username,
+        username=None,
         password=None,
         use_netrc=False,
         ssl_verify=True,
@@ -33,14 +33,9 @@ class GerritClient(object):
         max_retries=None,
         auth_suffix="/a"
     ):
-        if not password and not use_netrc:
-            raise ValueError(
-                "One of 'password' or 'use_netrc' parameters should be set!"
-            )
-
         self._base_url = self.strip_trailing_slash(base_url)
 
-        if not password and use_netrc:
+        if use_netrc:
             password = self.get_password_from_netrc_file()
 
         self.requester = Requester(
@@ -52,7 +47,10 @@ class GerritClient(object):
             timeout=timeout,
             max_retries=max_retries,
         )
-        self.auth_suffix = auth_suffix
+        if username and password:
+            self.auth_suffix = auth_suffix
+        else:
+            self.auth_suffix = ""
 
     def get_password_from_netrc_file(self):
         """
