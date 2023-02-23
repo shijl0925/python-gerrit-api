@@ -45,25 +45,6 @@ You may also use Git to clone the repository from Github and install it manually
     cd python-gerrit-api
     python setup.py install
 
-Donate
-------
-
-donations are not mandatory but very welcomed
-If you like my work and want to support development or buy me a coffee `PayPal Donate <https://paypal.me/shijialiang0925>`_
-
-Paypal
-------
-.. image:: https://raw.githubusercontent.com/andreostrovsky/donate-with-paypal/master/blue.svg
-    :target: https://paypal.me/shijialiang0925
-
-Wechat Pay
-----------
-.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/wechat.jpg
-
-Alipay
-------
-.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/alipay.jpg
-
 Usage
 -----
 
@@ -295,3 +276,22 @@ Project source code: github: https://github.com/shijl0925/python-gerrit-api
 Project documentation: https://python-gerrit-api.readthedocs.org/en/latest/
 
 Releases: http://pypi.python.org/pypi/python-gerrit-api
+
+Donate
+------
+
+donations are not mandatory but very welcomed
+If you like my work and want to support development or buy me a coffee `PayPal Donate <https://paypal.me/shijialiang0925>`_
+
+Paypal
+------
+.. image:: https://raw.githubusercontent.com/andreostrovsky/donate-with-paypal/master/blue.svg
+    :target: https://paypal.me/shijialiang0925
+
+Wechat Pay
+----------
+.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/wechat.jpg
+
+Alipay
+------
+.. image:: https://raw.githubusercontent.com/shijl0925/python-gerrit-api/master/docs/alipay.jpg
