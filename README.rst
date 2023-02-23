@@ -67,12 +67,16 @@ Alipay
 Usage
 -----
 
-Example 1: setup gerrit client::
+Example 1: setup gerrit client:
+
+.. code:: python
 
     from gerrit import GerritClient
     client = GerritClient(base_url="https://yourgerrit", username='******', password='xxxxx')
 
-Example 2: operate gerrit project::
+Example 2: operate gerrit project:
+
+.. code:: python
 
     # Retrieves a project.
     project = client.projects.get('MyProject')
@@ -127,7 +131,9 @@ Example 2: operate gerrit project::
     result = client.put(endpoint="/projects/MyProject/branches/stable", json=input_)
 
 
-Example 3: operate gerrit change::
+Example 3: operate gerrit change:
+
+.. code:: python
 
     # Retrieves a change.
     change = client.changes.get('python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
@@ -158,7 +164,9 @@ Example 3: operate gerrit change::
     # Gets the diff of a file from a certain revision.
     file_diff = file.get_diff()
 
-Example 4: operate gerrit account::
+Example 4: operate gerrit account:
+
+.. code:: python
 
     # Retrieves an account
     account = client.accounts.get('kevin.shi')
@@ -173,7 +181,9 @@ Example 4: operate gerrit account::
     ssh_key = 'ssh-rsa xxx'
     result = account.ssh_keys.add(ssh_key)
 
-Example 5: operate gerrit group::
+Example 5: operate gerrit group:
+
+.. code:: python
 
     # Retrieves a group.
     group = client.groups.get('af01a8cb8cbd8ee7be072b98b1ee882867c0cf06')
