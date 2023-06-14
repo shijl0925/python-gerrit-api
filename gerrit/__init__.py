@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+__version__ = "2.1.7"
+
 import json
 import netrc
 from gerrit.utils.requester import Requester
