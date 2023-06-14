@@ -20,6 +20,22 @@ gerrit.groups.groups module
    :undoc-members:
    :show-inheritance:
 
+gerrit.groups.members module
+----------------------------
+
+.. automodule:: gerrit.groups.members
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gerrit.groups.subgroups module
+------------------------------
+
+.. automodule:: gerrit.groups.subgroups
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
