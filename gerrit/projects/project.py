@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from packaging.version import parse
 from gerrit.projects.branches import GerritProjectBranches
 from gerrit.projects.tags import GerritProjectTags
 from gerrit.projects.commit import GerritProjectCommit
