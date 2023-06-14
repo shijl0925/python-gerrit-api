@@ -20,10 +20,19 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
+def get_version() -> str:
+    version = ""
+    with open("gerrit/__init__.py", "r", encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("__version__"):
+                version = eval(line.split("=")[-1])
+                break
+    return version
+
 setup(
     name="python-gerrit-api",
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.7",
+    version=get_version(),
     description="Python wrapper for the Gerrit REST API.",
     long_description=long_description,
     url="https://github.com/shijl0925/python-gerrit-api",
