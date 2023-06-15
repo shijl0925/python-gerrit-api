@@ -105,7 +105,7 @@ class GerritChangeEdit(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(self.endpoint + f":message")
+        return self.gerrit.get(self.endpoint + ":message")
 
     def publish(self, input_):
         """
