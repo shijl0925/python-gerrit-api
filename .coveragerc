@@ -1,4 +1,5 @@
 [run]
 source = gerrit
+omit = tests/*
 branch = True
 relative_files = True
