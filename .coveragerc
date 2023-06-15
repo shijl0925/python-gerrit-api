@@ -1,4 +1,4 @@
 [run]
-source = pokedex
+source = gerrit
 branch = True
 relative_files = True
