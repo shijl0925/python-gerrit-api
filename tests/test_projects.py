@@ -29,7 +29,7 @@ def test_search_projects(gerrit_client):
     query = "name:git-repo"
     resp = gerrit_client.projects.search(query=query, limit=25, skip=0)
 
-    assert len(resp) >= 1
+    assert len(resp) == 1
 
 
 def test_get_project(gerrit_client):
