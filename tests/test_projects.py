@@ -22,7 +22,7 @@ def gerrit_client():
 def test_list_projects(gerrit_client):
     resp = gerrit_client.projects.list(limit=25, skip=0)
 
-    assert len(resp) >= 0
+    assert len(resp) > 0
 
 
 def test_search_projects(gerrit_client):
