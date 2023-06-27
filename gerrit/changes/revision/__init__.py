@@ -191,11 +191,11 @@ class GerritChangeRevision(object):
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.
 
-        Adding query parameter zip (for example /changes/…​/patch?zip) returns the patch as a
+        Adding query parameter zip (for example /changes/.../patch?zip) returns the patch as a
         single file inside of a ZIP archive. Clients can expand the ZIP to obtain the plain text
         patch, avoiding the need for a base64 decoding step. This option implies download.
 
-        Query parameter download (e.g. /changes/…​/patch?download) will suggest the browser
+        Query parameter download (e.g. /changes/.../patch?download) will suggest the browser
         save the patch as commitsha1.diff.base64, for later processing by command line tools.
 
         If the path parameter is set, the returned content is a diff of the single file that
