@@ -55,8 +55,7 @@ def test_search_projects(gerrit_client):
 
 
 def test_get_project(gerrit_client):
-    from gerrit.projects.project import GerritProject
-    project_name = "git-repo"
+    project_name = "LineageOS/android"
     project = gerrit_client.projects.get(name=project_name)
 
     assert project.name == project_name
