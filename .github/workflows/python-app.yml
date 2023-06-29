@@ -36,9 +36,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
-        GERRIT_HOST_URL: ${{ env.GERRIT_HOST_URL }}
-        GERRIT_USERNAME: ${{ env.GERRIT_USERNAME }}
-        GERRIT_PASSWORD: ${{ env.GERRIT_PASSWORD }}
+        GERRIT_HOST_URL: ${{ secrets.GERRIT_HOST_URL }}
+        GERRIT_USERNAME: ${{ secrets.GERRIT_USERNAME }}
+        GERRIT_PASSWORD: ${{ secrets.GERRIT_PASSWORD }}
       run: |
         coverage run -m pytest -v
     - name: Analysing the code with pylint
