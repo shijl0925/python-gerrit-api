@@ -167,8 +167,8 @@ def test_get_change_reviewer(gerrit_client):
     change = gerrit_client.changes.get(id_=change_id)
 
     from gerrit.utils.exceptions import ReviewerNotFoundError
-    # with pytest.raises(ReviewerNotFoundError):
-    #     change.reviewers.get(account="shijl0925")
+    with pytest.raises(ReviewerNotFoundError):
+        change.reviewers.get(account="shijl900925")
 
     reviewer = change.reviewers.get(account="javelinanddart")
     assert "_account_id" in reviewer.to_dict()
