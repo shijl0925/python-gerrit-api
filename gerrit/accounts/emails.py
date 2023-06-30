@@ -1,14 +1,29 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
+import logging
+import requests
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    AccountEmailNotFoundError,
+    AccountEmailAlreadyExistsError,
+    GerritAPIException
+)
 
 
-class GerritAccountEmail(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "email"
-        self.endpoint = f"/accounts/{self.username}/emails/{self.email}"
+logger = logging.getLogger(__name__)
+
+
+class GerritAccountEmail(GerritBase):
+    def __init__(self, email, account, gerrit):
+        self.email = email
+        self.account = account
+        self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.account}/emails/{self.email}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.email
 
     def delete(self):
         """
@@ -27,11 +42,11 @@ class GerritAccountEmail(BaseModel):
         self.gerrit.put(self.endpoint + "/preferred")
 
 
-class GerritAccountEmails(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+class GerritAccountEmails:
+    def __init__(self, account, gerrit):
+        self.account = account
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/emails"
+        self.endpoint = f"/accounts/{self.account}/emails"
 
     def list(self):
         """
@@ -40,7 +55,7 @@ class GerritAccountEmails(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return GerritAccountEmail.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return result
 
     def create(self, email):
         """
@@ -48,7 +63,14 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        return self.gerrit.put(self.endpoint + f"/{email}")
+        try:
+            self.get(email)
+            message = f"Account Email {email} already register"
+            logger.error(message)
+            raise AccountEmailAlreadyExistsError(message)
+        except AccountEmailNotFoundError:
+            self.gerrit.put(self.endpoint + f"/{email}")
+            return self.get(email)
 
     def get(self, email):
         """
@@ -56,8 +78,17 @@ class GerritAccountEmails(object):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{email}")
-        return GerritAccountEmail(json=result, username=self.username, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{email}")
+
+            email_ = result.get("email")
+            return GerritAccountEmail(email=email_, account=self.account, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Account Email {email} does not exist"
+                logger.error(message)
+                raise AccountEmailNotFoundError(message)
+            raise GerritAPIException from error
 
     def set_preferred(self, email):
         """
@@ -66,6 +97,7 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
+        self.get(email)
         self.gerrit.put(self.endpoint + f"/{email}/preferred")
 
     def delete(self, email):
@@ -75,4 +107,5 @@ class GerritAccountEmails(object):
         :param email: account email
         :return:
         """
+        self.get(email)
         self.gerrit.delete(self.endpoint + f"/{email}")

@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
-
-
-class Cache(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "name"
-        self.endpoint = "/config/server/caches"
+class Cache:
+    def __init__(self, name: str, gerrit):
+        self.name = name
+        self.gerrit = gerrit
+        self.endpoint = f"/config/server/caches/{self.name}"
 
     def flush(self):
         """
@@ -16,10 +13,10 @@ class Cache(BaseModel):
 
         :return:
         """
-        self.gerrit.post(self.endpoint + f"/{self.name}/flush")
+        self.gerrit.post(self.endpoint + "/flush")
 
 
-class Caches(object):
+class Caches:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/config/server/caches"
@@ -37,7 +34,7 @@ class Caches(object):
             cache.update({"name": key})
             caches.append(cache)
 
-        return Cache.parse_list(caches, gerrit=self.gerrit)
+        return caches
 
     def get(self, name):
         """
@@ -47,7 +44,9 @@ class Caches(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{name}")
-        return Cache(json=result, gerrit=self.gerrit)
+
+        name = result.get("name")
+        return Cache(name=name, gerrit=self.gerrit)
 
     def flush(self, name):
         """

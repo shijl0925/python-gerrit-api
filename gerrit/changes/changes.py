@@ -1,15 +1,24 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+import requests
 from gerrit.changes.change import GerritChange
+from gerrit.utils.exceptions import (
+    ChangeNotFoundError,
+    GerritAPIException
+)
 
 
-class GerritChanges(object):
+logger = logging.getLogger(__name__)
+
+
+class GerritChanges:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/changes"
 
-    def search(self, query, options=None, limit=None, skip=None):
+    def search(self, query: str, options=None, limit: int = 25, skip: int = 0):
         """
         Queries changes visible to the caller.
 
@@ -35,24 +44,31 @@ class GerritChanges(object):
 
         return self.gerrit.get(self.endpoint + f"/?q={query}", params=params)
 
-    def get(self, id_, detailed=False, options=None):
+    def get(self, id_):
         """
         Retrieves a change.
 
         :param id_: change id
-        :param detailed: boolean value, if True then retrieve a change with
-                         labels, detailed labels, detailed accounts,
-                         reviewer updates, and messages.
-        :param options: List of options to fetch additional data about a change
         :return:
         """
+        try:
+            endpoint = self.endpoint + f"/{id_}/"
+            result = self.gerrit.get(endpoint)
 
-        endpoint = self.endpoint + f"/{id_}/"
-        if detailed:
-            endpoint += "detail"
+            id = result.get("id")
+            return GerritChange(id=id, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Change {id_} does not exist"
+                if id_.startswith("I"):
+                    res = self.search(query=f"change: {id_}")
+                    if len(res) > 0:
+                        change_ids = [item.get("id") for item in res]
+                        message = f"Change {id_} query multiple changes: {', '.join(change_ids)}, which one do you want?"
 
-        result = self.gerrit.get(endpoint, params={"o": options})
-        return GerritChange(json=result, gerrit=self.gerrit)
+                logger.error(message)
+                raise ChangeNotFoundError(message)
+            raise GerritAPIException from error
 
     def create(self, input_):
         """
@@ -73,8 +89,13 @@ class GerritChanges(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input
         :return:
         """
+        project_name = input_.get("project")
+        branch_name = input_.get("branch")
+        project = self.gerrit.projects.get(project_name)
+        project.branches.get(branch_name)
+
         result = self.gerrit.post(self.endpoint + '/', json=input_, headers=self.gerrit.default_headers)
-        return GerritChange(json=result, gerrit=self.gerrit)
+        return result
 
     def delete(self, id_):
         """
@@ -83,4 +104,5 @@ class GerritChanges(object):
         :param id_: change id
         :return:
         """
+        self.get(id_)
         self.gerrit.delete(self.endpoint + f"/{id_}")

@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-__version__ = "2.1.7"
+__version__ = "3.0.0.dev1"
 
-import json
 import netrc
 from gerrit.utils.requester import Requester
+from gerrit.utils.common import (
+    decode_response,
+    strip_trailing_slash
+)
 from gerrit.config.config import GerritConfig
 from gerrit.projects.projects import GerritProjects
 from gerrit.accounts.accounts import GerritAccounts
 from gerrit.groups.groups import GerritGroups
 from gerrit.plugins.plugins import GerritPlugins
 from gerrit.changes.changes import GerritChanges
-from gerrit.gitiles import GerritGitiles
 
 
-class GerritClient(object):
+class GerritClient:
     """
     Python wrapper for the Gerrit V3.x REST API.
 
@@ -35,7 +37,7 @@ class GerritClient(object):
         max_retries=None,
         auth_suffix="/a"
     ):
-        self._base_url = self.strip_trailing_slash(base_url)
+        self._base_url = strip_trailing_slash(base_url)
 
         if use_netrc:
             password = self.get_password_from_netrc_file()
@@ -66,17 +68,6 @@ class GerritClient(object):
             raise ValueError(f"The '{self._base_url}' host name is not found in netrc file.")
         return auth_tokens[2]
 
-    @classmethod
-    def strip_trailing_slash(cls, url):
-        """
-        remove url's trailing slash
-        :param url: url
-        :return:
-        """
-        while url.endswith("/"):
-            url = url[:-1]
-        return url
-
     def get_endpoint_url(self, endpoint):
         """
         Return the complete url including host and port for a given endpoint.
@@ -84,33 +75,6 @@ class GerritClient(object):
         :return: complete url (including host and port) as str
         """
         return f"{self._base_url}{self.auth_suffix}{endpoint}"
-
-    @staticmethod
-    def decode_response(response):
-        """Strip off Gerrit's magic prefix and decode a response.
-        :returns:
-            Decoded JSON content as a dict, or raw text if content could not be
-            decoded as JSON.
-        :raises:
-            requests.HTTPError if the response contains an HTTP error status code.
-        """
-        magic_json_prefix = ")]}'\n"
-        content_type = response.headers.get("content-type", "")
-
-        content = response.content.strip()
-        if response.encoding:
-            content = content.decode(response.encoding)
-        if not content:
-            return content
-        if content_type.split(";")[0] != "application/json":
-            return content
-        if content.startswith(magic_json_prefix):
-            index = len(magic_json_prefix)
-            content = content[index:]
-        try:
-            return json.loads(content)
-        except ValueError:
-            raise ValueError(f"Invalid json content: {content}")
 
     @property
     def config(self):
@@ -183,11 +147,6 @@ class GerritClient(object):
         """
         return self.config.get_server_info()
 
-    @property
-    def gitiles(self):
-        """gitiles plugin rest api"""
-        return GerritGitiles(gerrit=self)
-
     def get(self, endpoint, **kwargs):
         """
         Send HTTP GET to the endpoint.
@@ -196,7 +155,7 @@ class GerritClient(object):
         :return:
         """
         response = self.requester.get(self.get_endpoint_url(endpoint), **kwargs)
-        result = self.decode_response(response)
+        result = decode_response(response)
         return result
 
     def post(self, endpoint, **kwargs):
@@ -207,7 +166,7 @@ class GerritClient(object):
         :return:
         """
         response = self.requester.post(self.get_endpoint_url(endpoint), **kwargs)
-        result = self.decode_response(response)
+        result = decode_response(response)
         return result
 
     def put(self, endpoint, **kwargs):
@@ -218,7 +177,7 @@ class GerritClient(object):
         :return:
         """
         response = self.requester.put(self.get_endpoint_url(endpoint), **kwargs)
-        result = self.decode_response(response)
+        result = decode_response(response)
         return result
 
     def delete(self, endpoint):

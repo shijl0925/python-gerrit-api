@@ -1,30 +1,38 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
+import logging
+from typing import Any, Union, Dict, List, Optional
+from urllib.parse import quote_plus
+import requests
 from gerrit.projects.project import GerritProject
 from gerrit.utils.common import params_creator
+from gerrit.utils.exceptions import (
+    ProjectNotFoundError,
+    ProjectAlreadyExistsError,
+    GerritAPIException
+)
 
 
-class GerritProjects(object):
+logger = logging.getLogger(__name__)
+
+
+class GerritProjects:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/projects"
 
     def list(
         self,
-        is_all=False,
-        limit=None,
-        skip=None,
-        pattern_dispatcher=None,
-        project_type=None,
-        description=False,
-        branch=None,
-        state=None,
-    ):
+        is_all: bool = False,
+        limit: int = 25,
+        skip: int = 0,
+        pattern_dispatcher: Union[Dict, None] = None,
+        project_type: Optional[str] = None,
+        description: bool = False,
+        branch: Optional[str] = None,
+        state: Optional[str] = None,
+    ) -> List:
         """
         Get list of all available projects accessible by the caller.
 
@@ -50,16 +58,19 @@ class GerritProjects(object):
         """
         if is_all and state:
             raise ValueError("is_all can not be used together with the state option.")
-        
+
         pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-        tuples = (("n", limit),("S", skip),("type", project_type),("b", branch),("state", state))
+        tuples = (("n", limit), ("S", skip), ("type", project_type), ("b", branch), ("state", state))
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
-        params["all"] = int(is_all)
+        if is_all:
+            params.clear()
+            params["all"] = int(is_all)
         params["d"] = int(description)
+        print(params)
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def search(self, query, limit=None, skip=None):
+    def search(self, query: str, limit: int = 25, skip: int = 0) -> List:
         """
         Queries projects visible to the caller. The query string must be provided by the
         query parameter.
@@ -85,17 +96,25 @@ class GerritProjects(object):
 
         return self.gerrit.get(self.endpoint + f"/?query={query}", params=params)
 
-    def get(self, name):
+    def get(self, name: str):
         """
         Retrieves a project.
 
         :param name: the name of the project
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
-        return GerritProject(json=result, gerrit=self.gerrit)
+        try:
+            res = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
+            project_id = res.get("id")
+            return GerritProject(project_id=project_id, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Project {name} does not exist"
+                logger.error(message)
+                raise ProjectNotFoundError(message)
+            raise GerritAPIException from error
 
-    def create(self, project_name, input_):
+    def create(self, project_name: str, input_: Dict[str, Any]):
         """
         Creates a new project.
 
@@ -116,16 +135,22 @@ class GerritProjects(object):
 
         :return:
         """
-        result = self.gerrit.put(
-            self.endpoint + f"/{quote_plus(project_name)}",
-            json=input_, headers=self.gerrit.default_headers)
-        return GerritProject(json=result, gerrit=self.gerrit)
+        try:
+            self.get(project_name)
+            message = f"Project {project_name} already exists"
+            logger.error(message)
+            raise ProjectAlreadyExistsError(message)
+        except ProjectNotFoundError:
+            self.gerrit.put(self.endpoint + f"/{quote_plus(project_name)}",
+                            json=input_, headers=self.gerrit.default_headers)
+            return self.get(project_name)
 
-    def delete(self, project_name):
+    def delete(self, project_name: str):
         """
         Delete the project, requires delete-project plugin
 
         :param project_name: project name
         :return:
         """
+        self.get(project_name)
         self.gerrit.post(self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete")

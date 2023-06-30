@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
+class GerritProjectDashboard(GerritBase):
+    def __init__(self, id: str, project: str, gerrit):
+        self.id = id
+        self.project = project
+        self.gerrit = gerrit
+        self.endpoint = f"/projects/{self.project}/dashboards/{self.id}"
+        GerritBase.__init__(self)
 
-class GerritProjectDashboard(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __str__(self):
+        return str(self.id)
 
     def delete(self):
         """
@@ -15,10 +21,10 @@ class GerritProjectDashboard(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/projects/{self.project}/dashboards/{self.id}")
+        self.gerrit.delete(self.endpoint)
 
 
-class GerritProjectDashboards(object):
+class GerritProjectDashboards:
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -31,7 +37,7 @@ class GerritProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/")
-        return GerritProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
+        return result
 
     def create(self, id_, input_):
         """
@@ -55,7 +61,7 @@ class GerritProjectDashboards(object):
         """
         result = self.gerrit.put(
             self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
+        return result
 
     def get(self, id_):
         """
@@ -66,7 +72,9 @@ class GerritProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
+
+        dashboard_id = result.get("id")
+        return GerritProjectDashboard(id=dashboard_id, project=self.project, gerrit=self.gerrit)
 
     def delete(self, id_):
         """

@@ -1,22 +1,32 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+import requests
 from gerrit.accounts.account import GerritAccount
+from gerrit.utils.exceptions import (
+    AccountNotFoundError,
+    AccountAlreadyExistsError,
+    GerritAPIException
+)
 
 
-class GerritAccounts(object):
+logger = logging.getLogger(__name__)
+
+
+class GerritAccounts:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/accounts"
 
     def search(
         self,
-        query,
-        limit=None,
-        skip=None,
-        detailed=False,
-        suggested=False,
-        all_emails=False,
+        query: str,
+        limit: int = 25,
+        skip: int = 0,
+        detailed: bool = False,
+        suggested: bool = False,
+        all_emails: bool = False,
     ):
         """
         Queries accounts visible to the caller.
@@ -40,7 +50,7 @@ class GerritAccounts(object):
             None,
             ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
         )
-        option = None if not option else option
+        # option = None if not option else option
         params = {
             k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
         }
@@ -52,20 +62,25 @@ class GerritAccounts(object):
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, username, detailed=False):
+    def get(self, account):
         """
         Returns an account
 
-        :param username: username or _account_id
-        :param detailed: boolean type, If True then fetch info in more details, such as:
-            registered_on
+        :param account: username or email or _account_id or 'self'
         :return:
         """
-        endpoint = self.endpoint + f"/{username}/"
-        if detailed:
-            endpoint += "detail"
-        result = self.gerrit.get(endpoint)
-        return GerritAccount(json=result, gerrit=self.gerrit)
+        try:
+            endpoint = self.endpoint + f"/{account}/"
+            result = self.gerrit.get(endpoint)
+
+            account_ = result.get("_account_id")
+            return GerritAccount(account=account_, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Account {account} does not exist"
+                logger.error(message)
+                raise AccountNotFoundError(message)
+            raise GerritAPIException from error
 
     def create(self, username, input_):
         """
@@ -89,6 +104,12 @@ class GerritAccounts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-input
         :return:
         """
-        result = self.gerrit.put(
-            self.endpoint + f"/{username}", json=input_, headers=self.gerrit.default_headers)
-        return GerritAccount(json=result, gerrit=self.gerrit)
+        try:
+            self.get(username)
+            message = f"Account {username} already exists"
+            logger.error(message)
+            raise AccountAlreadyExistsError(message)
+        except AccountNotFoundError:
+            self.gerrit.put(
+                self.endpoint + f"/{username}", json=input_, headers=self.gerrit.default_headers)
+            return self.get(username)

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
+from gerrit.utils.gerritbase import GerritBase
 from gerrit.groups.members import GerritGroupMembers
 from gerrit.groups.subgroups import GerritGroupSubGroups
 
 
-class GerritGroup(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "name"
+class GerritGroup(GerritBase):
+    def __init__(self, group_id: int, gerrit):
+        self.id = group_id
+        self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def get_name(self):
         """
@@ -19,6 +23,14 @@ class GerritGroup(BaseModel):
         :return:
         """
         return self.gerrit.get(self.endpoint + "/name")
+
+    def get_detail(self):
+        """
+        Retrieves a group with the direct members and the directly included groups.
+
+        :return:
+        """
+        return self.gerrit.get(self.endpoint + "/detail")
 
     def set_name(self, input_):
         """

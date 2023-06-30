@@ -5,7 +5,7 @@ from gerrit.config.caches import Caches
 from gerrit.config.tasks import Tasks
 
 
-class GerritConfig(object):
+class GerritConfig:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/config/server"

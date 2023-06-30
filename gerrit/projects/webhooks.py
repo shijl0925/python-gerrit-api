@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
+class GerritProjectWebHook(GerritBase):
+    def __init__(self, name: str, project: str, gerrit):
+        self.name = name
+        self.project = project
+        self.gerrit = gerrit
+        self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
+        GerritBase.__init__(self)
 
-class GerritProjectWebHook(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "name"
-        self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes"
+    def __str__(self):
+        return self.name
 
     def delete(self):
         """
@@ -17,10 +21,10 @@ class GerritProjectWebHook(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.name}")
+        self.gerrit.delete(self.endpoint)
 
 
-class GerritProjectWebHooks(object):
+class GerritProjectWebHooks:
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -34,15 +38,7 @@ class GerritProjectWebHooks(object):
         """
         result = self.gerrit.get(self.endpoint + "/")
 
-        webhooks = []
-        for key, value in result.items():
-            webhook = value
-            webhook.update({"name": key})
-            webhooks.append(webhook)
-
-        return GerritProjectWebHook.parse_list(
-            webhooks, project=self.project, gerrit=self.gerrit
-        )
+        return result
 
     def create(self, name, input_):
         """
@@ -65,7 +61,7 @@ class GerritProjectWebHooks(object):
         """
         result = self.gerrit.put(
             self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
+        return result
 
     def get(self, name):
         """
@@ -75,8 +71,8 @@ class GerritProjectWebHooks(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{name}")
-        result.update({"name": name})
-        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
+        name = result.get("name")
+        return GerritProjectWebHook(name=name, project=self.project, gerrit=self.gerrit)
 
     def delete(self, name):
         """

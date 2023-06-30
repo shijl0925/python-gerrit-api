@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
-
-class GerritChangeRevisionComment(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class GerritChangeRevisionComment(GerritBase):
+    def __init__(self, id: str, change: str, revision: str, gerrit):
+        self.id = id
+        self.change = change
+        self.revision = revision
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def delete(self, input_=None):
         """
@@ -41,7 +47,7 @@ class GerritChangeRevisionComment(BaseModel):
                                     json=input_, headers=self.gerrit.default_headers)
 
 
-class GerritChangeRevisionComments(object):
+class GerritChangeRevisionComments:
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -61,9 +67,7 @@ class GerritChangeRevisionComments(object):
                 comment = item
                 comment.update({"path": key})
                 comments.append(comment)
-        return GerritChangeRevisionComment.parse_list(
-            comments, change=self.change, revision=self.revision, gerrit=self.gerrit
-        )
+        return comments
 
     def get(self, id_):
         """
@@ -73,6 +77,8 @@ class GerritChangeRevisionComments(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
+
+        id = result.get("id")
         return GerritChangeRevisionComment(
-            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
+            id=id, change=self.change, revision=self.revision, gerrit=self.gerrit
         )

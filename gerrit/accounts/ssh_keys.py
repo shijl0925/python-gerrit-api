@@ -1,14 +1,27 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
+import logging
+import requests
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    SSHKeyNotFoundError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritAccountSSHKey(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "seq"
-        self.endpoint = f"/accounts/{self.username}/sshkeys"
+class GerritAccountSSHKey(GerritBase):
+    def __init__(self, seq, account, gerrit):
+        self.seq = seq
+        self.account = account
+        self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.account}/sshkeys"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return str(self.seq)
 
     def delete(self):
         """
@@ -19,11 +32,11 @@ class GerritAccountSSHKey(BaseModel):
         self.gerrit.delete(self.endpoint + f"/{str(self.seq)}")
 
 
-class GerritAccountSSHKeys(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+class GerritAccountSSHKeys:
+    def __init__(self, account, gerrit):
+        self.account = account
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/sshkeys"
+        self.endpoint = f"/accounts/{self.account}/sshkeys"
 
     def list(self):
         """
@@ -32,7 +45,7 @@ class GerritAccountSSHKeys(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return GerritAccountSSHKey.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return result
 
     def get(self, seq):
         """
@@ -41,8 +54,17 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{str(seq)}")
-        return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{str(seq)}")
+
+            seq = result.get("seq")
+            return GerritAccountSSHKey(seq=seq, account=self.account, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"SSH key {seq} does not exist"
+                logger.error(message)
+                raise SSHKeyNotFoundError(message)
+            raise GerritAPIException from error
 
     def add(self, ssh_key):
         """
@@ -54,7 +76,7 @@ class GerritAccountSSHKeys(object):
         """
         result = self.gerrit.post(self.endpoint,
                                   data=ssh_key, headers={"Content-Type": "plain/text"})
-        return GerritAccountSSHKey(json=result, username=self.username, gerrit=self.gerrit)
+        return result
 
     def delete(self, seq):
         """
@@ -63,4 +85,5 @@ class GerritAccountSSHKeys(object):
         :param seq: SSH key id
         :return:
         """
+        self.get(seq)
         self.gerrit.delete(self.endpoint + f"/{str(seq)}")

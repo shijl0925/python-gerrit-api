@@ -1,17 +1,25 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+import requests
 from gerrit.groups.group import GerritGroup
 from gerrit.utils.common import params_creator
-from packaging.version import parse
+from gerrit.utils.exceptions import (
+    GroupNotFoundError,
+    GroupAlreadyExistsError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritGroups(object):
+class GerritGroups:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/groups"
 
-    def list(self, pattern_dispatcher=None, options=None, limit=None, skip=None):
+    def list(self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0):
         """
         Lists the groups accessible by the caller.
 
@@ -33,7 +41,7 @@ class GerritGroups(object):
 
         return self.gerrit.get(self.endpoint, params=params)
 
-    def search(self, query, options=None, limit=None, skip=None):
+    def search(self, query, options=None, limit: int = 25, skip: int = 0):
         """
         Query Groups
 
@@ -49,11 +57,7 @@ class GerritGroups(object):
                      number of groups from the beginning of the list
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            endpoint = self.endpoint + f"/?query2={query}"
-        else:
-            endpoint = self.endpoint + f"/?query={query}"
+        endpoint = self.endpoint + f"/?query={query}"
 
         params = {
             k: v
@@ -63,7 +67,7 @@ class GerritGroups(object):
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, id_, detailed=False):
+    def get(self, id_):
         """
         Retrieves a group.
 
@@ -71,10 +75,18 @@ class GerritGroups(object):
         :param detailed:
         :return:
         """
-        endpoint = self.endpoint + f"/{id_}/"
-        if detailed:
-            endpoint += "detail"
-        return GerritGroup(json=self.gerrit.get(endpoint), gerrit=self.gerrit)
+        try:
+            endpoint = self.endpoint + f"/{id_}/"
+            res = self.gerrit.get(endpoint)
+
+            group_id = res.get("id")
+            return GerritGroup(group_id=group_id, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Group {id_} does not exist"
+                logger.error(message)
+                raise GroupNotFoundError(message)
+            raise GerritAPIException from error
 
     def create(self, name, input_):
         """
@@ -95,6 +107,12 @@ class GerritGroups(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-input
         :return:
         """
-        result = self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
-        return GerritGroup(json=result, gerrit=self.gerrit)
+        try:
+            self.get(name)
+            message = f"Group {name} already exists"
+            logger.error(message)
+            raise GroupAlreadyExistsError(message)
+        except GroupNotFoundError:
+            self.gerrit.put(
+                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            return self.get(name)

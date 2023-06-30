@@ -1,18 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
-from gerrit.utils.models import BaseModel
+from urllib.parse import quote_plus
 
 
-class GerritChangeEdit(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "ref"
+class GerritChangeEdit:
+    def __init__(self, change: str, gerrit):
+        self.change = change
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/edit"
 
     def get_change_file_content(self, file):

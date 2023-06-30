@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
-
-class GerritChangeRevisionDraft(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class GerritChangeRevisionDraft(GerritBase):
+    def __init__(self, id: str, change: str, revision: str, gerrit):
+        self.id = id
+        self.change = change
+        self.revision = revision
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def update(self, input_):
         """
@@ -30,10 +36,7 @@ class GerritChangeRevisionDraft(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChangeRevisionDraft(
-            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
-        )
+        return self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete(self):
         """
@@ -44,7 +47,7 @@ class GerritChangeRevisionDraft(BaseModel):
         self.gerrit.delete(self.endpoint)
 
 
-class GerritChangeRevisionDrafts(object):
+class GerritChangeRevisionDrafts:
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -64,9 +67,8 @@ class GerritChangeRevisionDrafts(object):
                 draft = item
                 draft.update({"path": key})
                 drafts.append(draft)
-        return GerritChangeRevisionDraft.parse_list(
-            drafts, change=self.change, revision=self.revision, gerrit=self.gerrit
-        )
+
+        return drafts
 
     def get(self, id_):
         """
@@ -76,8 +78,10 @@ class GerritChangeRevisionDrafts(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
+
+        id = result.get("id")
         return GerritChangeRevisionDraft(
-            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
+            id=id, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
     def create(self, input_):
@@ -100,9 +104,7 @@ class GerritChangeRevisionDrafts(object):
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
-        return GerritChangeRevisionDraft(
-            json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
-        )
+        return result
 
     def delete(self, id_):
         """

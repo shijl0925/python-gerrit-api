@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
-
-
-class Task(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.endpoint = "/config/server/tasks"
+class Task:
+    def __init__(self, task_id: str, gerrit):
+        self.id = task_id
+        self.gerrit = gerrit
+        self.endpoint = "/config/server/tasks/{self.id}"
 
     def delete(self):
         """
@@ -16,10 +14,10 @@ class Task(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.id}")
+        self.gerrit.delete(self.endpoint)
 
 
-class Tasks(object):
+class Tasks:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/config/server/tasks"
@@ -32,7 +30,7 @@ class Tasks(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return Task.parse_list(result, gerrit=self.gerrit)
+        return result
 
     def get(self, id_):
         """
@@ -44,7 +42,9 @@ class Tasks(object):
         """
 
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return Task(json=result, gerrit=self.gerrit)
+
+        task_id = result.get("id")
+        return Task(task_id=task_id, gerrit=self.gerrit)
 
     def delete(self, id_):
         """

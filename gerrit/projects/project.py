@@ -1,21 +1,32 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from packaging.version import parse
+import logging
+import requests
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.projects.commit import GerritProjectCommit
 from gerrit.projects.branches import GerritProjectBranches
 from gerrit.projects.tags import GerritProjectTags
-from gerrit.projects.commit import GerritProjectCommit
 from gerrit.projects.dashboards import GerritProjectDashboards
 from gerrit.projects.labels import GerritProjectLabels
 from gerrit.projects.webhooks import GerritProjectWebHooks
-from gerrit.changes.change import GerritChange
-from gerrit.utils.models import BaseModel
+from gerrit.utils.exceptions import (
+    CommitNotFoundError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritProject(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class GerritProject(GerritBase):
+    def __init__(self, project_id: str, gerrit):
+        self.id = project_id
+        self.gerrit = gerrit
         self.endpoint = f"/projects/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def get_description(self):
         """
@@ -92,7 +103,7 @@ class GerritProject(BaseModel):
         return self.gerrit.put(self.endpoint + "/parent",
                                json=input_, headers=self.gerrit.default_headers)
 
-    def get_HEAD(self):
+    def get_head(self):
         """
         Retrieves for a project the name of the branch to which HEAD points.
 
@@ -100,7 +111,7 @@ class GerritProject(BaseModel):
         """
         return self.gerrit.get(self.endpoint + "/HEAD")
 
-    def set_HEAD(self, input_):
+    def set_head(self, input_):
         """
         Sets HEAD for a project.
 
@@ -255,7 +266,7 @@ class GerritProject(BaseModel):
         """
         result = self.gerrit.post(self.endpoint + "/create.change",
                                   json=input_, headers=self.gerrit.default_headers)
-        return GerritChange(json=result, gerrit=self.gerrit)
+        return result
 
     def create_access_rights_change(self, input_):
         """
@@ -272,7 +283,7 @@ class GerritProject(BaseModel):
         """
         result = self.gerrit.put(self.endpoint + "/access:review",
                                  json=input_, headers=self.gerrit.default_headers)
-        return GerritChange(json=result, gerrit=self.gerrit)
+        return result
 
     def check_access(self, options):
         """
@@ -381,8 +392,17 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/commits/{commit}")
-        return GerritProjectCommit(json=result, project=self.id, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/commits/{commit}")
+
+            commit = result.get("commit")
+            return GerritProjectCommit(commit=commit, project=self.id, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Commit {commit} does not exist"
+                logger.error(message)
+                raise CommitNotFoundError(message)
+            raise GerritAPIException from error
 
     @property
     def dashboards(self):
@@ -393,18 +413,14 @@ class GerritProject(BaseModel):
         """
         return GerritProjectDashboards(project=self.id, gerrit=self.gerrit)
 
-    def get_labels(self):
+    @property
+    def labels(self):
         """
         gerrit labels or gerrit labels operations
 
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            result = self.gerrit.get(self.endpoint)
-            return result.get("labels")
-        else:
-            return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
+        return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):

@@ -1,17 +1,30 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
+from gerrit.utils.gerritbase import GerritBase
 from gerrit.accounts.emails import GerritAccountEmails
 from gerrit.accounts.ssh_keys import GerritAccountSSHKeys
 from gerrit.accounts.gpg_keys import GerritAccountGPGKeys
 
 
-class GerritAccount(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "username"
-        self.endpoint = f"/accounts/{self.username}"
+class GerritAccount(GerritBase):
+    def __init__(self, account, gerrit):
+        self.account = account
+        self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.account}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return str(self.account)
+
+    def get_detail(self):
+        """
+        fetch account info in more details, such as: registered_on
+
+        :return:
+        """
+        result = self.gerrit.get(self.endpoint + "/detail")
+        return result
 
     def get_name(self):
         """
@@ -191,15 +204,15 @@ class GerritAccount(BaseModel):
 
     @property
     def emails(self):
-        return GerritAccountEmails(username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmails(account=self.account, gerrit=self.gerrit)
 
     @property
     def ssh_keys(self):
-        return GerritAccountSSHKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKeys(account=self.account, gerrit=self.gerrit)
 
     @property
     def gpg_keys(self):
-        return GerritAccountGPGKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKeys(account=self.account, gerrit=self.gerrit)
 
     def list_capabilities(self):
         """
@@ -480,7 +493,6 @@ class GerritAccount(BaseModel):
         return self.gerrit.put(self.endpoint + "/agreements",
                                json=input_, headers=self.gerrit.default_headers)
 
-
     def delete_draft_comments(self, input_):
         """
         Deletes some or all of a user’s draft comments.
@@ -516,7 +528,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/starred.changes")
-        return [self.gerrit.changes.get(item.get("id")) for item in result]
+        return result
 
     def put_default_star_on_change(self, id_):
         """
@@ -543,7 +555,7 @@ class GerritAccount(BaseModel):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/stars.changes")
-        return [self.gerrit.changes.get(item.get("id")) for item in result]
+        return result
 
     def get_star_labels_from_change(self, id_):
         """

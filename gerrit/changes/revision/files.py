@@ -1,30 +1,59 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
+import logging
+from typing import Optional
+from base64 import b64decode
+from urllib.parse import quote_plus
+import requests
+from gerrit.utils.exceptions import (
+    UnknownFile,
+    FileContentNotFoundError,
+    GerritAPIException
+)
 
-from gerrit.utils.models import BaseModel
-from gerrit.utils.exceptions import UnknownFile
+
+logger = logging.getLogger(__name__)
 
 
-class GerritChangeRevisionFile(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "path"
+class GerritChangeRevisionFile:
+    def __init__(self, path: str, json: dict, change: str, revision: str, gerrit):
+        self.path = path
+        self.json = json
+        self.change = change
+        self.revision = revision
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}" \
                         f"/files/{quote_plus(self.path)}"
 
-    def get_content(self):
+    def __repr__(self):
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
+
+    def __str__(self):
+        return self.path
+
+    def to_dict(self):
+        return self.json
+
+    def get_content(self, decode=False):
         """
         Gets the content of a file from a certain revision.
         The content is returned as base64 encoded string.
 
+        :param decode: Decode bas64 to plain text.
         :return:
         """
-        return self.gerrit.get(self.endpoint + "/content")
+        try:
+            result = self.gerrit.get(self.endpoint + "/content")
+            if decode:
+                return b64decode(result).decode("utf-8")
+            return result
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Revision File {self.path} content does not exist"
+                logger.error(message)
+                raise FileContentNotFoundError(message)
+            raise GerritAPIException from error
 
     def download_content(self):
         """
@@ -79,7 +108,7 @@ class GerritChangeRevisionFile(BaseModel):
         self.gerrit.delete(self.endpoint + "/reviewed")
 
 
-class GerritChangeRevisionFiles(object):
+class GerritChangeRevisionFiles:
     def __init__(self, change, revision, gerrit):
         self.change = change
         self.revision = revision
@@ -87,12 +116,38 @@ class GerritChangeRevisionFiles(object):
         self._data = []
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/files"
 
+    def search(self, reviewed: Optional[bool] = None, base: Optional[int] = None,
+               q: Optional[str] = None, parent: Optional[int] = None):
+        """
+        Lists the files that were modified, added or deleted in a revision.
+        The reviewed, base, q, and parent are mutually exclusive. That is, only one of them may be used at a time.
+
+        :param reviewed: return a list of the paths the caller has marked as reviewed
+        :param base: return a map of the files which are different in this commit compared to the given revision.
+          The revision must correspond to a patch set in the change.
+        :param q: return a list of all files (modified or unmodified) that contain that substring in the path name.
+        :param parent: For merge commits only, the integer-valued request parameter changes the response to
+          return a map of the files which are different in this commit compared to the given parent commit.
+        :return:
+        """
+        params = {
+            k: v
+            for k, v in (("base", base), ("q", q), ("parent", parent))
+            if v is not None
+        }
+        if reviewed:
+            params["reviewed"] = int(reviewed)
+
+        result = self.gerrit.get(self.endpoint, params=params)
+
+        return result
+
     def poll(self):
         """
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.search()
         files = []
         for key, value in result.items():
             file = value
@@ -146,7 +201,7 @@ class GerritChangeRevisionFiles(object):
 
         for file in self._data:
             yield GerritChangeRevisionFile(
-                json=file, change=self.change, revision=self.revision, gerrit=self.gerrit
+                path=file["path"], json=file, change=self.change, revision=self.revision, gerrit=self.gerrit
             )
 
     def __getitem__(self, path):
@@ -161,8 +216,10 @@ class GerritChangeRevisionFiles(object):
 
         result = [file for file in self._data if file["path"] == path]
         if result:
+            file = result[0]
             return GerritChangeRevisionFile(
-                json=result[0],
+                path=file["path"],
+                json=file,
                 change=self.change,
                 revision=self.revision,
                 gerrit=self.gerrit,

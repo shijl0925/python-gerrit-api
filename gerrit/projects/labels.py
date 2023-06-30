@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
-
-class GerritProjectLabel(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "name"
+class GerritProjectLabel(GerritBase):
+    def __init__(self, name: str, project: str, gerrit):
+        self.name = name
+        self.project = project
+        self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/labels/{self.name}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.name
 
     def set(self, input_):
         """
@@ -34,7 +38,7 @@ class GerritProjectLabel(BaseModel):
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
-        return self.gerrit.projects.get(self.project).labels.get(result.get("name"))
+        return result
 
     def delete(self):
         """
@@ -46,7 +50,7 @@ class GerritProjectLabel(BaseModel):
         self.gerrit.delete(self.endpoint)
 
 
-class GerritProjectLabels(object):
+class GerritProjectLabels:
     def __init__(self, project, gerrit):
         self.project = project
         self.gerrit = gerrit
@@ -59,7 +63,7 @@ class GerritProjectLabels(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/")
-        return GerritProjectLabel.parse_list(result, gerrit=self.gerrit)
+        return result
 
     def get(self, name):
         """
@@ -70,7 +74,9 @@ class GerritProjectLabels(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{name}")
-        return GerritProjectLabel(json=result, gerrit=self.gerrit)
+
+        name = result.get("name")
+        return GerritProjectLabel(name=name, project=self.project, gerrit=self.gerrit)
 
     def create(self, name, input_):
         """
@@ -101,7 +107,7 @@ class GerritProjectLabels(object):
         """
         result = self.gerrit.put(
             self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectLabel(json=result, gerrit=self.gerrit)
+        return result
 
     def delete(self, name):
         """

@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit.utils.gerritbase import GerritBase
 
-from gerrit.utils.models import BaseModel
 
-
-class GerritChangeMessage(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+class GerritChangeMessage(GerritBase):
+    def __init__(self, id: str, change: str, gerrit):
+        self.id = id
+        self.change = change
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/messages/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def delete(self, input_=None):
         """
@@ -35,13 +40,11 @@ class GerritChangeMessage(BaseModel):
         if input_ is None:
             self.gerrit.delete(self.endpoint)
         else:
-            result = self.gerrit.post(self.endpoint + "/delete",
-                                      json=input_, headers=self.gerrit.default_headers)
-            change = self.gerrit.changes.get(self.change)
-            return change.messages.get(result.get("id"))
+            self.gerrit.post(self.endpoint + "/delete",
+                             json=input_, headers=self.gerrit.default_headers)
 
 
-class GerritChangeMessages(object):
+class GerritChangeMessages:
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
@@ -54,7 +57,7 @@ class GerritChangeMessages(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return result
 
     def get(self, id_):
         """
@@ -64,4 +67,5 @@ class GerritChangeMessages(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritChangeMessage(json=result, change=self.change, gerrit=self.gerrit)
+        id_ = result.get("id")
+        return GerritChangeMessage(id=id_, change=self.change, gerrit=self.gerrit)

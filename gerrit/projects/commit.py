@@ -1,19 +1,21 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
-from gerrit.utils.models import BaseModel
+from base64 import b64decode
+from urllib.parse import quote_plus
+from gerrit.utils.gerritbase import GerritBase
 
 
-class GerritProjectCommit(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "commit"
+class GerritProjectCommit(GerritBase):
+    def __init__(self, commit: str, project: str, gerrit):
+        self.commit = commit
+        self.project = project
+        self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/commits/{self.commit}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.commit
 
     def get_include_in(self):
         """
@@ -23,14 +25,18 @@ class GerritProjectCommit(BaseModel):
         """
         return self.gerrit.get(self.endpoint + "/in")
 
-    def get_file_content(self, file):
+    def get_file_content(self, file, decode=False):
         """
         Gets the content of a file from a certain commit.
 
         :param file: the file path
+        :param decode: Decode bas64 to plain text.
         :return:
         """
-        return self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
+        result = self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
+        if decode:
+            return b64decode(result).decode("utf-8")
+        return result
 
     def cherry_pick(self, input_):
         """
@@ -51,7 +57,7 @@ class GerritProjectCommit(BaseModel):
         """
         result = self.gerrit.post(
             self.endpoint + "/cherrypick", json=input_, headers=self.gerrit.default_headers)
-        return self.gerrit.changes.get(result.get("id"))
+        return result
 
     def list_change_files(self):
         """

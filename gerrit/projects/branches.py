@@ -1,36 +1,45 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
-from gerrit.utils.models import BaseModel
+import logging
+from base64 import b64decode
+from urllib.parse import quote_plus, unquote_plus
+import requests
 from gerrit.utils.common import params_creator
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    BranchNotFoundError,
+    BranchAlreadyExistsError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritProjectBranch(BaseModel):
-    branch_prefix = "refs/heads/"
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "ref"
+class GerritProjectBranch(GerritBase):
+    def __init__(self, name: str, project: str, gerrit):
+        self.name = name
+        self.project = project
+        self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches/{self.name}"
+        GerritBase.__init__(self)
 
-    @property
-    def name(self):
-        return self.ref.replace(self.branch_prefix, "")
+    def __str__(self):
+        return self.name
 
-    def get_file_content(self, file):
+    def get_file_content(self, file, decode=False):
         """
         Gets the content of a file from the HEAD revision of a certain branch.
         The content is returned as base64 encoded string.
 
         :param file: the file path
+        :param decode: Decode bas64 to plain text.
         :return:
         """
-        return self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
+        result = self.gerrit.get(self.endpoint + f"/files/{quote_plus(file)}/content")
+        if decode:
+            return b64decode(result).decode("utf-8")
+        return result
 
     def is_mergeable(self, input_):
         """
@@ -48,6 +57,16 @@ class GerritProjectBranch(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-input
         :return:
         """
+        source = input_.get("source")
+        try:
+            project = self.gerrit.projects.get(unquote_plus(self.project))
+            project.branches.get(name=source)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Source Branch {source} does not exist"
+                logger.error(message)
+                raise BranchNotFoundError(message)
+
         return self.gerrit.get(self.endpoint + "/mergeable", params=input_)
 
     def get_reflog(self):
@@ -67,7 +86,7 @@ class GerritProjectBranch(BaseModel):
         self.gerrit.delete(self.endpoint)
 
 
-class GerritProjectBranches(object):
+class GerritProjectBranches:
     branch_prefix = "refs/heads/"
 
     def __init__(self, project, gerrit):
@@ -75,7 +94,7 @@ class GerritProjectBranches(object):
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"
 
-    def list(self, pattern_dispatcher=None, limit=None, skip=None):
+    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0):
         """
         List the branches of a project.
 
@@ -97,8 +116,18 @@ class GerritProjectBranches(object):
         :param name: branch ref name
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
-        return GerritProjectBranch(json=result, project=self.project, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
+
+            ref = result.get("ref")
+            name = ref.replace(self.branch_prefix, "")
+            return GerritProjectBranch(name=name, project=self.project, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Branch {name} does not exist"
+                logger.error(message)
+                raise BranchNotFoundError(message)
+            raise GerritAPIException from error
 
     def create(self, name, input_):
         """
@@ -118,8 +147,16 @@ class GerritProjectBranches(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#branch-info
         :return:
         """
-        return self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+        try:
+            self.get(name)
+            message = f"Branch {name} already exists"
+            logger.error(message)
+            raise BranchAlreadyExistsError(message)
+        except BranchNotFoundError:
+            self.gerrit.put(
+                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+
+            return self.get(name)
 
     def delete(self, name):
         """
@@ -128,4 +165,5 @@ class GerritProjectBranches(object):
         :param name: branch ref name
         :return:
         """
+        self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")

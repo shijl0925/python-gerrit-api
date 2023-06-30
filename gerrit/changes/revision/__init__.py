@@ -1,24 +1,25 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
 from base64 import b64decode
+from urllib.parse import quote_plus
 from gerrit.changes.revision.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.revision.comments import GerritChangeRevisionComments
 from gerrit.changes.revision.files import GerritChangeRevisionFiles
 
 
-class GerritChangeRevision(object):
-    def __init__(self, gerrit, project, change, revision="current"):
-        self.project = project
+class GerritChangeRevision:
+    def __init__(self, gerrit, change, revision="current"):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}"
+
+    def __repr__(self):
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
+
+    def __str__(self):
+        return str(self.revision)
 
     def get_commit(self):
         """
@@ -27,11 +28,7 @@ class GerritChangeRevision(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/commit")
-        commit = result.get("commit")
-        if commit:
-            project = self.gerrit.projects.get(self.project)
-            if project:
-                return project.get_commit(commit)
+        return result
 
     def get_description(self):
         """
@@ -73,10 +70,7 @@ class GerritChangeRevision(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/mergelist")
-        return [
-            self.gerrit.projects.get(self.project).get_commit(item.get("commit"))
-            for item in result
-        ]
+        return result
 
     def get_revision_actions(self):
         """

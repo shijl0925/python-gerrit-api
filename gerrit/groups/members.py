@@ -1,13 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+import requests
+
+from gerrit.utils.exceptions import (
+    GroupMemberNotFoundError,
+    GroupMemberAlreadyExistsError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritGroupMembers(object):
+class GerritGroupMembers:
     def __init__(self, group_id, gerrit):
-        self.group_id = group_id
+        self.id = group_id
         self.gerrit = gerrit
-        self.endpoint = f"/groups/{self.group_id}/members"
+        self.endpoint = f"/groups/{self.id}/members"
 
     def list(self):
         """
@@ -21,46 +31,57 @@ class GerritGroupMembers(object):
 
         accounts = []
         for item in result:
-            username = item.get("username")
-            accounts.append(self.gerrit.accounts.get(username))
+            account_id = item.get("_account_id")
+            accounts.append(self.gerrit.accounts.get(account_id))
 
         return accounts
 
-    def get(self, username):
+    def get(self, account):
         """
         Retrieves a group member.
         This endpoint is only allowed for Gerrit internal groups;
         attempting to call on a non-internal group will return 405 Method Not Allowed.
 
-        :param username: account username
+        :param account: account username or id
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{username}")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{account}")
+            account_id = result.get("_account_id")
+            return self.gerrit.accounts.get(account_id)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Group member {account} does not exist"
+                logger.error(message)
+                raise GroupMemberNotFoundError(message)
+            raise GerritAPIException from error
 
-    def add(self, username):
+    def add(self, account):
         """
         Adds a user as member to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
         attempting to call on a non-internal group will return 405 Method Not Allowed.
 
-        :param username: account username
+        :param account: account username or id
         :return:
         """
-        result = self.gerrit.put(self.endpoint + f"/{username}")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        try:
+            self.get(account)
+            message = f"Group member {account} already exists"
+            logger.error(message)
+            raise GroupMemberAlreadyExistsError(message)
+        except GroupMemberNotFoundError:
+            self.gerrit.put(self.endpoint + f"/{account}")
+            return self.get(account)
 
-    def remove(self, username):
+    def remove(self, account):
         """
         Removes a user from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
         attempting to call on a non-internal group will return 405 Method Not Allowed.
 
-        :param username: account username
+        :param account: account username or id
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{username}")
+        self.get(account)
+        self.gerrit.delete(self.endpoint + f"/{account}")

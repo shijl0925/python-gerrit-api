@@ -3,11 +3,11 @@
 # @Author: Jialiang Shi
 
 
-class GerritGroupSubGroups(object):
+class GerritGroupSubGroups:
     def __init__(self, group_id, gerrit):
-        self.group_id = group_id
+        self.id = group_id
         self.gerrit = gerrit
-        self.endpoint = f"/groups/{self.group_id}/groups/"
+        self.endpoint = f"/groups/{self.id}/groups/"
 
     def list(self):
         """
@@ -35,9 +35,9 @@ class GerritGroupSubGroups(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{subgroup}")
-        if result:
-            subgroup_id = result.get("id")
-            return self.gerrit.groups.get(subgroup_id)
+
+        subgroup_id = result.get("id")
+        return self.gerrit.groups.get(subgroup_id)
 
     def add(self, subgroup):
         """
@@ -49,9 +49,9 @@ class GerritGroupSubGroups(object):
         :return:
         """
         result = self.gerrit.put(self.endpoint + f"/{subgroup}")
-        if result:
-            subgroup_id = result.get("id")
-            return self.gerrit.groups.get(subgroup_id)
+
+        subgroup_id = result.get("id")
+        return self.gerrit.groups.get(subgroup_id)
 
     def remove(self, subgroup):
         """

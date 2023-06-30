@@ -1,15 +1,28 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+import requests
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    ReviewerNotFoundError,
+    ReviewerAlreadyExistsError,
+    GerritAPIException
+)
 
-from gerrit.utils.models import BaseModel
+logger = logging.getLogger(__name__)
 
 
-class GerritChangeReviewer(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "username"
-        self.endpoint = f"/changes/{self.change}/reviewers/{self.username}"
+class GerritChangeReviewer(GerritBase):
+    def __init__(self, account: str, change: str, gerrit):
+        self.account = account
+        self.change = change
+        self.gerrit = gerrit
+        self.endpoint = f"/changes/{self.change}/reviewers/{self.account}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return str(self.account)
 
     def delete(self, input_=None):
         """
@@ -78,7 +91,7 @@ class GerritChangeReviewer(BaseModel):
             self.gerrit.post(endpoint + "/delete", json=input_, headers=self.gerrit.default_headers)
 
 
-class GerritChangeReviewers(object):
+class GerritChangeReviewers:
     def __init__(self, change, gerrit):
         self.change = change
         self.gerrit = gerrit
@@ -91,7 +104,7 @@ class GerritChangeReviewers(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/")
-        return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return result
 
     def get(self, account):
         """
@@ -100,9 +113,17 @@ class GerritChangeReviewers(object):
         :param account: _account_id, name, username or email
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{account}")
-        if result:
-            return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{account}")
+
+            account = result[0].get("_account_id")
+            return GerritChangeReviewer(account=account, change=self.change, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Reviewer {account} does not exist"
+                logger.error(message)
+                raise ReviewerNotFoundError(message)
+            raise GerritAPIException from error
 
     def add(self, input_):
         """
@@ -129,4 +150,12 @@ class GerritChangeReviewers(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#reviewer-input
         :return:
         """
-        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        reviewer = input_.get("reviewer")
+        try:
+            self.get(reviewer)
+            message = f"Reviewer {reviewer} already exists"
+            logger.error(message)
+            raise ReviewerAlreadyExistsError(message)
+        except ReviewerNotFoundError:
+            self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+            return self.get(reviewer)

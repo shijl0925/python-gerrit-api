@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
 from gerrit.utils.common import params_creator
 
 
-class GerritPlugin(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.endpoint = f"/plugins/{self.id}"
+class GerritPlugin:
+    def __init__(self, id_: str, gerrit):
+        self.id_ = id_
+        self.gerrit = gerrit
+        self.endpoint = f"/plugins/{self.id_}"
 
     def enable(self):
         """
@@ -17,7 +17,7 @@ class GerritPlugin(BaseModel):
         :return:
         """
         result = self.gerrit.post(self.endpoint + "/gerrit~enable")
-        return self.gerrit.plugins.get(result.get("id"))
+        return result
 
     def disable(self):
         """
@@ -26,7 +26,7 @@ class GerritPlugin(BaseModel):
         :return:
         """
         result = self.gerrit.post(self.endpoint + "/gerrit~disable")
-        return self.gerrit.plugins.get(result.get("id"))
+        return result
 
     def reload(self):
         """
@@ -35,15 +35,21 @@ class GerritPlugin(BaseModel):
         :return:
         """
         result = self.gerrit.post(self.endpoint + "/gerrit~reload")
-        return self.gerrit.plugins.get(result.get("id"))
+        return result
 
 
-class GerritPlugins(object):
+class GerritPlugins:
     def __init__(self, gerrit):
         self.gerrit = gerrit
         self.endpoint = "/plugins"
 
-    def list(self, is_all=False, limit=None, skip=None, pattern_dispatcher=None):
+    def list(
+        self,
+        is_all: bool = False,
+        limit: int = 25,
+        skip: int = 0,
+        pattern_dispatcher=None
+    ):
         """
         Lists the plugins installed on the Gerrit server.
 
@@ -70,7 +76,9 @@ class GerritPlugins(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}/gerrit~status")
-        return GerritPlugin(json=result, gerrit=self.gerrit)
+
+        plugin_id = result.get("id")
+        return GerritPlugin(id_=plugin_id, gerrit=self.gerrit)
 
     def install(self, id_, input_):
         """
@@ -92,4 +100,4 @@ class GerritPlugins(object):
         result = self.gerrit.put(
             self.endpoint + f"/{id_}.jar", json=input_, headers=self.gerrit.default_headers
         )
-        return GerritPlugin(json=result, gerrit=self.gerrit)
+        return result

@@ -1,19 +1,39 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Dict
+from gerrit.utils.gerritbase import GerritBase
 from gerrit.changes.reviewers import GerritChangeReviewers
 from gerrit.changes.revision import GerritChangeRevision
 from gerrit.changes.edit import GerritChangeEdit
 from gerrit.changes.messages import GerritChangeMessages
-from gerrit.utils.models import BaseModel
 
 
-class GerritChange(BaseModel):
-    def __init__(self, **kwargs):
-        self.revisions = {}
-        self.current_revision_number = 0
-        super().__init__(**kwargs)
+class GerritChange(GerritBase):
+    def __init__(self, id: str, gerrit):
+        self.id = id
+        self.gerrit = gerrit
         self.endpoint = f"/changes/{self.id}"
+        GerritBase.__init__(self)
+
+        self.revisions: Dict[str, str] = {}
+        self.current_revision_number = 0
+
+    def __str__(self):
+        return self.id
+
+    def get_detail(self, options=None):
+        """
+        retrieve a change with labels, detailed labels, detailed accounts, reviewer updates, and messages.
+
+        :param options: List of options to fetch additional data about a change
+        :return:
+        """
+        if options:
+            params = {"o": options}
+        else:
+            params = None
+        return self.gerrit.get(self.endpoint + "/detail", params=params)
 
     def get_meta_diff(self, old=None, meta=None):
         """
@@ -118,7 +138,7 @@ class GerritChange(BaseModel):
           #delete-vote-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{account}/votes/{label}"
+        endpoint = f"{self.endpoint}/reviewers/{account}/votes/{label}"
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
@@ -135,7 +155,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/topic")
+        return self.gerrit.get(f"{self.endpoint}/topic")
 
     def set_topic(self, topic):
         """
@@ -154,7 +174,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/changes/{self.id}/topic")
+        self.gerrit.delete(f"{self.endpoint}/topic")
 
     def get_assignee(self):
         """
@@ -162,10 +182,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint + "/assignee")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        return self.gerrit.get(self.endpoint + "/assignee")
 
     def set_assignee(self, input_):
         """
@@ -186,9 +203,7 @@ class GerritChange(BaseModel):
         """
         result = self.gerrit.put(self.endpoint + "/assignee",
                                  json=input_, headers=self.gerrit.default_headers)
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        return result
 
     def get_past_assignees(self):
         """
@@ -198,14 +213,7 @@ class GerritChange(BaseModel):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/past_assignees")
-        assignees = []
-        if result:
-            for item in result:
-                username = item.get("username")
-                assignee = self.gerrit.accounts.get(username)
-                assignees.append(assignee)
-
-        return assignees
+        return result
 
     def delete_assignee(self):
         """
@@ -213,12 +221,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        response = self.gerrit.delete(self.endpoint + "/assignee")
-        result = self.gerrit.decode_response(response)
-
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        self.gerrit.delete(self.endpoint + "/assignee")
 
     def get_pure_revert(self, commit):
         """
@@ -372,7 +375,7 @@ class GerritChange(BaseModel):
             result = self.gerrit.post(endpoint)
         else:
             result = self.gerrit.post(endpoint,
-                                    json=input_, headers=self.gerrit.default_headers)
+                                      json=input_, headers=self.gerrit.default_headers)
         return result
 
     def list_submitted_together_changes(self):
@@ -636,7 +639,6 @@ class GerritChange(BaseModel):
         return self.gerrit.post(self.endpoint + "/hashtags",
                                 json=input_, headers=self.gerrit.default_headers)
 
-
     @property
     def messages(self):
         return GerritChangeMessages(change=self.id, gerrit=self.gerrit)
@@ -660,8 +662,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint + "/edit")
-        return GerritChangeEdit(json=result, change=self.id, gerrit=self.gerrit)
+        return GerritChangeEdit(change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
         """
@@ -676,12 +677,14 @@ class GerritChange(BaseModel):
         return GerritChangeReviewers(change=self.id, gerrit=self.gerrit)
 
     def __get_revisions(self):
-        endpoint = f"/changes/?q={self.number}&o=ALL_REVISIONS"
+        number = self.to_dict().get("_number")
+
+        endpoint = f"/changes/?q={number}&o=ALL_REVISIONS"
         results = self.gerrit.get(endpoint)
 
         result = {}
         for item in results:
-            if item.get("_number") == self.number:
+            if item.get("_number") == number:
                 result = item
                 break
 
@@ -712,7 +715,7 @@ class GerritChange(BaseModel):
         :return:
         """
         if isinstance(revision_id, int):
-            if len(self.revisions) == 0:
+            if len(self.revisions.keys()) == 0:
                 self.__get_revisions()
             if revision_id <= 0:
                 revision_id = self.current_revision_number + revision_id
@@ -722,7 +725,6 @@ class GerritChange(BaseModel):
 
         return GerritChangeRevision(
             gerrit=self.gerrit,
-            project=self.project,
             change=self.id,
             revision=revision_id
         )
@@ -734,7 +736,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/attention")
+        return self.gerrit.get(f"{self.endpoint}/attention")
 
     def add_to_attention_set(self, input_):
         """
@@ -791,4 +793,4 @@ class GerritChange(BaseModel):
             self.gerrit.delete(endpoint)
         else:
             endpoint += "/delete"
-            return self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)

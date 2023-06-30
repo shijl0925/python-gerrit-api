@@ -1,13 +1,27 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.models import BaseModel
+import logging
+import requests
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    GPGKeyNotFoundError,
+    GerritAPIException
+)
+
+logger = logging.getLogger(__name__)
 
 
-class GerritAccountGPGKey(BaseModel):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.endpoint = f"/accounts/{self.username}/gpgkeys"
+class GerritAccountGPGKey(GerritBase):
+    def __init__(self, id, account, gerrit):
+        self.id = id
+        self.account = account
+        self.gerrit = gerrit
+        self.endpoint = f"/accounts/{self.account}/gpgkeys/{self.id}"
+        GerritBase.__init__(self)
+
+    def __str__(self):
+        return self.id
 
     def delete(self):
         """
@@ -15,14 +29,14 @@ class GerritAccountGPGKey(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.id}")
+        self.gerrit.delete(self.endpoint)
 
 
-class GerritAccountGPGKeys(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+class GerritAccountGPGKeys:
+    def __init__(self, account, gerrit):
+        self.account = account
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/gpgkeys"
+        self.endpoint = f"/accounts/{self.account}/gpgkeys"
 
     def list(self):
         """
@@ -37,9 +51,7 @@ class GerritAccountGPGKeys(object):
             gpg_key.update({"id": key})
             keys.append(gpg_key)
 
-        return GerritAccountGPGKey.parse_list(
-            keys, username=self.username, gerrit=self.gerrit
-        )
+        return keys
 
     def get(self, id_):
         """
@@ -48,8 +60,17 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritAccountGPGKey(json=result, username=self.username, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{id_}")
+
+            id = result.get("id")
+            return GerritAccountGPGKey(id=id, account=self.account, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"GPG key {id_} does not exist"
+                logger.error(message)
+                raise GPGKeyNotFoundError(message)
+            raise GerritAPIException from error
 
     def modify(self, input_):
         """
@@ -100,7 +121,7 @@ class GerritAccountGPGKeys(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        return self.gerrit.post(self.endpoint , json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, id_):
         """
@@ -109,4 +130,5 @@ class GerritAccountGPGKeys(object):
         :param id_: GPG key id
         :return:
         """
+        self.get(id_)
         self.gerrit.delete(self.endpoint + f"/{id_}")

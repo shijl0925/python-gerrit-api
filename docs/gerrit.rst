@@ -10,7 +10,6 @@ Subpackages
    gerrit.accounts
    gerrit.changes
    gerrit.config
-   gerrit.gitiles
    gerrit.groups
    gerrit.plugins
    gerrit.projects

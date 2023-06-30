@@ -12,14 +12,6 @@ gerrit.utils.common module
    :undoc-members:
    :show-inheritance:
 
-gerrit.utils.entity module
---------------------------
-
-.. automodule:: gerrit.utils.entity
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 gerrit.utils.exceptions module
 ------------------------------
 
@@ -28,10 +20,10 @@ gerrit.utils.exceptions module
    :undoc-members:
    :show-inheritance:
 
-gerrit.utils.models module
---------------------------
+gerrit.utils.gerritbase module
+------------------------------
 
-.. automodule:: gerrit.utils.models
+.. automodule:: gerrit.utils.gerritbase
    :members:
    :undoc-members:
    :show-inheritance:

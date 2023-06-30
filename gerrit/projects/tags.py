@@ -1,26 +1,31 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import logging
+from urllib.parse import quote_plus
+import requests
 from gerrit.utils.common import params_creator
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
+from gerrit.utils.gerritbase import GerritBase
+from gerrit.utils.exceptions import (
+    TagNotFoundError,
+    TagAlreadyExistsError,
+    GerritAPIException
+)
 
-from gerrit.utils.models import BaseModel
+
+logger = logging.getLogger(__name__)
 
 
-class GerritProjectTag(BaseModel):
-    tag_prefix = "refs/tags/"
+class GerritProjectTag(GerritBase):
+    def __init__(self, name: str, project: str, gerrit):
+        self.name = name
+        self.project = project
+        self.gerrit = gerrit
+        self.endpoint = f"/projects/{self.project}/tags/{self.name}"
+        GerritBase.__init__(self)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.entity_name = "ref"
-        self.endpoint = f"/projects/{self.project}/tags"
-
-    @property
-    def name(self):
-        return self.ref.replace(self.tag_prefix, "")
+    def __str__(self):
+        return self.name
 
     def delete(self):
         """
@@ -28,10 +33,10 @@ class GerritProjectTag(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.name}")
+        self.gerrit.delete(self.endpoint)
 
 
-class GerritProjectTags(object):
+class GerritProjectTags:
     tag_prefix = "refs/tags/"
 
     def __init__(self, project, gerrit):
@@ -39,7 +44,7 @@ class GerritProjectTags(object):
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/tags"
 
-    def list(self, pattern_dispatcher=None, limit=None, skip=None):
+    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0):
         """
         List the tags of a project.
 
@@ -60,8 +65,18 @@ class GerritProjectTags(object):
         :param name: the tag ref
         :return:
         """
-        result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
-        return GerritProjectTag(json=result, project=self.project, gerrit=self.gerrit)
+        try:
+            result = self.gerrit.get(self.endpoint + f"/{quote_plus(name)}")
+
+            ref = result.get("ref")
+            name = ref.replace(self.tag_prefix, "")
+            return GerritProjectTag(name=name, project=self.project, gerrit=self.gerrit)
+        except requests.exceptions.HTTPError as error:
+            if error.response.status_code in (404, 400):
+                message = f"Tag {name} does not exist"
+                logger.error(message)
+                raise TagNotFoundError(message)
+            raise GerritAPIException from error
 
     def create(self, name, input_):
         """
@@ -82,8 +97,16 @@ class GerritProjectTags(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#tag-input
         :return:
         """
-        return self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+        try:
+            self.get(name)
+            message = f"Tag {name} already exists"
+            logger.error(message)
+            raise TagAlreadyExistsError(message)
+        except TagNotFoundError:
+            self.gerrit.put(
+                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+
+            return self.get(name)
 
     def delete(self, name):
         """
@@ -92,4 +115,5 @@ class GerritProjectTags(object):
         :param name: the tag ref
         :return:
         """
+        self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
