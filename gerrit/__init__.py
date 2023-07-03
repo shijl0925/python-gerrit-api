@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-__version__ = "3.0.0.dev1"
+__version__ = "3.0.0"
 
 import netrc
 from gerrit.utils.requester import Requester
