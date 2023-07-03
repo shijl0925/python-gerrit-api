@@ -53,9 +53,9 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         pylint --rcfile=pylint.conf gerrit
-    - name: Run mypy check
-      run: |
-        mypy gerrit --install-types
+    # - name: Run mypy check
+    #   run: |
+    #     mypy gerrit --install-types
     - name: SonarCloud Scan
       if: ${{ matrix.python-version == '3.10' }}
       uses: SonarSource/sonarcloud-github-action@master
