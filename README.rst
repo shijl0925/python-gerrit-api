@@ -69,6 +69,8 @@ Example 2: operate gerrit project:
     # or
     project = client.get(endpoint="/projects/MyProject")
 
+.. code:: python
+
     # Creates a new project.
     input_ = {
         "description": "This is a demo project.",
@@ -82,6 +84,8 @@ Example 2: operate gerrit project:
     # or
     client.post(endpoint="/projects/MyProject", json=input_)
 
+.. code:: python
+
     # Sets the description of a project.
     project = client.projects.get('MyProject')
     input_ = {
@@ -93,18 +97,29 @@ Example 2: operate gerrit project:
     # or
     result = client.put(endpoint="/projects/MyProject/description", json=input_)
 
+.. code:: python
+
     # Deletes the description of a project.
     project = client.projects.get('MyProject')
     project.delete_description()
 
     # or
-    client.put(endpoint="/projects/MyProject/description")
+    client.delete(endpoint="/projects/MyProject/description")
+
+.. code:: python
 
     # get a branch of th project by ref
     branch = project.branches.get('refs/heads/stable')
 
+.. code:: python
+
     # get these branches of th project
+    branches = project.branches.list()
+
+    # or 
     branches = client.get(endpoint = "/projects/MyProject"/branches/)
+
+.. code:: python
 
     # Creates a new branch.
     input_ = {
@@ -126,8 +141,12 @@ Example 3: operate gerrit change:
     # or
     change = client.get(endpoint='/changes/python-sonarqube-api~stable3~I60c3bf10a5b0daf62a0f7c38bdf90b15026bbc2e')
 
+.. code:: python
+
     # Marks a change as reviewed.
     change.mark_as_reviewed()
+
+.. code:: python
 
     # Adds and removes hashtags from a change.
     input_ = {
@@ -140,11 +159,17 @@ Example 3: operate gerrit change:
     }
     result = change.set_hashtags(input_)
 
+.. code:: python
+
     # get one revision by revision id
     revision = change.get_revision('534b3ce21655a092eccf72680f2ad16b8fecf119')
 
+.. code:: python
+
     # get a file by path
     file = revision.files.get('sonarqube/community/favorites.py')
+
+.. code:: python
 
     # Gets the diff of a file from a certain revision.
     file_diff = file.get_diff()
@@ -156,11 +181,15 @@ Example 4: operate gerrit account:
     # Retrieves an account
     account = client.accounts.get('kevin.shi')
 
+.. code:: python
+
     # Sets the full name of an account.
     input_ = {
         "name": "Keven Shi"
     }
     result = account.set_name(input_)
+
+.. code:: python
 
     # Adds an SSH key for a user.
     ssh_key = 'ssh-rsa xxx'
@@ -173,8 +202,12 @@ Example 5: operate gerrit group:
     # Retrieves a group.
     group = client.groups.get('af01a8cb8cbd8ee7be072b98b1ee882867c0cf06')
 
+.. code:: python
+
     # Adds a user as member to a Gerrit internal group.
     result = group.add_member("ci_jenkins")
+
+.. code:: python
 
     # Sets the owner group of a Gerrit internal group.
     input_ = {
