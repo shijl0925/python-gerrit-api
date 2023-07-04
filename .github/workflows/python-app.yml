@@ -49,7 +49,8 @@ jobs:
         GERRIT_USERNAME: ${{ secrets.GERRIT_USERNAME }}
         GERRIT_PASSWORD: ${{ secrets.GERRIT_PASSWORD }}
       run: |
-        coverage run -m pytest -v
+        pytest -s
+        coverage report
     - name: Analysing the code with pylint
       run: |
         pylint --rcfile=pylint.conf gerrit
