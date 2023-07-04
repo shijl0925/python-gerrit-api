@@ -297,11 +297,12 @@ The project has been tested against Python versions:
 * 3.8
 * 3.9
 * 3.10
+* 3.11
 
 Gerrit versions
 ---------------
 
-Project tested on Version 3.5.0 Gerrit.
+Project tested on Version 3.8.0 Gerrit.
 
 Important Links
 ---------------
