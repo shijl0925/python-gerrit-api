@@ -52,6 +52,9 @@ You may also use Git to clone the repository from Github and install it manually
 Usage
 -----
 
+For a full documentation spec of what this library supports see `readthedocs
+<https://python-gerrit-api.readthedocs.io/en/latest/>`_
+
 Example 1: setup gerrit client:
 
 .. code:: python
@@ -283,9 +286,6 @@ This library allows you to automate most common Gerrit operations using Python, 
     * ...
 
 * Ability to install/enable/disable/reload/query Gerrit plugins
-
-For a full documentation spec of what this library supports see `readthedocs
-<https://python-gerrit-api.readthedocs.io/en/latest/>`_
 
 Python versions
 ---------------
