@@ -41,3 +41,18 @@ def gitiles_client():
 
     return client
 
+
+
+status = ("open", "merged", "abandoned")
+
+
+@pytest.fixture(params=status)
+def change_status(request):
+    param = request.param
+    return param
+
+
+@pytest.fixture(scope="function")
+def latest_change_id(gerrit_client, change_status):
+    changes = gerrit_client.changes.search(query=f"status:{change_status}")
+    return changes[0].get("id")
