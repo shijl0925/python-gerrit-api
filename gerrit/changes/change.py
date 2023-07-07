@@ -76,8 +76,7 @@ class GerritChange(GerritBase):
             result = change.update(input_)
 
         :param input_: the MergePatchSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #merge-patch-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-patch-set-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/merge",
@@ -97,8 +96,7 @@ class GerritChange(GerritBase):
             result = change.set_commit_message(input_)
 
         :param input_: the CommitMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #commit-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#commit-message-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/message",
@@ -134,8 +132,7 @@ class GerritChange(GerritBase):
         :param account:
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
         endpoint = f"{self.endpoint}/reviewers/{account}/votes/{label}"
@@ -495,8 +492,7 @@ class GerritChange(GerritBase):
             result = change.set_work_in_progress()
 
         :param input_: the WorkInProgressInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #work-in-progress-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/wip",
@@ -520,8 +516,7 @@ class GerritChange(GerritBase):
             change.set_ready_for_review(input_)
 
         :param input_: the WorkInProgressInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #work-in-progress-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers)
@@ -756,8 +751,7 @@ class GerritChange(GerritBase):
             result = change.add_to_attention_set(input_)
 
         :param input_: the AttentionSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #attention-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#attention-set-input
         :return:
         """
         result = self.gerrit.post(self.endpoint + "/attention",
@@ -784,8 +778,7 @@ class GerritChange(GerritBase):
 
         :param id_: account id
         :param input_: the AttentionSetInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #attention-set-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#attention-set-input
         :return:
         """
         endpoint = self.endpoint + f"/attention/{id_}"

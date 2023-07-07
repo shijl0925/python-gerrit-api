@@ -36,8 +36,7 @@ class GerritChangeRevisionComment(GerritBase):
             result = comment.delete()
 
         :param input_: the DeleteCommentInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-comment-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-comment-input
         :return:
         """
         if input_ is None:

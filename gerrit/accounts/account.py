@@ -51,8 +51,7 @@ class GerritAccount(GerritBase):
 
 
         :param input_: the AccountNameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #account-name-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-name-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/name",
@@ -107,8 +106,7 @@ class GerritAccount(GerritBase):
             result = account.set_username(input_)
 
         :param input_: the UsernameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #username-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#username-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/username",
@@ -129,8 +127,7 @@ class GerritAccount(GerritBase):
             result = account.set_displayname(input_)
 
         :param input_: the DisplayNameInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #display-name-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#display-name-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/displayname",
@@ -176,8 +173,7 @@ class GerritAccount(GerritBase):
             result = account.set_http_password(input_)
 
         :param input_: the HttpPasswordInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #http-password-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#http-password-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/password.http",
@@ -289,8 +285,7 @@ class GerritAccount(GerritBase):
             result = account.set_user_preferences(input_)
 
         :param input_: the PreferencesInput entity，
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/preferences",
@@ -329,8 +324,7 @@ class GerritAccount(GerritBase):
             result = account.set_diff_preferences(input_)
 
         :param input_: the DiffPreferencesInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #diff-preferences-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/preferences.diff",
@@ -371,8 +365,7 @@ class GerritAccount(GerritBase):
             result = account.set_edit_preferences(input_)
 
         :param input_: the EditPreferencesInfo entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #edit-preferences-info
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-info
         :return:
         """
         return self.gerrit.put(self.endpoint + "/preferences.edit",
@@ -486,8 +479,7 @@ class GerritAccount(GerritBase):
             result = account.sign_contributor_agreement(input_)
 
         :param input_: the ContributorAgreementInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #contributor-agreement-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#contributor-agreement-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/agreements",
@@ -506,8 +498,7 @@ class GerritAccount(GerritBase):
             result = account.delete_draft_comments(input_)
 
         :param input_: the DeleteDraftCommentsInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html
-          #delete-draft-comments-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#delete-draft-comments-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/drafts:delete",

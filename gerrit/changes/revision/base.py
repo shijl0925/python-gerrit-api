@@ -54,8 +54,7 @@ class GerritChangeRevision:
             result = revision.set_description(input_)
 
         :param input_: the DescriptionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #description-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#description-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/description",
@@ -316,8 +315,7 @@ class GerritChangeRevision:
             result = revision.cherry_pick(input_)
 
         :param input_: the CherryPickInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #cherry-pick-commit
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#cherry-pick-commit
         :return:
         """
         return self.gerrit.post(self.endpoint + "/cherrypick",
@@ -363,8 +361,7 @@ class GerritChangeRevision:
         :param account:
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
         endpoint = self.endpoint + f"/reviewers/{account}/votes/{label}"

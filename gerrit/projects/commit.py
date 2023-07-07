@@ -51,8 +51,7 @@ class GerritProjectCommit(GerritBase):
             result = commit.cherry_pick(input_)
 
         :param input_: the CherryPickInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #cherrypick-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#cherrypick-input
         :return:  the resulting cherry-picked change
         """
         result = self.gerrit.post(
