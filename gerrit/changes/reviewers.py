@@ -29,8 +29,7 @@ class GerritChangeReviewer(BaseModel):
             reviewer.delete()
 
         :param input_: the DeleteReviewerInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-reviewer-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-reviewer-input
         :return:
         """
         if input_ is None:
@@ -67,8 +66,7 @@ class GerritChangeReviewer(BaseModel):
 
         :param label:
         :param input_: the DeleteVoteInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-vote-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
         endpoint = self.endpoint + f"/votes/{label}"

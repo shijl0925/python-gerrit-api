@@ -70,8 +70,7 @@ class Caches(object):
             gerrit.config.caches.operation(input_)
 
         :param input_: the CacheOperationInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html
-          #cache-operation-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#cache-operation-input
         :return:
         """
         self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)

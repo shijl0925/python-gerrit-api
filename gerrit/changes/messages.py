@@ -28,8 +28,7 @@ class GerritChangeMessage(BaseModel):
             result = message.delete()
 
         :param input_: the DeleteChangeMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #delete-change-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-change-message-input
         :return:
         """
         if input_ is None:

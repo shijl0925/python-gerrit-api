@@ -91,8 +91,7 @@ class GerritChangeEdit(BaseModel):
             edit.change_commit_message(input_)
 
         :param input_: the ChangeEditMessageInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #change-edit-message-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-edit-message-input
         :return:
         """
         self.gerrit.put(self.endpoint + ":message",
@@ -122,8 +121,7 @@ class GerritChangeEdit(BaseModel):
             edit.publish(input_)
 
         :param input_: the PublishChangeEditInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html
-          #publish-change-edit-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#publish-change-edit-input
         :return:
         """
         self.gerrit.post(self.endpoint + ":publish",

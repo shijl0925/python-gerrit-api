@@ -29,8 +29,7 @@ class GerritProjectLabel(BaseModel):
             result = label.set(input_)
 
         :param input_: the LabelDefinitionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #label-definition-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
         :return:
         """
         result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
@@ -95,8 +94,7 @@ class GerritProjectLabels(object):
 
         :param name: label name
         :param input_: the LabelDefinitionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #label-definition-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
         :return:
         """
         result = self.gerrit.put(

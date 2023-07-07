@@ -103,8 +103,7 @@ class GerritGroup(BaseModel):
 
 
         :param input_: the GroupOptionsInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html
-          #group-options-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#group-options-input
         :return:
         """
         return self.gerrit.put(

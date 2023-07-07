@@ -39,8 +39,7 @@ class GerritProject(BaseModel):
             result = project.set_description(input_)
 
         :param input_: the ProjectDescriptionInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #project-description-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-description-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/description",
@@ -85,8 +84,7 @@ class GerritProject(BaseModel):
             result = project.set_parent(input_)
 
         :param input_: The ProjectParentInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #project-parent-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-parent-input
         :return:
         """
         return self.gerrit.put(self.endpoint + "/parent",
@@ -224,8 +222,7 @@ class GerritProject(BaseModel):
         https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#set-access
 
         :param input_: the ProjectAccessInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #project-access-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/access",
@@ -262,12 +259,10 @@ class GerritProject(BaseModel):
         Sets access rights for the project using the diff schema provided by ProjectAccessInput
         This takes the same input as Update Access Rights, but creates a pending change for review.
         Like Create Change, it returns a ChangeInfo entity describing the resulting change.
-        https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-        #create-access-change
+        https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#create-access-change
 
         :param input_: the ProjectAccessInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #project-access-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#project-access-input
         :return:
         """
         result = self.gerrit.put(self.endpoint + "/access:review",
@@ -306,8 +301,7 @@ class GerritProject(BaseModel):
             result = project.index(input_)
 
         :param input_: the IndexProjectInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #index-project-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#index-project-input
         :return:
         """
         self.gerrit.post(self.endpoint + "/index",
@@ -341,8 +335,7 @@ class GerritProject(BaseModel):
             result = project.check_consistency(input_)
 
         :param input_: the CheckProjectInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #check-project-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#check-project-input
         :return:
         """
         return self.gerrit.post(self.endpoint + "/check",

@@ -49,8 +49,7 @@ class GerritProjectDashboards(object):
 
         :param id_: the dashboard id
         :param input_: the DashboardInput entity,
-          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html
-          #dashboard-input
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#dashboard-input
         :return:
         """
         result = self.gerrit.put(
