@@ -13,9 +13,10 @@ Project description
     :target: https://sonarcloud.io/summary/overall?id=shijl0925_python-gerrit-api
 .. image:: https://codecov.io/gh/shijl0925/python-gerrit-api/branch/master/graph/badge.svg?token=HU6U2LNHUK 
     :target: https://codecov.io/gh/shijl0925/python-gerrit-api
-.. image:: https://www.codefactor.io/repository/github/shijl0925/python-gerrit-api/badge
-   :target: https://www.codefactor.io/repository/github/shijl0925/python-gerrit-api
-   :alt: CodeFactor
+.. image:: https://app.codacy.com/project/badge/Grade/fb3a59e09af8422ca2349b3974e02833
+    :target: https://app.codacy.com/gh/shijl0925/python-gerrit-api/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
+.. image:: https://app.codacy.com/project/badge/Coverage/fb3a59e09af8422ca2349b3974e02833
+    :target: https://app.codacy.com/gh/shijl0925/python-gerrit-api/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage
 .. image:: https://img.shields.io/github/license/shijl0925/python-gerrit-api.svg
     :target: LICENSE
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
