@@ -1,6 +1,10 @@
 Project description
 ===================
 
+.. image:: https://api.codacy.com/project/badge/Grade/604e1ca8c3fe4ea0b9ca8480ad628a74
+   :alt: Codacy Badge
+   :target: https://app.codacy.com/gh/shijl0925/python-gerrit-api?utm_source=github.com&utm_medium=referral&utm_content=shijl0925/python-gerrit-api&utm_campaign=Badge_Grade
+
 .. image:: https://img.shields.io/pypi/pyversions/python-gerrit-api.svg
     :target: https://pypi.python.org/pypi/python-gerrit-api
 .. image:: https://img.shields.io/pypi/v/python-gerrit-api.svg
