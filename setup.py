@@ -4,6 +4,7 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/pypa/sampleproject
 """
 # Always prefer setuptools over distutils
+import ast
 from setuptools import setup, find_packages
 
 # To use a consistent encoding
@@ -25,7 +26,7 @@ def get_version() -> str:
     with open("gerrit/__init__.py", "r", encoding="utf-8") as f:
         for line in f:
             if line.startswith("__version__"):
-                version = eval(line.split("=")[-1])
+                version = ast.literal_eval(line.split("=")[-1])
                 break
     return version
 
