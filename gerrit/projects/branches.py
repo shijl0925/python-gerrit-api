@@ -154,7 +154,7 @@ class GerritProjectBranches:
             raise BranchAlreadyExistsError(message)
         except BranchNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{quote_plus(name)}", json=input_, headers=self.gerrit.default_headers)
 
             return self.get(name)
 
