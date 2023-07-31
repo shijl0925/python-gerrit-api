@@ -30,7 +30,7 @@ def test_get_group(gerrit_client):
     group_id = 613
     group = gerrit_client.groups.get(group_id)
 
-    assert type(group) == GerritGroup
+    assert isinstance(group, GerritGroup)
 
     assert str(group) == str(group.id)
 
