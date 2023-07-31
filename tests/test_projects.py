@@ -72,7 +72,7 @@ def test_get_project(gerrit_client, gerrit_object):
     project = gerrit_client.projects.get(name=project_name)
     logger.debug(project.to_dict())
 
-    assert type(project) == GerritProject
+    assert isinstance(project, GerritProject)
 
     attrs = ["id", "name", "parent", "state", "labels", "web_links"]
     for attr in attrs:
