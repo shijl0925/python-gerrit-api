@@ -12,7 +12,7 @@ class GerritAccount(GerritBase):
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return str(self.account)

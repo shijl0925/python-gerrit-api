@@ -10,7 +10,7 @@ class GerritProjectDashboard(GerritBase):
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/dashboards/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return str(self.id)

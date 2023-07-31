@@ -11,7 +11,7 @@ class GerritChangeRevisionComment(GerritBase):
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return self.id

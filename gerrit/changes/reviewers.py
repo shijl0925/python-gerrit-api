@@ -19,7 +19,7 @@ class GerritChangeReviewer(GerritBase):
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers/{self.account}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return str(self.account)

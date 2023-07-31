@@ -11,7 +11,7 @@ class GerritChangeRevisionDraft(GerritBase):
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return self.id

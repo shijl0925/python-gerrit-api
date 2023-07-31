@@ -10,7 +10,7 @@ class GerritChangeMessage(GerritBase):
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/messages/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return self.id

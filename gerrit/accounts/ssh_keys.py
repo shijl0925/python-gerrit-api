@@ -18,7 +18,7 @@ class GerritAccountSSHKey(GerritBase):
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/sshkeys"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return str(self.seq)

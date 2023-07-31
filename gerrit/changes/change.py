@@ -14,7 +14,7 @@ class GerritChange(GerritBase):
         self.id = id
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
         self.revisions: Dict[str, str] = {}
         self.current_revision_number = 0

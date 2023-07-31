@@ -23,7 +23,7 @@ class GerritProject(GerritBase):
         self.id = project_id
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.id}"
-        GerritBase.__init__(self)
+        super().__init__(self)
 
     def __str__(self):
         return self.id
