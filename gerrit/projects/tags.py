@@ -21,7 +21,7 @@ class GerritProjectTag(GerritBase):
         self.name = name
         self.project = project
         self.gerrit = gerrit
-        self.endpoint = f"/projects/{self.project}/tags/{self.name}"
+        self.endpoint = f"/projects/{self.project}/tags/{quote_plus(self.name)}"
         GerritBase.__init__(self)
 
     def __str__(self):
@@ -104,7 +104,7 @@ class GerritProjectTags:
             raise TagAlreadyExistsError(message)
         except TagNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{quote_plus(name)}", json=input_, headers=self.gerrit.default_headers)
 
             return self.get(name)
 
