@@ -73,11 +73,15 @@ class Requester:
             request_kwargs["auth"] = (self.username, self.password)
 
         if params:
-            assert isinstance(params, dict), f"Params must be a dict, got {repr(params)}"
+            if not isinstance(params, dict):
+                raise ValueError(f"Params must be a dict, got {repr(params)}")
+
             request_kwargs["params"] = params
 
         if headers:
-            assert isinstance(headers, dict), f"headers must be a dict, got {repr(headers)}"
+            if not isinstance(headers, dict):
+                raise ValueError(f"headers must be a dict, got {repr(headers)}")
+
             request_kwargs["headers"] = headers
 
         if self.AUTH_COOKIE:
