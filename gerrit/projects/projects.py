@@ -66,7 +66,6 @@ class GerritProjects:
             params.clear()
             params["all"] = int(is_all)
         params["d"] = int(description)
-        print(params)
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
