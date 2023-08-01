@@ -117,7 +117,7 @@ class GerritChangeReviewers:
             account = result[0].get("_account_id")
             return GerritChangeReviewer(account=account, change=self.change, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Reviewer {account} does not exist"
                 logger.error(message)
                 raise ReviewerNotFoundError(message)

@@ -391,7 +391,7 @@ class GerritProject(GerritBase):
             commit = result.get("commit")
             return GerritProjectCommit(commit=commit, project=self.id, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Commit {commit} does not exist"
                 logger.error(message)
                 raise CommitNotFoundError(message)

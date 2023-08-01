@@ -76,7 +76,7 @@ class GerritAccounts:
             account_ = result.get("_account_id")
             return GerritAccount(account=account_, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Account {account} does not exist"
                 logger.error(message)
                 raise AccountNotFoundError(message)

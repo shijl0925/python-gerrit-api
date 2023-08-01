@@ -107,7 +107,7 @@ class GerritProjects:
             project_id = res.get("id")
             return GerritProject(project_id=project_id, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Project {name} does not exist"
                 logger.error(message)
                 raise ProjectNotFoundError(message)

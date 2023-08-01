@@ -49,7 +49,7 @@ class GerritChangeRevisionFile:
                 return b64decode(result).decode("utf-8")
             return result
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Revision File {self.path} content does not exist"
                 logger.error(message)
                 raise FileContentNotFoundError(message)

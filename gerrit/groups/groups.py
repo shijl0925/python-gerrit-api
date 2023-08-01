@@ -82,7 +82,7 @@ class GerritGroups:
             group_id = res.get("id")
             return GerritGroup(group_id=group_id, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Group {id_} does not exist"
                 logger.error(message)
                 raise GroupNotFoundError(message)

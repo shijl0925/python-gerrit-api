@@ -62,7 +62,7 @@ class GerritProjectBranch(GerritBase):
             project = self.gerrit.projects.get(unquote_plus(self.project))
             project.branches.get(name=source)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Source Branch {source} does not exist"
                 logger.error(message)
                 raise BranchNotFoundError(message)
@@ -123,7 +123,7 @@ class GerritProjectBranches:
             name = ref.replace(self.branch_prefix, "")
             return GerritProjectBranch(name=name, project=self.project, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Branch {name} does not exist"
                 logger.error(message)
                 raise BranchNotFoundError(message)

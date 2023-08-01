@@ -84,7 +84,7 @@ class GerritAccountEmails:
             email_ = result.get("email")
             return GerritAccountEmail(email=email_, account=self.account, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Account Email {email} does not exist"
                 logger.error(message)
                 raise AccountEmailNotFoundError(message)

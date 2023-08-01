@@ -72,7 +72,7 @@ class GerritProjectTags:
             name = ref.replace(self.tag_prefix, "")
             return GerritProjectTag(name=name, project=self.project, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
-            if error.response.status_code in (404, 400):
+            if error.response.status_code == 404:
                 message = f"Tag {name} does not exist"
                 logger.error(message)
                 raise TagNotFoundError(message)
