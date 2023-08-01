@@ -240,7 +240,7 @@ class Requester:
         return response
 
     @staticmethod
-    def confirm_status(res):
+    def confirm_status(res):  # pylint: disable=too-many-branches
         """
         check response status code
         :param res:
@@ -299,4 +299,3 @@ class Requester:
         else:
             # 5xx is server error
             raise ServerError(http_error_msg)
-

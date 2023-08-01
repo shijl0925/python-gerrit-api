@@ -29,6 +29,7 @@ data = [
     },
 ]
 
+
 @pytest.mark.parametrize('is_all, limit, skip, pattern_dispatcher, project_type, description, branch, state',
                          [(False, 25, 0, None, None, False, None, "ACTIVE"),
                           (False, 25, 25, None, None, False, None, "ACTIVE"),

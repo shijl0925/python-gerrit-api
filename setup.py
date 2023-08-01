@@ -21,6 +21,7 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
+
 def get_version() -> str:
     version = ""
     with open("gerrit/__init__.py", "r", encoding="utf-8") as f:
@@ -29,6 +30,7 @@ def get_version() -> str:
                 version = ast.literal_eval(line.split("=")[-1])
                 break
     return version
+
 
 setup(
     name="python-gerrit-api",
