@@ -4,6 +4,15 @@
 import six.moves.urllib.parse as urlparse
 from requests import Session
 from requests.adapters import HTTPAdapter
+from gerrit.utils.exceptions import (
+    NotAllowedError,
+    ValidationError,
+    AuthError,
+    UnauthorizedError,
+    ConflictError,
+    ClientError,
+    ServerError,
+)
 
 
 class Requester:
@@ -134,7 +143,7 @@ class Requester:
         )
         response = self.session.get(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
-            response.raise_for_status()
+            self.confirm_status(response)
         return response
 
     def post(
@@ -172,7 +181,7 @@ class Requester:
         )
         response = self.session.post(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
-            response.raise_for_status()
+            self.confirm_status(response)
         return response
 
     def put(
@@ -210,7 +219,7 @@ class Requester:
         )
         response = self.session.put(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
-            response.raise_for_status()
+            self.confirm_status(response)
         return response
 
     def delete(self, url, headers=None, allow_redirects=True, raise_for_status: bool = True, **kwargs):
@@ -227,5 +236,67 @@ class Requester:
         )
         response = self.session.delete(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
-            response.raise_for_status()
+            self.confirm_status(response)
         return response
+
+    @staticmethod
+    def confirm_status(res):
+        """
+        check response status code
+        :param res:
+        :return:
+        """
+        http_error_msg = ""
+        if isinstance(res.reason, bytes):
+            # We attempt to decode utf-8 first because some servers
+            # choose to localize their reason strings. If the string
+            # isn't utf-8, we fall back to iso-8859-1 for all other
+            # encodings. (See PR #3538)
+            try:
+                reason = res.reason.decode("utf-8")
+            except UnicodeDecodeError:
+                reason = res.reason.decode("iso-8859-1")
+        else:
+            reason = res.reason
+
+        if 400 <= res.status_code < 500:
+            http_error_msg = f"{res.status_code} Client Error: {reason} for url: {res.url}"
+
+        elif 500 <= res.status_code < 600:
+            http_error_msg = f"{res.status_code} Server Error: {reason} for url: {res.url}"
+
+        if not http_error_msg:
+            return
+
+        if res.status_code == 400:
+            # Validation error
+            raise ValidationError(http_error_msg)
+
+        elif res.status_code == 401:
+            # Unauthorized error
+            raise UnauthorizedError(http_error_msg)
+
+        elif res.status_code == 403:
+            # Auth error
+            raise AuthError(http_error_msg)
+
+        elif res.status_code == 404:
+            # Not Found
+            res.raise_for_status()
+
+        elif res.status_code == 405:
+            # Method Not Allowed
+            raise NotAllowedError(http_error_msg)
+
+        elif res.status_code == 409:
+            # Conflict
+            raise ConflictError(http_error_msg)
+
+        elif res.status_code < 500:
+            # Other 4xx, generic client error
+            raise ClientError(http_error_msg)
+
+        else:
+            # 5xx is server error
+            raise ServerError(http_error_msg)
+

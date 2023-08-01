@@ -11,6 +11,18 @@ class GerritAPIException(Exception):
     """
 
 
+class ClientError(GerritAPIException):
+    """
+    Client Error
+    """
+
+
+class ServerError(GerritAPIException):
+    """
+    Server Error
+    """
+
+
 class UnauthorizedError(GerritAPIException):
     """
     401 Unauthorized
