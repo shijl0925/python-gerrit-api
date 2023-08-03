@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-__version__ = "2.1.7"
+__version__ = "2.1.8"
 
 import json
 import netrc
