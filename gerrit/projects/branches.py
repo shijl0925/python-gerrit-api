@@ -12,7 +12,7 @@ class GerritProjectBranch(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "ref"
-        self.endpoint = f"/projects/{self.project}/branches/{quote_plu(self.name)}"
+        self.endpoint = f"/projects/{self.project}/branches/{quote_plus(self.name)}"
 
     @property
     def name(self):
