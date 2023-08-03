@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
+from urllib.parse import quote_plus
 from gerrit.utils.models import BaseModel
 from gerrit.utils.common import params_creator
 
@@ -16,7 +12,7 @@ class GerritProjectBranch(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "ref"
-        self.endpoint = f"/projects/{self.project}/branches/{self.name}"
+        self.endpoint = f"/projects/{self.project}/branches/{quote_plu(self.name)}"
 
     @property
     def name(self):
@@ -119,7 +115,7 @@ class GerritProjectBranches(object):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{quote_plus(name)}", json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, name):
         """

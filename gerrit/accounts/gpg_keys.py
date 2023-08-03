@@ -100,7 +100,7 @@ class GerritAccountGPGKeys(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        return self.gerrit.post(self.endpoint , json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, id_):
         """

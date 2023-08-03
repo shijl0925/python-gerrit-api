@@ -2,11 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from gerrit.utils.common import params_creator
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
-
+from urllib.parse import quote_plus
 from gerrit.utils.models import BaseModel
 
 

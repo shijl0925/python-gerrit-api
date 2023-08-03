@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from packaging.version import parse
 from gerrit.projects.branches import GerritProjectBranches
 from gerrit.projects.tags import GerritProjectTags
 from gerrit.projects.commit import GerritProjectCommit
@@ -392,12 +391,7 @@ class GerritProject(BaseModel):
 
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            result = self.gerrit.get(self.endpoint)
-            return result.get("labels")
-        else:
-            return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
+        return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):

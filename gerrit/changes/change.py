@@ -369,7 +369,7 @@ class GerritChange(BaseModel):
             result = self.gerrit.post(endpoint)
         else:
             result = self.gerrit.post(endpoint,
-                                    json=input_, headers=self.gerrit.default_headers)
+                                      json=input_, headers=self.gerrit.default_headers)
         return result
 
     def list_submitted_together_changes(self):

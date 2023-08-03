@@ -49,7 +49,7 @@ class GerritChangeRevisionDrafts(object):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
-        self.endpoint = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts")
+        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
 
     def list(self):
         """
@@ -57,7 +57,7 @@ class GerritChangeRevisionDrafts(object):
 
         :return:
         """
-        result = self.gerrit.get(f"/changes/{self.change}/revisions/{self.revision}/drafts")
+        result = self.gerrit.get(self.endpoint)
         drafts = []
         for key, value in result.items():
             for item in value:

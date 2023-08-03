@@ -3,7 +3,6 @@
 # @Author: Jialiang Shi
 from gerrit.groups.group import GerritGroup
 from gerrit.utils.common import params_creator
-from packaging.version import parse
 
 
 class GerritGroups(object):
@@ -49,11 +48,7 @@ class GerritGroups(object):
                      number of groups from the beginning of the list
         :return:
         """
-        version = self.gerrit.version
-        if parse(version) < parse("3.2.0"):
-            endpoint = self.endpoint + f"/?query2={query}"
-        else:
-            endpoint = self.endpoint + f"/?query={query}"
+        endpoint = self.endpoint + f"/?query={query}"
 
         params = {
             k: v

@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-try:
-    from urllib.parse import quote_plus
-except ImportError:
-    from urllib import quote_plus
+from urllib.parse import quote_plus
 from gerrit.projects.project import GerritProject
 from gerrit.utils.common import params_creator
 
@@ -52,9 +49,11 @@ class GerritProjects(object):
             raise ValueError("is_all can not be used together with the state option.")
         
         pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-        tuples = (("n", limit),("S", skip),("type", project_type),("b", branch),("state", state))
+        tuples = (("n", limit), ("S", skip), ("type", project_type), ("b", branch), ("state", state))
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
-        params["all"] = int(is_all)
+        if is_all:
+            params.clear()
+            params["all"] = int(is_all)
         params["d"] = int(description)
 
         return self.gerrit.get(self.endpoint + "/", params=params)
