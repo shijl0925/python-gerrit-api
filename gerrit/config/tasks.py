@@ -5,7 +5,7 @@ class Task:
     def __init__(self, task_id: str, gerrit):
         self.id = task_id
         self.gerrit = gerrit
-        self.endpoint = "/config/server/tasks/{self.id}"
+        self.endpoint = f"/config/server/tasks/{self.id}"
 
     def delete(self):
         """
