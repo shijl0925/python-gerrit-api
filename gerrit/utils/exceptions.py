@@ -208,3 +208,9 @@ class GPGKeyNotFoundError(GerritAPIException):
     """
     GPG key cannot be found
     """
+
+
+class ChangeEditNotFoundError(GerritAPIException):
+    """
+    Change edit cannot be found
+    """

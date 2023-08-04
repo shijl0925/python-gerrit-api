@@ -29,13 +29,14 @@ class GerritBase:
         data = self._poll()
         self._data = data
 
-        for key, value in self._data.items():
-            try:
-                if key[0] == '_':
-                    key = key[1:]
-                setattr(self, key, value)
-            except AttributeError:
-                pass
+        if isinstance(self._data, dict):
+            for key, value in self._data.items():
+                try:
+                    if key[0] == '_':
+                        key = key[1:]
+                    setattr(self, key, value)
+                except AttributeError:
+                    pass
 
     def _poll(self):
         res = self.gerrit.get(self.endpoint)  # pylint: disable=no-member

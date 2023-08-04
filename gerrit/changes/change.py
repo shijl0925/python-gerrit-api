@@ -7,6 +7,7 @@ from gerrit.changes.reviewers import GerritChangeReviewers
 from gerrit.changes.revision import GerritChangeRevision
 from gerrit.changes.edit import GerritChangeEdit
 from gerrit.changes.messages import GerritChangeMessages
+from gerrit.utils.exceptions import ChangeEditNotFoundError
 
 
 class GerritChange(GerritBase):
@@ -657,6 +658,10 @@ class GerritChange(GerritBase):
 
         :return:
         """
+        result = self.gerrit.get(self.endpoint + "/edit")
+        if not result:
+            raise ChangeEditNotFoundError("Change edit does not exist")
+
         return GerritChangeEdit(change=self.id, gerrit=self.gerrit)
 
     def create_empty_edit(self):
