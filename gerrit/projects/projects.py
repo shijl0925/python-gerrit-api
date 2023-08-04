@@ -47,7 +47,7 @@ class GerritProjects(object):
         """
         if is_all and state:
             raise ValueError("is_all can not be used together with the state option.")
-        
+
         pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
         tuples = (("n", limit), ("S", skip), ("type", project_type), ("b", branch), ("state", state))
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
