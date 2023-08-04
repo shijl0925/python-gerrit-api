@@ -15,6 +15,9 @@ class BaseModel(object):
 
         # Parse a JSON object into a model instance.
         if json is not None:
+            if not isinstance(json, dict):
+                raise ValueError(f"Invalid content: {json}")
+
             self.content = deepcopy(json)
             json.update(kwargs)
 
