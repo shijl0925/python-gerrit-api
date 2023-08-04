@@ -32,6 +32,8 @@ def test_get_group(gerrit_client):
 
     assert type(group) == GerritGroup
 
+    assert str(group) == f"GerritGroup(name={group.name})"
+
     group_name = group.get_name()
     assert group_name == "Reviewers"
 
@@ -94,6 +96,7 @@ def test_group_member(gerrit_client):
 
     account_id = 16
     member = group.members.get(account_id)
+    assert str(member) == f"GerritAccount(username={member.username})"
 
     result = member.to_dict()
     assert "_account_id" in result
@@ -120,3 +123,4 @@ def test_group_subgroups(gerrit_client):
 
     subgroup_id = "3bff52be902fb279c5e495462a68b701e9bd5889"
     subgroup = group.subgroup.get(subgroup_id)
+    assert str(subgroup) == f"GerritGroup(name={subgroup.name})"
