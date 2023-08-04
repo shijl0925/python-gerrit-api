@@ -631,7 +631,6 @@ class GerritChange(BaseModel):
         return self.gerrit.post(self.endpoint + "/hashtags",
                                 json=input_, headers=self.gerrit.default_headers)
 
-
     @property
     def messages(self):
         return GerritChangeMessages(change=self.id, gerrit=self.gerrit)
