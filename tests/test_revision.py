@@ -136,7 +136,7 @@ def test_get_revision_file(gerrit_client):
     path = "overlay/frameworks/base/core/res/res/values/config.xml"
     file = revision.files[path]
 
-    # assert str(file) == path
+    assert str(file) == f"GerritChangeRevisionFile(path={path})"
 
     assert "path" in file.to_dict()
 
