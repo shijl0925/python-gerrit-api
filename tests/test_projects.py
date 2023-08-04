@@ -29,6 +29,7 @@ data = [
     },
 ]
 
+
 @pytest.mark.parametrize('is_all, limit, skip, pattern_dispatcher, project_type, description, branch, state',
                          [(False, 25, 0, None, None, False, None, "ACTIVE"),
                           (False, 25, 25, None, None, False, None, "ACTIVE"),
@@ -81,8 +82,7 @@ def test_get_project(gerrit_client, gerrit_object):
     assert all([hasattr(project, attr) for attr in attrs])
 
     project_id = project.id
-    # assert str(project) == f"{project_id}"
-    # assert repr(project) == f"<gerrit.projects.project.GerritProject {project_id}>"
+    assert str(project) == f"GerritProject(id={project_id})"
 
     project_info = project.to_dict()
     assert project_info.get("name") == project_name
@@ -187,7 +187,8 @@ def test_project_branches(gerrit_client, gerrit_object):
     branch_name = gerrit_object["branch"]
     branch = project.branches.get(name=branch_name)
     assert branch.name == branch_name
-    # assert str(branch) == f"{branch_name}"
+    logger.debug(str(branch))
+    assert str(branch) == f"GerritProjectBranch(ref=refs/heads/{branch_name})"
 
     master_info = branch.to_dict()
     assert master_info.get("ref") == f"refs/heads/{branch_name}"
@@ -255,7 +256,7 @@ def test_project_tags(gerrit_client, gerrit_object):
     tag_name = gerrit_object["tag"]
     tag = project.tags.get(name=tag_name)
     assert tag.name == tag_name
-    # assert str(tag) == f"{tag_name}"
+    assert str(tag) == f"GerritProjectTag(ref=refs/tags/{tag_name})"
 
     tag_info = tag.to_dict()
     assert tag_info.get("ref") == f"refs/tags/{tag_name}"
@@ -296,7 +297,7 @@ def test_get_project_commit(gerrit_client):
     with pytest.raises(NotFoundError):
         project.get_commit(commit="00000000000000000000")
 
-    # assert str(commit) == f"{hash_}"
+    assert str(commit) == f"GerritProjectCommit(commit={hash_})"
 
     detail = commit.to_dict()
     assert "author" in detail
