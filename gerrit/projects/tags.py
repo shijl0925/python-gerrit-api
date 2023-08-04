@@ -24,7 +24,7 @@ class GerritProjectTag(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.name}")
+        self.gerrit.delete(self.endpoint + f"/{quote_plus(self.name)}")
 
 
 class GerritProjectTags(object):
@@ -79,7 +79,7 @@ class GerritProjectTags(object):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{quote_plus(self.name)}", json=input_, headers=self.gerrit.default_headers)
 
     def delete(self, name):
         """
