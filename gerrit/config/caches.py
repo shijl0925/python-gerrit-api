@@ -8,7 +8,7 @@ class Cache(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "name"
-        self.endpoint = "/config/server/caches"
+        self.endpoint = f"/config/server/caches/{self.name}"
 
     def flush(self):
         """
@@ -16,7 +16,7 @@ class Cache(BaseModel):
 
         :return:
         """
-        self.gerrit.post(self.endpoint + f"/{self.name}/flush")
+        self.gerrit.post(self.endpoint + "/flush")
 
 
 class Caches(object):
