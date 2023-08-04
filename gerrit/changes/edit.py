@@ -13,6 +13,9 @@ class GerritChangeEdit(GerritBase):
 
         super().__init__(self)
 
+    def __str__(self):
+        return f"change {self.change} edit"
+
     def get_change_file_content(self, file):
         """
         Retrieves content of a file from a change edit.
