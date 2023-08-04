@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from urllib.parse import quote_plus
 from base64 import b64decode
+from urllib.parse import quote_plus
 from gerrit.changes.revision.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.revision.comments import GerritChangeRevisionComments
 from gerrit.changes.revision.files import GerritChangeRevisionFiles
