@@ -4,6 +4,14 @@ gerrit.changes.revision package
 Submodules
 ----------
 
+gerrit.changes.revision.base module
+-----------------------------------
+
+.. automodule:: gerrit.changes.revision.base
+      :members:
+   :undoc-members:
+   :show-inheritance:
+
 gerrit.changes.revision.comments module
 ---------------------------------------
 

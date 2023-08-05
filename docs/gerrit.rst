@@ -15,6 +15,17 @@ Subpackages
    gerrit.projects
    gerrit.utils
 
+Submodules
+----------
+
+gerrit.base module
+------------------
+
+.. automodule:: gerrit.base
+      :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
