@@ -101,7 +101,7 @@ def test_search_revision_files(gerrit_client, latest_change_id, reviewed, base, 
 
 
 def test_get_revision_files(gerrit_client, latest_change_id):
-    from gerrit.changes.revision.files import GerritChangeRevisionFile
+    from gerrit.changes.files import GerritChangeRevisionFile
     from gerrit.utils.exceptions import UnknownFile
     change = gerrit_client.changes.get(id_=latest_change_id)
 
