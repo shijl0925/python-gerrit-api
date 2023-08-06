@@ -22,7 +22,7 @@ gerrit.base module
 ------------------
 
 .. automodule:: gerrit.base
-      :members:
+   :members:
    :undoc-members:
    :show-inheritance:
 
