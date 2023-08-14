@@ -35,9 +35,8 @@ class GerritGroupSubGroups(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{subgroup}")
-        if result:
-            subgroup_id = result.get("id")
-            return self.gerrit.groups.get(subgroup_id)
+        subgroup_id = result.get("id")
+        return self.gerrit.groups.get(subgroup_id)
 
     def add(self, subgroup):
         """
@@ -49,9 +48,8 @@ class GerritGroupSubGroups(object):
         :return:
         """
         result = self.gerrit.put(self.endpoint + f"/{subgroup}")
-        if result:
-            subgroup_id = result.get("id")
-            return self.gerrit.groups.get(subgroup_id)
+        subgroup_id = result.get("id")
+        return self.gerrit.groups.get(subgroup_id)
 
     def remove(self, subgroup):
         """

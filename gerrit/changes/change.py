@@ -161,9 +161,8 @@ class GerritChange(BaseModel):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/assignee")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        username = result.get("username")
+        return self.gerrit.accounts.get(username)
 
     def set_assignee(self, input_):
         """
@@ -184,9 +183,8 @@ class GerritChange(BaseModel):
         """
         result = self.gerrit.put(self.endpoint + "/assignee",
                                  json=input_, headers=self.gerrit.default_headers)
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        username = result.get("username")
+        return self.gerrit.accounts.get(username)
 
     def get_past_assignees(self):
         """
@@ -214,9 +212,8 @@ class GerritChange(BaseModel):
         response = self.gerrit.delete(self.endpoint + "/assignee")
         result = self.gerrit.decode_response(response)
 
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        username = result.get("username")
+        return self.gerrit.accounts.get(username)
 
     def get_pure_revert(self, commit):
         """

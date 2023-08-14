@@ -24,10 +24,8 @@ class GerritChangeRevision(object):
         """
         result = self.gerrit.get(self.endpoint + "/commit")
         commit = result.get("commit")
-        if commit:
-            project = self.gerrit.projects.get(self.project)
-            if project:
-                return project.get_commit(commit)
+        project = self.gerrit.projects.get(self.project)
+        return project.get_commit(commit)
 
     def get_description(self):
         """

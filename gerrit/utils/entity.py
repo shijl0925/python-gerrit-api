@@ -17,7 +17,7 @@ class Entity(object):
         self.attributes = self.required + self.optional
 
         for item in self.required:
-            if item not in kwargs.keys():
+            if item not in kwargs:
                 name = self.__class__.__name__
                 logger.warning(
                     "*** Warning! %s missing a required keyword argument '%s' ***", name, item

@@ -36,9 +36,8 @@ class GerritGroupMembers(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{username}")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        username = result.get("username")
+        return self.gerrit.accounts.get(username)
 
     def add(self, username):
         """
@@ -50,9 +49,8 @@ class GerritGroupMembers(object):
         :return:
         """
         result = self.gerrit.put(self.endpoint + f"/{username}")
-        if result:
-            username = result.get("username")
-            return self.gerrit.accounts.get(username)
+        username = result.get("username")
+        return self.gerrit.accounts.get(username)
 
     def remove(self, username):
         """

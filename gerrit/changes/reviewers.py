@@ -99,8 +99,7 @@ class GerritChangeReviewers(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{account}")
-        if result:
-            return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
+        return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
 
     def add(self, input_):
         """

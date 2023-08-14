@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+import six.moves.urllib.parse as urlparse
 from requests import Session
 from requests.adapters import HTTPAdapter
-import six.moves.urllib.parse as urlparse
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
@@ -54,7 +54,7 @@ class Requester(object):
         """
         Updates scheme of given url to the one used in Gerrit base_url.
         """
-        if self.base_scheme and not url.startswith("%s://" % self.base_scheme):
+        if self.base_scheme and not url.startswith(f"{self.base_scheme}://"):
             url_split = urlparse.urlsplit(url)
             url = urlparse.urlunsplit(
                 [

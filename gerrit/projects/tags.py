@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from gerrit.utils.common import params_creator
 from urllib.parse import quote_plus
+from gerrit.utils.common import params_creator
 from gerrit.utils.models import BaseModel
 
 
