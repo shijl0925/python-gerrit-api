@@ -109,7 +109,7 @@ def test_get_revision_comment(gerrit_client):
 
 
 def test_get_revision_files(gerrit_client):
-    from gerrit.changes.revision.files import GerritChangeRevisionFile
+    from gerrit.changes.files import GerritChangeRevisionFile
     from gerrit.utils.exceptions import UnknownFile
     change_id = "LineageOS%2Fandroid_device_xiaomi_sdm710-common~lineage-20~I3767d8a44cbd9af891fbac7a67380b205b414a37"
     change = gerrit_client.changes.get(id_=change_id)

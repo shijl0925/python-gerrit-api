@@ -3,9 +3,9 @@
 # @Author: Jialiang Shi
 from base64 import b64decode
 from urllib.parse import quote_plus
-from gerrit.changes.revision.drafts import GerritChangeRevisionDrafts
-from gerrit.changes.revision.comments import GerritChangeRevisionComments
-from gerrit.changes.revision.files import GerritChangeRevisionFiles
+from gerrit.changes.drafts import GerritChangeRevisionDrafts
+from gerrit.changes.comments import GerritChangeRevisionComments
+from gerrit.changes.files import GerritChangeRevisionFiles
 
 
 class GerritChangeRevision(object):
