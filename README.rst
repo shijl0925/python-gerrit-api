@@ -5,7 +5,7 @@ Project description
     :target: https://pypi.python.org/pypi/python-gerrit-api
 .. image:: https://img.shields.io/pypi/v/python-gerrit-api.svg
     :target: https://pypi.python.org/pypi/python-gerrit-api
-.. image:: https://pepy.tech/badge/python-gerrit-api
+.. image:: https://static.pepy.tech/badge/python-gerrit-api
     :target: https://pepy.tech/project/python-gerrit-api
 .. image:: https://sonarcloud.io/api/project_badges/measure?project=shijl0925_python-gerrit-api&metric=alert_status
     :target: https://sonarcloud.io/dashboard?id=shijl0925_python-gerrit-api
