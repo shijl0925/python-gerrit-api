@@ -122,6 +122,20 @@ def test_set_account__display_name(gerrit_client):
     account.set_displayname(input_)
 
 
+@pytest.mark.xfail(reason="Request is not authorized")
+def test_set_account_active(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    account.set_active()
+
+
+@pytest.mark.xfail(reason="Request is not authorized")
+def test_delete_account_active(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    account.delete_active()
+
+
 def test_list_account_ssh_keys(gerrit_client):
     account = gerrit_client.accounts.get(account="self")
     ssh_keys = account.ssh_keys.list()
@@ -136,3 +150,134 @@ def test_list_account_gpg_keys(gerrit_client):
     logger.debug(f"the number of account gpg keys: {len(gpg_keys)}")
 
     assert len(gpg_keys) >= 0
+
+
+def test_list_account_capabilities(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    result = account.list_capabilities()
+
+    assert "queryLimit" in result
+
+
+def test_check_account_capability(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    capability = "account-deleteOwnAccount"
+    result = account.check_capability(capability)
+    assert result == "ok"
+
+    capability = "createGroup"
+    import requests
+    with pytest.raises(requests.exceptions.HTTPError):
+        account.check_capability(capability)
+
+
+def test_get_account_groups(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    groups = account.groups
+    assert len(groups) > 0
+
+
+def test_get_account_avatar(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    avatar = account.get_avatar()
+    assert isinstance(avatar, bytes)
+
+
+def test_get_account_avatar_change_url(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    url = account.get_avatar_change_url()
+    assert url == "http://www.gravatar.com"
+
+
+def test_get_account_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    res = account.get_user_preferences()
+
+    assert "changes_per_page" in res
+
+
+def test_set_account_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    input_ = {
+        "changes_per_page": 50
+    }
+    res = account.set_user_preferences(input_)
+
+    assert res.get("changes_per_page") == 50
+
+
+def test_get_account_diff_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    res = account.get_diff_preferences()
+
+    assert "line_length" in res
+
+
+def test_set_account_diff_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    input_ = {
+        "line_length": 120
+    }
+    res = account.set_diff_preferences(input_)
+
+    assert res.get("line_length") == 120
+
+
+def test_get_account_edit_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+
+    res = account.get_edit_preferences()
+
+    assert "line_length" in res
+
+
+def test_set_account_edit_preferences(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    input_ = {
+        "line_length": 100
+    }
+    res = account.set_edit_preferences(input_)
+
+    assert res.get("line_length") == 100
+
+
+def test_get_account_watched_projects(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    projects = account.get_watched_projects()
+
+    assert len(projects) >= 0
+
+
+def test_add_account_watched_projects(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    input_ = [
+        {
+            "project": "LineageOS/android_packages_apps_Dialer",
+            "notify_new_changes": True,
+            "notify_new_patch_sets": True,
+            "notify_all_comments": True,
+        }
+    ]
+    res = account.modify_watched_projects(input_)
+
+    assert len(res) >= 1
+
+
+def test_delete_account_watched_projects(gerrit_client):
+    account = gerrit_client.accounts.get(account="self")
+    input_ = [
+        {
+            "project": "LineageOS/android_packages_apps_Dialer",
+            "notify_new_changes": True,
+            "notify_new_patch_sets": True,
+            "notify_all_comments": True,
+        }
+    ]
+    account.delete_watched_projects(input_)
