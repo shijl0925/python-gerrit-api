@@ -116,7 +116,7 @@ class GerritChange(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#delete-vote-input
         :return:
         """
-        endpoint = f"/changes/{self.change}/reviewers/{account}/votes/{label}"
+        endpoint = f"{self.endpoint}/reviewers/{account}/votes/{label}"
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
@@ -133,7 +133,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/topic")
+        return self.gerrit.get(f"{self.endpoint}/topic")
 
     def set_topic(self, topic):
         """
@@ -729,7 +729,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        return self.gerrit.get(f"/changes/{self.id}/attention")
+        return self.gerrit.get(f"{self.endpoint}/attention")
 
     def add_to_attention_set(self, input_):
         """
