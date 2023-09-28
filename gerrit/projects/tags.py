@@ -74,7 +74,6 @@ class GerritProjectTags:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Tag {name} does not exist"
-                logger.error(message)
                 raise TagNotFoundError(message)
             raise GerritAPIException from error
 

@@ -109,7 +109,6 @@ class GerritProjects:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Project {name} does not exist"
-                logger.error(message)
                 raise ProjectNotFoundError(message)
             raise GerritAPIException from error
 

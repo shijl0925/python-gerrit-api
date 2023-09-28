@@ -125,7 +125,6 @@ class GerritProjectBranches:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Branch {name} does not exist"
-                logger.error(message)
                 raise BranchNotFoundError(message)
             raise GerritAPIException from error
 

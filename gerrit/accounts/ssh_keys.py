@@ -62,7 +62,6 @@ class GerritAccountSSHKeys:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"SSH key {seq} does not exist"
-                logger.error(message)
                 raise SSHKeyNotFoundError(message)
             raise GerritAPIException from error
 

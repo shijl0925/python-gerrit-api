@@ -52,7 +52,6 @@ class GerritGroupMembers:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Group member {account} does not exist"
-                logger.error(message)
                 raise GroupMemberNotFoundError(message)
             raise GerritAPIException from error
 

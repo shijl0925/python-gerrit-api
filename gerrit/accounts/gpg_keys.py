@@ -68,7 +68,6 @@ class GerritAccountGPGKeys:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"GPG key {id_} does not exist"
-                logger.error(message)
                 raise GPGKeyNotFoundError(message)
             raise GerritAPIException from error
 

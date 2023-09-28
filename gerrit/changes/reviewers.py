@@ -119,7 +119,6 @@ class GerritChangeReviewers:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Reviewer {account} does not exist"
-                logger.error(message)
                 raise ReviewerNotFoundError(message)
             raise GerritAPIException from error
 

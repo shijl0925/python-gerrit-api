@@ -86,7 +86,6 @@ class GerritAccountEmails:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Account Email {email} does not exist"
-                logger.error(message)
                 raise AccountEmailNotFoundError(message)
             raise GerritAPIException from error
 

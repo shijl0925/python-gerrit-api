@@ -84,7 +84,6 @@ class GerritGroups:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Group {id_} does not exist"
-                logger.error(message)
                 raise GroupNotFoundError(message)
             raise GerritAPIException from error
 
