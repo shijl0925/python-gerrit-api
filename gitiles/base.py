@@ -63,10 +63,10 @@ class GitilesClient:
 
         return result
 
-    def download_file(self, repo: str, ref: str, path: str, decode: bool = False):
+    def download_file(self, repo: str, ref: str, path: str, format: str = "TEXT", decode: bool = False):
         """Downloads raw file content from a Gitiles repository."""
         endpoint = f"/{repo}/+/{ref}/{path}"
-        params = {"format": "TEXT"}
+        params = {"format": format}
 
         response = self.requester.get(self.get_endpoint_url(endpoint), params=params)
         result = decode_response(response)
