@@ -4,10 +4,7 @@
 import logging
 import requests
 from gerrit.utils.gerritbase import GerritBase
-from gerrit.utils.exceptions import (
-    SSHKeyNotFoundError,
-    GerritAPIException
-)
+from gerrit.utils.exceptions import SSHKeyNotFoundError, GerritAPIException
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +55,9 @@ class GerritAccountSSHKeys:
             result = self.gerrit.get(self.endpoint + f"/{str(seq)}")
 
             seq = result.get("seq")
-            return GerritAccountSSHKey(seq=seq, account=self.account, gerrit=self.gerrit)
+            return GerritAccountSSHKey(
+                seq=seq, account=self.account, gerrit=self.gerrit
+            )
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"SSH key {seq} does not exist"
@@ -73,8 +72,9 @@ class GerritAccountSSHKeys:
         :param ssh_key: SSH key raw content
         :return:
         """
-        result = self.gerrit.post(self.endpoint,
-                                  data=ssh_key, headers={"Content-Type": "plain/text"})
+        result = self.gerrit.post(
+            self.endpoint, data=ssh_key, headers={"Content-Type": "plain/text"}
+        )
         return result
 
     def delete(self, seq):

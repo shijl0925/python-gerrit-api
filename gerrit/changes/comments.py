@@ -10,7 +10,9 @@ class GerritChangeRevisionComment(GerritBase):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
+        )
         super().__init__(self)
 
     def __str__(self):
@@ -42,8 +44,11 @@ class GerritChangeRevisionComment(GerritBase):
         if input_ is None:
             return self.gerrit.delete(self.endpoint)
         else:
-            return self.gerrit.post(self.endpoint + "/delete",
-                                    json=input_, headers=self.gerrit.default_headers)
+            return self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
 
 class GerritChangeRevisionComments:

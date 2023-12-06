@@ -9,7 +9,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     TagNotFoundError,
     TagAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 
@@ -54,8 +54,11 @@ class GerritProjectTags:
         :param skip: Skip the given number of tags from the beginning of the list.
         :return:
         """
-        params = params_creator((("n", limit), ("s", skip)),
-                                {"match": "m", "regex": "r"}, pattern_dispatcher)
+        params = params_creator(
+            (("n", limit), ("s", skip)),
+            {"match": "m", "regex": "r"},
+            pattern_dispatcher,
+        )
         return self.gerrit.get(self.endpoint + "/", params=params)
 
     def get(self, name):
@@ -103,7 +106,10 @@ class GerritProjectTags:
             raise TagAlreadyExistsError(message)
         except TagNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{quote_plus(name)}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{quote_plus(name)}",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
             return self.get(name)
 

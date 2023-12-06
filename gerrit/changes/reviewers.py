@@ -7,7 +7,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     ReviewerNotFoundError,
     ReviewerAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 logger = logging.getLogger(__name__)
@@ -48,8 +48,11 @@ class GerritChangeReviewer(GerritBase):
         if input_ is None:
             self.gerrit.delete(self.endpoint)
         else:
-            self.gerrit.post(self.endpoint + "/delete",
-                             json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
     def list_votes(self):
         """
@@ -86,7 +89,9 @@ class GerritChangeReviewer(GerritBase):
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
-            self.gerrit.post(endpoint + "/delete", json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                endpoint + "/delete", json=input_, headers=self.gerrit.default_headers
+            )
 
 
 class GerritChangeReviewers:
@@ -115,7 +120,9 @@ class GerritChangeReviewers:
             result = self.gerrit.get(self.endpoint + f"/{account}")
 
             account = result[0].get("_account_id")
-            return GerritChangeReviewer(account=account, change=self.change, gerrit=self.gerrit)
+            return GerritChangeReviewer(
+                account=account, change=self.change, gerrit=self.gerrit
+            )
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Reviewer {account} does not exist"
@@ -154,5 +161,7 @@ class GerritChangeReviewers:
             logger.error(message)
             raise ReviewerAlreadyExistsError(message)
         except ReviewerNotFoundError:
-            self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                self.endpoint, json=input_, headers=self.gerrit.default_headers
+            )
             return self.get(reviewer)

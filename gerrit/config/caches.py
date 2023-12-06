@@ -72,4 +72,6 @@ class Caches:
           https://gerrit-review.googlesource.com/Documentation/rest-api-config.html#cache-operation-input
         :return:
         """
-        self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )

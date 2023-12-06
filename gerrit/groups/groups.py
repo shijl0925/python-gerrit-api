@@ -8,7 +8,7 @@ from gerrit.utils.common import params_creator
 from gerrit.utils.exceptions import (
     GroupNotFoundError,
     GroupAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 logger = logging.getLogger(__name__)
@@ -19,7 +19,9 @@ class GerritGroups:
         self.gerrit = gerrit
         self.endpoint = "/groups"
 
-    def list(self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0):
+    def list(
+        self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0
+    ):
         """
         Lists the groups accessible by the caller.
 
@@ -36,8 +38,11 @@ class GerritGroups:
                      number of groups from the beginning of the list
         :return:
         """
-        params = params_creator((("o", options), ("n", limit), ("S", skip)),
-                                {"match": "m", "regex": "r"}, pattern_dispatcher)
+        params = params_creator(
+            (("o", options), ("n", limit), ("S", skip)),
+            {"match": "m", "regex": "r"},
+            pattern_dispatcher,
+        )
 
         return self.gerrit.get(self.endpoint, params=params)
 
@@ -113,5 +118,8 @@ class GerritGroups:
             raise GroupAlreadyExistsError(message)
         except GroupNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{name}",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
             return self.get(name)

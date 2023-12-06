@@ -4,10 +4,7 @@
 import logging
 import requests
 from gerrit.utils.gerritbase import GerritBase
-from gerrit.utils.exceptions import (
-    GPGKeyNotFoundError,
-    GerritAPIException
-)
+from gerrit.utils.exceptions import GPGKeyNotFoundError, GerritAPIException
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +117,9 @@ class GerritAccountGPGKeys:
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete(self, id_):
         """

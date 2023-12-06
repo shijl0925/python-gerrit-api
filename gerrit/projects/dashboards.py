@@ -59,7 +59,8 @@ class GerritProjectDashboards:
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def get(self, id_):
@@ -73,7 +74,9 @@ class GerritProjectDashboards:
         result = self.gerrit.get(self.endpoint + f"/{id_}")
 
         dashboard_id = result.get("id")
-        return GerritProjectDashboard(id=dashboard_id, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard(
+            id=dashboard_id, project=self.project, gerrit=self.gerrit
+        )
 
     def delete(self, id_):
         """

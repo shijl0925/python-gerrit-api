@@ -105,7 +105,7 @@ def test_get_project_access_rights(gerrit_client, gerrit_object):
 
 @pytest.mark.parametrize('project_name, expected',
                          [("LineageOS/android", "Head-Developers"),
-                          ("LineageOS/android_device_google_tangorpro", "PROJECT-Google-gs201")
+                          ("LineageOS/android_device_google_tangorpro", "PROJECT-Google-tangorpro")
                           ])
 def test_get_project_parent(gerrit_client, project_name, expected):
     project = gerrit_client.projects.get(name=project_name)

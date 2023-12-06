@@ -55,7 +55,10 @@ class GerritProjectCommit(GerritBase):
         :return:  the resulting cherry-picked change
         """
         result = self.gerrit.post(
-            self.endpoint + "/cherrypick", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/cherrypick",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
         return result
 
     def list_change_files(self):

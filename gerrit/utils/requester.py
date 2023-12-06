@@ -34,7 +34,7 @@ class Requester:
         :param kwargs:
         """
         timeout = 10
-        base_url = kwargs.get('base_url')
+        base_url = kwargs.get("base_url")
         self.base_scheme = urlparse.urlsplit(base_url).scheme if base_url else None
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
@@ -61,7 +61,7 @@ class Requester:
                     url_split.netloc,
                     url_split.path,
                     url_split.query,
-                    url_split.fragment
+                    url_split.fragment,
                 ]
             )
         return url
@@ -122,7 +122,7 @@ class Requester:
         allow_redirects=True,
         stream=False,
         raise_for_status: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -139,7 +139,7 @@ class Requester:
             headers=headers,
             allow_redirects=allow_redirects,
             stream=stream,
-            **kwargs
+            **kwargs,
         )
         response = self.session.get(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
@@ -156,7 +156,7 @@ class Requester:
         headers=None,
         allow_redirects=True,
         raise_for_status: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -177,7 +177,7 @@ class Requester:
             files=files,
             headers=headers,
             allow_redirects=allow_redirects,
-            **kwargs
+            **kwargs,
         )
         response = self.session.post(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
@@ -194,7 +194,7 @@ class Requester:
         headers=None,
         allow_redirects=True,
         raise_for_status: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -215,14 +215,21 @@ class Requester:
             files=files,
             headers=headers,
             allow_redirects=allow_redirects,
-            **kwargs
+            **kwargs,
         )
         response = self.session.put(self._update_url_scheme(url), **request_kwargs)
         if raise_for_status:
             self.confirm_status(response)
         return response
 
-    def delete(self, url, headers=None, allow_redirects=True, raise_for_status: bool = True, **kwargs):
+    def delete(
+        self,
+        url,
+        headers=None,
+        allow_redirects=True,
+        raise_for_status: bool = True,
+        **kwargs,
+    ):
         """
         :param url:
         :param headers:
@@ -260,10 +267,14 @@ class Requester:
             reason = res.reason
 
         if 400 <= res.status_code < 500:
-            http_error_msg = f"{res.status_code} Client Error: {reason} for url: {res.url}"
+            http_error_msg = (
+                f"{res.status_code} Client Error: {reason} for url: {res.url}"
+            )
 
         elif 500 <= res.status_code < 600:
-            http_error_msg = f"{res.status_code} Server Error: {reason} for url: {res.url}"
+            http_error_msg = (
+                f"{res.status_code} Server Error: {reason} for url: {res.url}"
+            )
 
         if not http_error_msg:
             return

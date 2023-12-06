@@ -39,8 +39,11 @@ class GerritChangeMessage(GerritBase):
         if input_ is None:
             self.gerrit.delete(self.endpoint)
         else:
-            self.gerrit.post(self.endpoint + "/delete",
-                             json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
 
 class GerritChangeMessages:

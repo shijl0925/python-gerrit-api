@@ -10,7 +10,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     BranchNotFoundError,
     BranchAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 logger = logging.getLogger(__name__)
@@ -104,8 +104,11 @@ class GerritProjectBranches:
         :param skip: Skip the given number of branches from the beginning of the list.
         :return:
         """
-        params = params_creator((("n", limit), ("s", skip)),
-                                {"match": "m", "regex": "r"}, pattern_dispatcher)
+        params = params_creator(
+            (("n", limit), ("s", skip)),
+            {"match": "m", "regex": "r"},
+            pattern_dispatcher,
+        )
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
@@ -121,7 +124,9 @@ class GerritProjectBranches:
 
             ref = result.get("ref")
             name = ref.replace(self.branch_prefix, "")
-            return GerritProjectBranch(name=name, project=self.project, gerrit=self.gerrit)
+            return GerritProjectBranch(
+                name=name, project=self.project, gerrit=self.gerrit
+            )
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Branch {name} does not exist"
@@ -153,7 +158,10 @@ class GerritProjectBranches:
             raise BranchAlreadyExistsError(message)
         except BranchNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{quote_plus(name)}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{quote_plus(name)}",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
             return self.get(name)
 

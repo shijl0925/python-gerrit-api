@@ -7,7 +7,7 @@ from gerrit.accounts.account import GerritAccount
 from gerrit.utils.exceptions import (
     AccountNotFoundError,
     AccountAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 
@@ -110,5 +110,8 @@ class GerritAccounts:
             raise AccountAlreadyExistsError(message)
         except AccountNotFoundError:
             self.gerrit.put(
-                self.endpoint + f"/{username}", json=input_, headers=self.gerrit.default_headers)
+                self.endpoint + f"/{username}",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
             return self.get(username)

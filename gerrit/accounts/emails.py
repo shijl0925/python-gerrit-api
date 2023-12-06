@@ -7,7 +7,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     AccountEmailNotFoundError,
     AccountEmailAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 
@@ -82,7 +82,9 @@ class GerritAccountEmails:
             result = self.gerrit.get(self.endpoint + f"/{email}")
 
             email_ = result.get("email")
-            return GerritAccountEmail(email=email_, account=self.account, gerrit=self.gerrit)
+            return GerritAccountEmail(
+                email=email_, account=self.account, gerrit=self.gerrit
+            )
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Account Email {email} does not exist"

@@ -7,7 +7,7 @@ import requests
 from gerrit.utils.exceptions import (
     GroupMemberNotFoundError,
     GroupMemberAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 logger = logging.getLogger(__name__)

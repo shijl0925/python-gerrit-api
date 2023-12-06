@@ -9,7 +9,9 @@ class GerritProjectWebHook(GerritBase):
         self.name = name
         self.project = project
         self.gerrit = gerrit
-        self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
+        self.endpoint = (
+            f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
+        )
         super().__init__(self)
 
     def __str__(self):
@@ -60,7 +62,8 @@ class GerritProjectWebHooks:
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def get(self, name):

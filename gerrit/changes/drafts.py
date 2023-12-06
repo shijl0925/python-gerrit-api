@@ -10,7 +10,9 @@ class GerritChangeRevisionDraft(GerritBase):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
+        )
         super().__init__(self)
 
     def __str__(self):
@@ -36,7 +38,9 @@ class GerritChangeRevisionDraft(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        return self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete(self):
         """
@@ -103,7 +107,9 @@ class GerritChangeRevisionDrafts:
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def delete(self, id_):

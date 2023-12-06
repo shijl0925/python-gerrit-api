@@ -4,10 +4,7 @@
 import logging
 import requests
 from gerrit.changes.change import GerritChange
-from gerrit.utils.exceptions import (
-    ChangeNotFoundError,
-    GerritAPIException
-)
+from gerrit.utils.exceptions import ChangeNotFoundError, GerritAPIException
 
 
 logger = logging.getLogger(__name__)
@@ -94,7 +91,9 @@ class GerritChanges:
         project = self.gerrit.projects.get(project_name)
         project.branches.get(branch_name)
 
-        result = self.gerrit.post(self.endpoint + '/', json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(
+            self.endpoint + "/", json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def delete(self, id_):

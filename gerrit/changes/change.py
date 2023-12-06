@@ -80,8 +80,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#merge-patch-set-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/merge",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/merge", json=input_, headers=self.gerrit.default_headers
+        )
 
     def set_commit_message(self, input_):
         """
@@ -100,8 +101,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#commit-message-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/message",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/message", json=input_, headers=self.gerrit.default_headers
+        )
 
     def list_votes(self, account):
         """
@@ -163,8 +165,9 @@ class GerritChange(GerritBase):
         :return:
         """
         input_ = {"topic": topic}
-        return self.gerrit.put(self.endpoint + "/topic",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/topic", json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete_topic(self):
         """
@@ -199,8 +202,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#assignee-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint + "/assignee",
-                                 json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint + "/assignee",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
         return result
 
     def get_past_assignees(self):
@@ -272,8 +278,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#rebase-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/rebase",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/rebase", json=input_, headers=self.gerrit.default_headers
+        )
 
     def move(self, input_):
         """
@@ -294,9 +301,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#move-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/move",
-                                json=input_,
-                                headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/move", json=input_, headers=self.gerrit.default_headers
+        )
 
     def revert(self, input_=None):
         """
@@ -328,8 +335,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#revert-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/revert",
-                                json=input_ or {}, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/revert",
+            json=input_ or {},
+            headers=self.gerrit.default_headers,
+        )
 
     def revert_submission(self):
         """
@@ -372,8 +382,9 @@ class GerritChange(GerritBase):
         if input_ is None:
             result = self.gerrit.post(endpoint)
         else:
-            result = self.gerrit.post(endpoint,
-                                      json=input_, headers=self.gerrit.default_headers)
+            result = self.gerrit.post(
+                endpoint, json=input_, headers=self.gerrit.default_headers
+            )
         return result
 
     def list_submitted_together_changes(self):
@@ -382,7 +393,9 @@ class GerritChange(GerritBase):
         including the current change itself.
 
         """
-        return self.gerrit.get(self.endpoint + "/submitted_together?o=NON_VISIBLE_CHANGES")
+        return self.gerrit.get(
+            self.endpoint + "/submitted_together?o=NON_VISIBLE_CHANGES"
+        )
 
     def delete(self):
         """
@@ -469,7 +482,9 @@ class GerritChange(GerritBase):
         if input_ is None:
             result = self.gerrit.post(endpoint)
         else:
-            result = self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
+            result = self.gerrit.post(
+                endpoint, json=input_, headers=self.gerrit.default_headers
+            )
         return result
 
     def set_work_in_progress(self, input_=None):
@@ -496,9 +511,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
-        self.gerrit.post(self.endpoint + "/wip",
-                         json=input_ or {}, headers=self.gerrit.default_headers
-                         )
+        self.gerrit.post(
+            self.endpoint + "/wip",
+            json=input_ or {},
+            headers=self.gerrit.default_headers,
+        )
 
     def set_ready_for_review(self, input_):
         """
@@ -520,7 +537,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#work-in-progress-input
         :return:
         """
-        self.gerrit.post(self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers
+        )
 
     def mark_private(self, input_):
         """
@@ -539,9 +558,9 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#private-input
         :return:
         """
-        self.gerrit.post(self.endpoint + "/private",
-                         json=input_, headers=self.gerrit.default_headers
-                         )
+        self.gerrit.post(
+            self.endpoint + "/private", json=input_, headers=self.gerrit.default_headers
+        )
 
     def unmark_private(self, input_=None):
         """
@@ -565,9 +584,11 @@ class GerritChange(GerritBase):
         if input_ is None:
             self.gerrit.delete(self.endpoint + "/private")
         else:
-            self.gerrit.post(self.endpoint + "/private.delete",
-                             json=input_, headers=self.gerrit.default_headers
-                             )
+            self.gerrit.post(
+                self.endpoint + "/private.delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
     def ignore(self):
         """
@@ -632,8 +653,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#hashtags-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/hashtags",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/hashtags",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     @property
     def messages(self):
@@ -647,8 +671,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#submit-requirement-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/check.submit_requirement",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/check.submit_requirement",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_edit(self):
         """
@@ -724,9 +751,7 @@ class GerritChange(GerritBase):
                 return None
 
         return GerritChangeRevision(
-            gerrit=self.gerrit,
-            change=self.id,
-            revision=revision_id
+            gerrit=self.gerrit, change=self.id, revision=revision_id
         )
 
     def get_attention_set(self):
@@ -759,8 +784,11 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#attention-set-input
         :return:
         """
-        result = self.gerrit.post(self.endpoint + "/attention",
-                                  json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(
+            self.endpoint + "/attention",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
         return result
 
     def remove_from_attention_set(self, id_, input_=None):

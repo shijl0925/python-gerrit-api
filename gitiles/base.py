@@ -4,10 +4,7 @@
 from typing import Optional
 from base64 import b64decode
 from gerrit.utils.requester import Requester
-from gerrit.utils.common import (
-    decode_response,
-    strip_trailing_slash
-)
+from gerrit.utils.common import decode_response, strip_trailing_slash
 
 
 class GitilesClient:
@@ -63,7 +60,9 @@ class GitilesClient:
 
         return result
 
-    def download_file(self, repo: str, ref: str, path: str, format: str = "TEXT", decode: bool = False):
+    def download_file(
+        self, repo: str, ref: str, path: str, format: str = "TEXT", decode: bool = False
+    ):
         """Downloads raw file content from a Gitiles repository."""
         endpoint = f"/{repo}/+/{ref}/{path}"
         params = {"format": format}

@@ -11,6 +11,7 @@ class GerritBase:
     This appears to be the base object that all other gerrit objects are
     inherited from
     """
+
     def __init__(self, pull=True):
         """
         Initialize a gerrit connection
@@ -32,7 +33,7 @@ class GerritBase:
         if isinstance(self._data, dict):
             for key, value in self._data.items():
                 try:
-                    if key[0] == '_':
+                    if key[0] == "_":
                         key = key[1:]
                     setattr(self, key, value)
                 except AttributeError:

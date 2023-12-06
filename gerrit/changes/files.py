@@ -9,7 +9,7 @@ import requests
 from gerrit.utils.exceptions import (
     UnknownFile,
     FileContentNotFoundError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 
@@ -23,8 +23,10 @@ class GerritChangeRevisionFile:
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}" \
-                        f"/files/{quote_plus(self.path)}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}"
+            f"/files/{quote_plus(self.path)}"
+        )
 
     def __repr__(self):
         return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
@@ -116,8 +118,13 @@ class GerritChangeRevisionFiles:
         self._data = []
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/files"
 
-    def search(self, reviewed: Optional[bool] = None, base: Optional[int] = None,
-               q: Optional[str] = None, parent: Optional[int] = None):
+    def search(
+        self,
+        reviewed: Optional[bool] = None,
+        base: Optional[int] = None,
+        q: Optional[str] = None,
+        parent: Optional[int] = None,
+    ):
         """
         Lists the files that were modified, added or deleted in a revision.
         The reviewed, base, q, and parent are mutually exclusive. That is, only one of them may be used at a time.
@@ -201,7 +208,11 @@ class GerritChangeRevisionFiles:
 
         for file in self._data:
             yield GerritChangeRevisionFile(
-                path=file["path"], json=file, change=self.change, revision=self.revision, gerrit=self.gerrit
+                path=file["path"],
+                json=file,
+                change=self.change,
+                revision=self.revision,
+                gerrit=self.gerrit,
             )
 
     def __getitem__(self, path):

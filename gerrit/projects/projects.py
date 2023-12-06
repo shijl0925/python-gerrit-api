@@ -10,7 +10,7 @@ from gerrit.utils.common import params_creator
 from gerrit.utils.exceptions import (
     ProjectNotFoundError,
     ProjectAlreadyExistsError,
-    GerritAPIException
+    GerritAPIException,
 )
 
 
@@ -60,7 +60,13 @@ class GerritProjects:
             raise ValueError("is_all can not be used together with the state option.")
 
         pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-        tuples = (("n", limit), ("S", skip), ("type", project_type), ("b", branch), ("state", state))
+        tuples = (
+            ("n", limit),
+            ("S", skip),
+            ("type", project_type),
+            ("b", branch),
+            ("state", state),
+        )
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
         if is_all:
             params.clear()
@@ -139,8 +145,11 @@ class GerritProjects:
             logger.error(message)
             raise ProjectAlreadyExistsError(message)
         except ProjectNotFoundError:
-            self.gerrit.put(self.endpoint + f"/{quote_plus(project_name)}",
-                            json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.put(
+                self.endpoint + f"/{quote_plus(project_name)}",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
             return self.get(project_name)
 
     def delete(self, project_name: str):
@@ -151,4 +160,6 @@ class GerritProjects:
         :return:
         """
         self.get(project_name)
-        self.gerrit.post(self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete")
+        self.gerrit.post(
+            self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete"
+        )

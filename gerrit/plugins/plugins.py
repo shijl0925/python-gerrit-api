@@ -48,7 +48,7 @@ class GerritPlugins:
         is_all: bool = False,
         limit: int = 25,
         skip: int = 0,
-        pattern_dispatcher=None
+        pattern_dispatcher=None,
     ):
         """
         Lists the plugins installed on the Gerrit server.
@@ -63,8 +63,11 @@ class GerritPlugins:
                      pattern value: {('prefix'|'match'|'regex') : value}
         :return:
         """
-        params = params_creator((("n", limit), ("S", skip)),
-                                {"prefix": "p", "match": "m", "regex": "r"}, pattern_dispatcher)
+        params = params_creator(
+            (("n", limit), ("S", skip)),
+            {"prefix": "p", "match": "m", "regex": "r"},
+            pattern_dispatcher,
+        )
         params["all"] = int(is_all)
 
         return self.gerrit.get(self.endpoint + "/", params=params)
@@ -98,6 +101,8 @@ class GerritPlugins:
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{id_}.jar", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + f"/{id_}.jar",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )
         return result

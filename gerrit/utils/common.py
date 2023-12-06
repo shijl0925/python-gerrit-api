@@ -51,12 +51,10 @@ def params_creator(tuples, pattern_types, pattern_dispatcher):
                 break
         else:
             k = list(pattern_types.keys())
-            raise ValueError("Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1])
+            raise ValueError(
+                "Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1]
+            )
 
-    params = {
-        k: v
-        for k, v in tuples + ((p, v),)
-        if v is not None
-    }
+    params = {k: v for k, v in tuples + ((p, v),) if v is not None}
 
     return params

@@ -36,7 +36,9 @@ class GerritProjectLabel(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#label-definition-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def delete(self):
@@ -104,7 +106,8 @@ class GerritProjectLabels:
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers
+        )
         return result
 
     def delete(self, name):
