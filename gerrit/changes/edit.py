@@ -38,8 +38,11 @@ class GerritChangeEdit(BaseModel):
         :param file_content: the content of the file need to change
         :return:
         """
-        self.gerrit.put(self.endpoint + f"/{quote_plus(file)}",
-                        data=file_content, headers={"Content-Type": "plain/text"})
+        self.gerrit.put(
+            self.endpoint + f"/{quote_plus(file)}",
+            data=file_content,
+            headers={"Content-Type": "plain/text"},
+        )
 
     def restore_file_content(self, file):
         """
@@ -49,7 +52,9 @@ class GerritChangeEdit(BaseModel):
         :return:
         """
         input_ = {"restore_path": file}
-        self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
 
     def rename_file(self, old_path, new_path):
         """
@@ -60,7 +65,9 @@ class GerritChangeEdit(BaseModel):
         :return:
         """
         input_ = {"old_path": old_path, "new_path": new_path}
-        self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete_file(self, file):
         """
@@ -90,8 +97,9 @@ class GerritChangeEdit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-edit-message-input
         :return:
         """
-        self.gerrit.put(self.endpoint + ":message",
-                        json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.put(
+            self.endpoint + ":message", json=input_, headers=self.gerrit.default_headers
+        )
 
     def get_commit_message(self):
         """
@@ -120,8 +128,9 @@ class GerritChangeEdit(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#publish-change-edit-input
         :return:
         """
-        self.gerrit.post(self.endpoint + ":publish",
-                         json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint + ":publish", json=input_, headers=self.gerrit.default_headers
+        )
 
     def rebase(self):
         """

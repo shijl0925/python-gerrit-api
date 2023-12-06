@@ -33,7 +33,7 @@ class GerritClient(object):
         cert=None,
         timeout=60,
         max_retries=None,
-        auth_suffix="/a"
+        auth_suffix="/a",
     ):
         self._base_url = self.strip_trailing_slash(base_url)
 
@@ -63,7 +63,9 @@ class GerritClient(object):
         netrc_client = netrc.netrc()
         auth_tokens = netrc_client.authenticators(self._base_url)
         if not auth_tokens:
-            raise ValueError(f"The '{self._base_url}' host name is not found in netrc file.")
+            raise ValueError(
+                f"The '{self._base_url}' host name is not found in netrc file."
+            )
         return auth_tokens[2]
 
     @classmethod

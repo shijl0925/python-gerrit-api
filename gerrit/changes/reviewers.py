@@ -35,8 +35,11 @@ class GerritChangeReviewer(BaseModel):
         if input_ is None:
             self.gerrit.delete(self.endpoint)
         else:
-            self.gerrit.post(self.endpoint + "/delete",
-                             json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
     def list_votes(self):
         """
@@ -73,7 +76,9 @@ class GerritChangeReviewer(BaseModel):
         if input_ is None:
             self.gerrit.delete(endpoint)
         else:
-            self.gerrit.post(endpoint + "/delete", json=input_, headers=self.gerrit.default_headers)
+            self.gerrit.post(
+                endpoint + "/delete", json=input_, headers=self.gerrit.default_headers
+            )
 
 
 class GerritChangeReviewers(object):
@@ -89,7 +94,9 @@ class GerritChangeReviewers(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/")
-        return GerritChangeReviewer.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeReviewer.parse_list(
+            result, change=self.change, gerrit=self.gerrit
+        )
 
     def get(self, account):
         """
@@ -99,7 +106,9 @@ class GerritChangeReviewers(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{account}")
-        return GerritChangeReviewer(json=result[0], change=self.change, gerrit=self.gerrit)
+        return GerritChangeReviewer(
+            json=result[0], change=self.change, gerrit=self.gerrit
+        )
 
     def add(self, input_):
         """
@@ -126,4 +135,6 @@ class GerritChangeReviewers(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#reviewer-input
         :return:
         """
-        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )

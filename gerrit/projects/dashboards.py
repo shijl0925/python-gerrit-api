@@ -31,7 +31,9 @@ class GerritProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + "/")
-        return GerritProjectDashboard.parse_list(result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard.parse_list(
+            result, project=self.project, gerrit=self.gerrit
+        )
 
     def create(self, id_, input_):
         """
@@ -53,8 +55,11 @@ class GerritProjectDashboards(object):
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
+            self.endpoint + f"/{id_}", json=input_, headers=self.gerrit.default_headers
+        )
+        return GerritProjectDashboard(
+            json=result, project=self.project, gerrit=self.gerrit
+        )
 
     def get(self, id_):
         """
@@ -65,7 +70,9 @@ class GerritProjectDashboards(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritProjectDashboard(json=result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectDashboard(
+            json=result, project=self.project, gerrit=self.gerrit
+        )
 
     def delete(self, id_):
         """

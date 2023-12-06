@@ -49,7 +49,9 @@ class GerritAccountGPGKeys(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
-        return GerritAccountGPGKey(json=result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKey(
+            json=result, username=self.username, gerrit=self.gerrit
+        )
 
     def modify(self, input_):
         """
@@ -100,7 +102,9 @@ class GerritAccountGPGKeys(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#gpg-keys-input
         :return:
         """
-        return self.gerrit.post(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete(self, id_):
         """

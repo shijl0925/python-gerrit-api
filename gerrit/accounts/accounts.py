@@ -90,5 +90,8 @@ class GerritAccounts(object):
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{username}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{username}",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
         return GerritAccount(json=result, gerrit=self.gerrit)

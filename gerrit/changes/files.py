@@ -10,8 +10,10 @@ class GerritChangeRevisionFile(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "path"
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}" \
-                        f"/files/{quote_plus(self.path)}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}"
+            f"/files/{quote_plus(self.path)}"
+        )
 
     def get_content(self):
         """
@@ -142,7 +144,10 @@ class GerritChangeRevisionFiles(object):
 
         for file in self._data:
             yield GerritChangeRevisionFile(
-                json=file, change=self.change, revision=self.revision, gerrit=self.gerrit
+                json=file,
+                change=self.change,
+                revision=self.revision,
+                gerrit=self.gerrit,
             )
 
     def __getitem__(self, path):

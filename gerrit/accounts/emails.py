@@ -40,7 +40,9 @@ class GerritAccountEmails(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return GerritAccountEmail.parse_list(result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmail.parse_list(
+            result, username=self.username, gerrit=self.gerrit
+        )
 
     def create(self, email):
         """
@@ -57,7 +59,9 @@ class GerritAccountEmails(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint + f"/{email}")
-        return GerritAccountEmail(json=result, username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmail(
+            json=result, username=self.username, gerrit=self.gerrit
+        )
 
     def set_preferred(self, email):
         """

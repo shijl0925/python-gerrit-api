@@ -8,7 +8,9 @@ from gerrit.utils.models import BaseModel
 class GerritChangeRevisionDraft(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
+        )
 
     def update(self, input_):
         """
@@ -30,7 +32,9 @@ class GerritChangeRevisionDraft(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
         return GerritChangeRevisionDraft(
             json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
@@ -99,7 +103,9 @@ class GerritChangeRevisionDrafts(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#comment-input
         :return:
         """
-        result = self.gerrit.put(self.endpoint, json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
         return GerritChangeRevisionDraft(
             json=result, change=self.change, revision=self.revision, gerrit=self.gerrit
         )

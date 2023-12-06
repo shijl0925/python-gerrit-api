@@ -8,7 +8,9 @@ from gerrit.utils.models import BaseModel
 class GerritChangeRevisionComment(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
+        self.endpoint = (
+            f"/changes/{self.change}/revisions/{self.revision}/comments/{self.id}"
+        )
 
     def delete(self, input_=None):
         """
@@ -36,8 +38,11 @@ class GerritChangeRevisionComment(BaseModel):
         if input_ is None:
             return self.gerrit.delete(self.endpoint)
         else:
-            return self.gerrit.post(self.endpoint + "/delete",
-                                    json=input_, headers=self.gerrit.default_headers)
+            return self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
 
 
 class GerritChangeRevisionComments(object):

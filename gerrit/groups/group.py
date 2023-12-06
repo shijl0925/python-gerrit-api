@@ -39,7 +39,8 @@ class GerritGroup(BaseModel):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers
+        )
 
     def get_description(self):
         """
@@ -67,7 +68,10 @@ class GerritGroup(BaseModel):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/description", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/description",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def delete_description(self):
         """
@@ -107,7 +111,8 @@ class GerritGroup(BaseModel):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/options", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/options", json=input_, headers=self.gerrit.default_headers
+        )
 
     def get_owner(self):
         """
@@ -136,7 +141,8 @@ class GerritGroup(BaseModel):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/owner", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/owner", json=input_, headers=self.gerrit.default_headers
+        )
 
     def get_audit_log(self):
         """

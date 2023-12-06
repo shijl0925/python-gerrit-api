@@ -49,7 +49,13 @@ class GerritProjects(object):
             raise ValueError("is_all can not be used together with the state option.")
 
         pattern_types = {"prefix": "p", "match": "m", "regex": "r"}
-        tuples = (("n", limit), ("S", skip), ("type", project_type), ("b", branch), ("state", state))
+        tuples = (
+            ("n", limit),
+            ("S", skip),
+            ("type", project_type),
+            ("b", branch),
+            ("state", state),
+        )
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
         if is_all:
             params.clear()
@@ -117,7 +123,9 @@ class GerritProjects(object):
         """
         result = self.gerrit.put(
             self.endpoint + f"/{quote_plus(project_name)}",
-            json=input_, headers=self.gerrit.default_headers)
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
         return GerritProject(json=result, gerrit=self.gerrit)
 
     def delete(self, project_name):
@@ -127,4 +135,6 @@ class GerritProjects(object):
         :param project_name: project name
         :return:
         """
-        self.gerrit.post(self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete")
+        self.gerrit.post(
+            self.endpoint + f"/{quote_plus(project_name)}/delete-project~delete"
+        )

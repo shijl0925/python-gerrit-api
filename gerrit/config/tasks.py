@@ -18,6 +18,7 @@ class Task(BaseModel):
         """
         self.gerrit.delete(self.endpoint)
 
+
 class Tasks(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit

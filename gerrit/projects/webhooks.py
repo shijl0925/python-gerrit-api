@@ -64,8 +64,11 @@ class GerritProjectWebHooks(object):
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
-        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers
+        )
+        return GerritProjectWebHook(
+            json=result, project=self.project, gerrit=self.gerrit
+        )
 
     def get(self, name):
         """
@@ -76,7 +79,9 @@ class GerritProjectWebHooks(object):
         """
         result = self.gerrit.get(self.endpoint + f"/{name}")
         result.update({"name": name})
-        return GerritProjectWebHook(json=result, project=self.project, gerrit=self.gerrit)
+        return GerritProjectWebHook(
+            json=result, project=self.project, gerrit=self.gerrit
+        )
 
     def delete(self, name):
         """

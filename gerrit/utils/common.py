@@ -15,13 +15,11 @@ def params_creator(tuples, pattern_types, pattern_dispatcher):
                 break
         else:
             k = list(pattern_types.keys())
-            raise ValueError("Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1])
+            raise ValueError(
+                "Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1]
+            )
 
-    params = {
-        k: v
-        for k, v in tuples + ((p, v),)
-        if v is not None
-    }
+    params = {k: v for k, v in tuples + ((p, v),) if v is not None}
 
     return params
 
@@ -43,7 +41,9 @@ def check(fn):
         for k, v in kwargs.items():
             kwarg_type = fn.__annotations__.get(k, None)
             if kwarg_type and not isinstance(v, kwarg_type):
-                raise TypeError(f"{k} should be {kwarg_type.__name__}, not {type(v).__name__}")
+                raise TypeError(
+                    f"{k} should be {kwarg_type.__name__}, not {type(v).__name__}"
+                )
 
         result = fn(*args, **kwargs)
 

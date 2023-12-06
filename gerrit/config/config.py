@@ -43,7 +43,10 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.post(
-            self.endpoint + "/check.consistency", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + "/check.consistency",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def reload_config(self):
         """
@@ -71,7 +74,9 @@ class GerritConfig(object):
         :return:
         """
         self.gerrit.put(
-            self.endpoint + "/email.confirm", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/email.confirm",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )
 
     @property
@@ -135,7 +140,9 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/preferences", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )
 
     def get_default_diff_preferences(self):
@@ -173,7 +180,9 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/preferences.diff", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences.diff",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )
 
     def get_default_edit_preferences(self):
@@ -209,7 +218,9 @@ class GerritConfig(object):
         :return:
         """
         return self.gerrit.put(
-            self.endpoint + "/preferences.edit", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/preferences.edit",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )
 
     def index_changes(self, input_):
@@ -226,5 +237,7 @@ class GerritConfig(object):
         :return:
         """
         self.gerrit.post(
-            self.endpoint + "/index.changes", json=input_, headers=self.gerrit.default_headers
+            self.endpoint + "/index.changes",
+            json=input_,
+            headers=self.gerrit.default_headers,
         )

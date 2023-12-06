@@ -27,8 +27,11 @@ class GerritGroups(object):
                      number of groups from the beginning of the list
         :return:
         """
-        params = params_creator((("o", options), ("n", limit), ("S", skip)),
-                                {"match": "m", "regex": "r"}, pattern_dispatcher)
+        params = params_creator(
+            (("o", options), ("n", limit), ("S", skip)),
+            {"match": "m", "regex": "r"},
+            pattern_dispatcher,
+        )
 
         return self.gerrit.get(self.endpoint, params=params)
 
@@ -91,5 +94,6 @@ class GerritGroups(object):
         :return:
         """
         result = self.gerrit.put(
-            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers)
+            self.endpoint + f"/{name}", json=input_, headers=self.gerrit.default_headers
+        )
         return GerritGroup(json=result, gerrit=self.gerrit)

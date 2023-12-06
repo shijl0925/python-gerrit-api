@@ -23,7 +23,7 @@ class BaseModel(object):
 
             for key, value in json.items():
                 try:
-                    if key[0] == '_':
+                    if key[0] == "_":
                         key = key[1:]
                     setattr(self, key, value)
                 except AttributeError:

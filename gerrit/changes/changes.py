@@ -73,7 +73,9 @@ class GerritChanges(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input
         :return:
         """
-        result = self.gerrit.post(self.endpoint + '/', json=input_, headers=self.gerrit.default_headers)
+        result = self.gerrit.post(
+            self.endpoint + "/", json=input_, headers=self.gerrit.default_headers
+        )
         return GerritChange(json=result, gerrit=self.gerrit)
 
     def delete(self, id_):

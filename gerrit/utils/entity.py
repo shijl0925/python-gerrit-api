@@ -20,16 +20,20 @@ class Entity(object):
             if item not in kwargs:
                 name = self.__class__.__name__
                 logger.warning(
-                    "*** Warning! %s missing a required keyword argument '%s' ***", name, item
+                    "*** Warning! %s missing a required keyword argument '%s' ***",
+                    name,
+                    item,
                 )
 
-        for (k, v) in kwargs.items():
+        for k, v in kwargs.items():
             if k in self.attributes:
                 setattr(self, k, v)
             else:
                 name = self.__class__.__name__
                 logger.warning(
-                    "*** Warning! %s got an unexpected keyword argument: '%s' ***", name, k
+                    "*** Warning! %s got an unexpected keyword argument: '%s' ***",
+                    name,
+                    k,
                 )
 
     def __getattr__(self, key):

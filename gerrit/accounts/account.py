@@ -41,8 +41,9 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#account-name-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/name",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers
+        )
 
     def delete_name(self):
         """
@@ -74,8 +75,9 @@ class GerritAccount(BaseModel):
         :return:
         """
         input_ = {"status": status}
-        return self.gerrit.put(self.endpoint + "/status",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/status", json=input_, headers=self.gerrit.default_headers
+        )
 
     def set_username(self, input_):
         """
@@ -96,8 +98,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#username-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/username",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/username",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def set_displayname(self, input_):
         """
@@ -117,8 +122,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#display-name-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/displayname",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/displayname",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_active(self):
         """
@@ -163,8 +171,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#http-password-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/password.http",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/password.http",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def delete_http_password(self):
         """
@@ -275,8 +286,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#preferences-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/preferences",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/preferences",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_diff_preferences(self):
         """
@@ -314,8 +328,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#diff-preferences-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/preferences.diff",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/preferences.diff",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_edit_preferences(self):
         """
@@ -355,8 +372,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#edit-preferences-info
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/preferences.edit",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/preferences.edit",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_watched_projects(self):
         """
@@ -388,8 +408,11 @@ class GerritAccount(BaseModel):
         :param input_: the ProjectWatchInfo entities as list
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/watched.projects",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/watched.projects",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def delete_watched_projects(self, input_):
         """
@@ -410,8 +433,11 @@ class GerritAccount(BaseModel):
         :param input_: the watched projects as list
         :return:
         """
-        self.gerrit.post(self.endpoint + "/watched.projects:delete",
-                         json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint + "/watched.projects:delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_external_ids(self):
         """
@@ -442,8 +468,11 @@ class GerritAccount(BaseModel):
         :param input_: the external ids as list
         :return:
         """
-        self.gerrit.post(self.endpoint + "/external.ids:delete",
-                         json=input_, headers=self.gerrit.default_headers)
+        self.gerrit.post(
+            self.endpoint + "/external.ids:delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def list_contributor_agreements(self):
         """
@@ -469,9 +498,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#contributor-agreement-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/agreements",
-                               json=input_, headers=self.gerrit.default_headers)
-
+        return self.gerrit.put(
+            self.endpoint + "/agreements",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def delete_draft_comments(self, input_):
         """
@@ -489,8 +520,11 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#delete-draft-comments-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/drafts:delete",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/drafts:delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def index(self):
         """
@@ -566,5 +600,8 @@ class GerritAccount(BaseModel):
           https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#stars-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + f"/stars.changes/{id_}",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + f"/stars.changes/{id_}",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )

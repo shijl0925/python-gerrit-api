@@ -54,8 +54,11 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#description-input
         :return:
         """
-        return self.gerrit.put(self.endpoint + "/description",
-                               json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.put(
+            self.endpoint + "/description",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def get_merge_list(self):
         """
@@ -142,8 +145,9 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#review-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/review",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/review", json=input_, headers=self.gerrit.default_headers
+        )
 
     def rebase(self, input_):
         """
@@ -165,8 +169,9 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#rebase-input
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/rebase",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/rebase", json=input_, headers=self.gerrit.default_headers
+        )
 
     def submit(self):
         """
@@ -250,8 +255,11 @@ class GerritChangeRevision(object):
         :type: str
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/test.submit_type",
-                                data=input_, headers={"Content-Type": "plain/text"})
+        return self.gerrit.post(
+            self.endpoint + "/test.submit_type",
+            data=input_,
+            headers={"Content-Type": "plain/text"},
+        )
 
     def test_submit_rule(self, input_):
         """
@@ -261,8 +269,11 @@ class GerritChangeRevision(object):
         :type: str
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/test.submit_rule",
-                                data=input_, headers={"Content-Type": "plain/text"})
+        return self.gerrit.post(
+            self.endpoint + "/test.submit_rule",
+            data=input_,
+            headers={"Content-Type": "plain/text"},
+        )
 
     @property
     def drafts(self):
@@ -318,8 +329,11 @@ class GerritChangeRevision(object):
           https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#cherry-pick-commit
         :return:
         """
-        return self.gerrit.post(self.endpoint + "/cherrypick",
-                                json=input_, headers=self.gerrit.default_headers)
+        return self.gerrit.post(
+            self.endpoint + "/cherrypick",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
 
     def list_reviewers(self):
         """

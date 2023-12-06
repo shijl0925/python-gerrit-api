@@ -34,8 +34,11 @@ class GerritChangeMessage(BaseModel):
         if input_ is None:
             self.gerrit.delete(self.endpoint)
         else:
-            result = self.gerrit.post(self.endpoint + "/delete",
-                                      json=input_, headers=self.gerrit.default_headers)
+            result = self.gerrit.post(
+                self.endpoint + "/delete",
+                json=input_,
+                headers=self.gerrit.default_headers,
+            )
             change = self.gerrit.changes.get(self.change)
             return change.messages.get(result.get("id"))
 
@@ -53,7 +56,9 @@ class GerritChangeMessages(object):
         :return:
         """
         result = self.gerrit.get(self.endpoint)
-        return GerritChangeMessage.parse_list(result, change=self.change, gerrit=self.gerrit)
+        return GerritChangeMessage.parse_list(
+            result, change=self.change, gerrit=self.gerrit
+        )
 
     def get(self, id_):
         """

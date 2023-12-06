@@ -35,7 +35,7 @@ class Requester(object):
         :param kwargs:
         """
         timeout = 10
-        base_url = kwargs.get('base_url')
+        base_url = kwargs.get("base_url")
         self.base_scheme = urlparse.urlsplit(base_url).scheme if base_url else None
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
@@ -62,7 +62,7 @@ class Requester(object):
                     url_split.netloc,
                     url_split.path,
                     url_split.query,
-                    url_split.fragment
+                    url_split.fragment,
                 ]
             )
         return url
@@ -83,11 +83,15 @@ class Requester(object):
             request_kwargs["auth"] = (self.username, self.password)
 
         if params:
-            assert isinstance(params, dict), f"Params must be a dict, got {repr(params)}"
+            assert isinstance(
+                params, dict
+            ), f"Params must be a dict, got {repr(params)}"
             request_kwargs["params"] = params
 
         if headers:
-            assert isinstance(headers, dict), f"headers must be a dict, got {repr(headers)}"
+            assert isinstance(
+                headers, dict
+            ), f"headers must be a dict, got {repr(headers)}"
             request_kwargs["headers"] = headers
 
         if self.AUTH_COOKIE:
@@ -118,7 +122,7 @@ class Requester(object):
         headers=None,
         allow_redirects=True,
         stream=False,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -134,9 +138,11 @@ class Requester(object):
             headers=headers,
             allow_redirects=allow_redirects,
             stream=stream,
-            **kwargs
+            **kwargs,
         )
-        return self.confirm_status(self.session.get(self._update_url_scheme(url), **request_kwargs))
+        return self.confirm_status(
+            self.session.get(self._update_url_scheme(url), **request_kwargs)
+        )
 
     def post(
         self,
@@ -147,7 +153,7 @@ class Requester(object):
         files=None,
         headers=None,
         allow_redirects=True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -167,9 +173,11 @@ class Requester(object):
             files=files,
             headers=headers,
             allow_redirects=allow_redirects,
-            **kwargs
+            **kwargs,
         )
-        return self.confirm_status(self.session.post(self._update_url_scheme(url), **request_kwargs))
+        return self.confirm_status(
+            self.session.post(self._update_url_scheme(url), **request_kwargs)
+        )
 
     def put(
         self,
@@ -180,7 +188,7 @@ class Requester(object):
         files=None,
         headers=None,
         allow_redirects=True,
-        **kwargs
+        **kwargs,
     ):
         """
         :param url:
@@ -200,9 +208,11 @@ class Requester(object):
             files=files,
             headers=headers,
             allow_redirects=allow_redirects,
-            **kwargs
+            **kwargs,
         )
-        return self.confirm_status(self.session.put(self._update_url_scheme(url), **request_kwargs))
+        return self.confirm_status(
+            self.session.put(self._update_url_scheme(url), **request_kwargs)
+        )
 
     def delete(self, url, headers=None, allow_redirects=True, **kwargs):
         """
@@ -215,7 +225,9 @@ class Requester(object):
         request_kwargs = self.get_request_dict(
             headers=headers, allow_redirects=allow_redirects, **kwargs
         )
-        return self.confirm_status(self.session.delete(self._update_url_scheme(url), **request_kwargs))
+        return self.confirm_status(
+            self.session.delete(self._update_url_scheme(url), **request_kwargs)
+        )
 
     @staticmethod
     def confirm_status(res):
@@ -238,10 +250,14 @@ class Requester(object):
             reason = res.reason
 
         if 400 <= res.status_code < 500:
-            http_error_msg = f"{res.status_code} Client Error: {reason} for url: {res.url}"
+            http_error_msg = (
+                f"{res.status_code} Client Error: {reason} for url: {res.url}"
+            )
 
         elif 500 <= res.status_code < 600:
-            http_error_msg = f"{res.status_code} Server Error: {reason} for url: {res.url}"
+            http_error_msg = (
+                f"{res.status_code} Server Error: {reason} for url: {res.url}"
+            )
 
         if res.status_code < 300:
             # OK, return http response

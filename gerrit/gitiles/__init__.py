@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 
+
 class GerritGitiles(object):
     def __init__(self, gerrit):
         self.gerrit = gerrit
@@ -19,4 +20,6 @@ class GerritGitiles(object):
         if commit is not None:
             params.update({"s": commit})
 
-        return self.gerrit.get(self.endpoint + f"/{project}/+log/{branch}", params=params)
+        return self.gerrit.get(
+            self.endpoint + f"/{project}/+log/{branch}", params=params
+        )
