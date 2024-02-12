@@ -84,7 +84,7 @@ def test_add_group_member(gerrit_client):
     # with pytest.raises(GroupMemberAlreadyExistsError):
     #     group.members.add(account_id)
 
-    user = gerrit_client.accounts.get(account="shijl0925")
+    user = gerrit_client.accounts.get(account="jialiang.shi")
     account_id = user.account_id
     logger.debug(f"account id: {account_id}")
     group.members.add(account_id)

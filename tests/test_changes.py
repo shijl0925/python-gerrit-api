@@ -156,7 +156,7 @@ def test_get_change_reviewer(gerrit_client):
 
     from gerrit.utils.exceptions import NotFoundError
     with pytest.raises(NotFoundError):
-        change.reviewers.get(account="shijl900925")
+        change.reviewers.get(account="shijl0925")
 
     reviewer = change.reviewers.get(account="javelinanddart")
     assert "_account_id" in reviewer.to_dict()
@@ -174,4 +174,4 @@ def test_add_change_reviewer(gerrit_client):
     # with pytest.raises(ReviewerAlreadyExistsError):
     #     change.reviewers.add(input_={"reviewer": "javelinanddart"})
 
-    change.reviewers.add(input_={"reviewer": "shijl0925"})
+    change.reviewers.add(input_={"reviewer": "jialiang.shi"})
