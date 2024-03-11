@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class GerritGroups:
     def __init__(self, gerrit):
         self.gerrit = gerrit
-        self.endpoint = "/groups"
+        self.endpoint = "/groups/"
 
     def list(
         self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0
