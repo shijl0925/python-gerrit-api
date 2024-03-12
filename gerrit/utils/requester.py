@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-import six.moves.urllib.parse as urlparse
+import urllib.parse as urlparse
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
