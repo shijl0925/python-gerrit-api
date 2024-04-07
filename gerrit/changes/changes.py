@@ -57,7 +57,7 @@ class GerritChanges:
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Change {id_} does not exist"
-                if id_.startswith("I"):
+                if isinstance(id_, str) and id_.startswith("I"):
                     res = self.search(query=f"change: {id_}")
                     if len(res) > 0:
                         change_ids = [item.get("id") for item in res]
