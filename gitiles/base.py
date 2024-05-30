@@ -3,6 +3,8 @@
 # @Author: Jialiang Shi
 from typing import Optional
 from base64 import b64decode
+import requests
+from requests.adapters import HTTPAdapter
 from gerrit.utils.requester import Requester
 from gerrit.utils.common import decode_response, strip_trailing_slash
 
@@ -20,14 +22,28 @@ class GitilesClient:
     ):
         self._base_url = strip_trailing_slash(base_url)
 
+        # make request session
+        _session = requests.Session()
+        if username and password:
+            _session.auth = (username, password)
+
+        if ssl_verify:
+            _session.verify = ssl_verify
+
+        if cert is not None:
+            _session.cert = cert
+
+        if max_retries is not None:
+            retry_adapter = HTTPAdapter(max_retries=max_retries)
+            _session.mount("http://", retry_adapter)
+            _session.mount("https://", retry_adapter)
+
+        self.session = _session
+
         self.requester = Requester(
             base_url=base_url,
-            username=username,
-            password=password,
-            ssl_verify=ssl_verify,
-            cert=cert,
+            session=self.session,
             timeout=timeout,
-            max_retries=max_retries,
         )
 
     def get_endpoint_url(self, endpoint):

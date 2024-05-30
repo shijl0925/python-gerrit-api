@@ -2,8 +2,6 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import urllib.parse as urlparse
-from requests import Session
-from requests.adapters import HTTPAdapter
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
@@ -36,18 +34,8 @@ class Requester:
         timeout = 10
         base_url = kwargs.get("base_url")
         self.base_scheme = urlparse.urlsplit(base_url).scheme if base_url else None
-        self.username = kwargs.get("username")
-        self.password = kwargs.get("password")
-        self.ssl_verify = kwargs.get("ssl_verify")
-        self.cert = kwargs.get("cert")
+        self.session = kwargs.get("session")
         self.timeout = kwargs.get("timeout", timeout)
-        self.session = Session()
-
-        self.max_retries = kwargs.get("max_retries")
-        if self.max_retries is not None:
-            retry_adapter = HTTPAdapter(max_retries=self.max_retries)
-            self.session.mount("http://", retry_adapter)
-            self.session.mount("https://", retry_adapter)
 
     def _update_url_scheme(self, url):
         """
@@ -78,8 +66,6 @@ class Requester:
         :return:
         """
         request_kwargs = kwargs
-        if self.username and self.password:
-            request_kwargs["auth"] = (self.username, self.password)
 
         if params:
             if not isinstance(params, dict):
@@ -97,9 +83,6 @@ class Requester:
             currentheaders = request_kwargs.get("headers", {})
             currentheaders.update({"Cookie": self.AUTH_COOKIE})
             request_kwargs["headers"] = currentheaders
-
-        request_kwargs["verify"] = self.ssl_verify
-        request_kwargs["cert"] = self.cert
 
         if data and json:
             raise ValueError("Cannot use data and json together")

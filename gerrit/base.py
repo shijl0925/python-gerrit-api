@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import netrc
+import requests
+from requests.adapters import HTTPAdapter
 from gerrit.utils.requester import Requester
 from gerrit.utils.common import decode_response, strip_trailing_slash
 from gerrit.config.config import GerritConfig
@@ -37,14 +39,28 @@ class GerritClient:
         if use_netrc:
             password = self.get_password_from_netrc_file()
 
+        # make request session
+        _session = requests.Session()
+        if username and password:
+            _session.auth = (username, password)
+
+        if ssl_verify:
+            _session.verify = ssl_verify
+
+        if cert is not None:
+            _session.cert = cert
+
+        if max_retries is not None:
+            retry_adapter = HTTPAdapter(max_retries=max_retries)
+            _session.mount("http://", retry_adapter)
+            _session.mount("https://", retry_adapter)
+
+        self.session = _session
+
         self.requester = Requester(
             base_url=base_url,
-            username=username,
-            password=password,
-            ssl_verify=ssl_verify,
-            cert=cert,
+            session=self.session,
             timeout=timeout,
-            max_retries=max_retries,
         )
         if username and password:
             self.auth_suffix = auth_suffix
