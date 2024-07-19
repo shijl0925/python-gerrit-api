@@ -12,7 +12,7 @@ class GerritProjectTag(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "ref"
-        self.endpoint = f"/projects/{self.project}/tags"
+        self.endpoint = f"/projects/{self.project}/tags/{quote_plus(self.name)}"
 
     @property
     def name(self):
@@ -24,7 +24,7 @@ class GerritProjectTag(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{quote_plus(self.name)}")
+        self.gerrit.delete(self.endpoint)
 
 
 class GerritProjectTags(object):
