@@ -734,7 +734,7 @@ class GerritChange(BaseModel):
         :return:
         """
         if isinstance(revision_id, int):
-            if len(self.revisions) == 0:
+            if len(self.revisions.keys()) == 0:
                 self.__get_revisions()
             if revision_id <= 0:
                 revision_id = self.current_revision_number + revision_id
