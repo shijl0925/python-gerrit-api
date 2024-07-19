@@ -9,7 +9,7 @@ class GerritProjectWebHook(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "name"
-        self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes"
+        self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
 
     def delete(self):
         """
@@ -17,7 +17,7 @@ class GerritProjectWebHook(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + f"/{self.name}")
+        self.gerrit.delete(self.endpoint)
 
 
 class GerritProjectWebHooks(object):
