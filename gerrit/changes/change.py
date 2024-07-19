@@ -155,7 +155,7 @@ class GerritChange(BaseModel):
 
         :return:
         """
-        self.gerrit.delete(f"/changes/{self.id}/topic")
+        self.gerrit.delete(f"{self.endpoint}/topic")
 
     def get_assignee(self):
         """
