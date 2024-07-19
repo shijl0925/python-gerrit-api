@@ -14,8 +14,8 @@ class GerritProjects(object):
     def list(
         self,
         is_all=False,
-        limit=None,
-        skip=None,
+        limit=25,
+        skip=0,
         pattern_dispatcher=None,
         project_type=None,
         description=False,
@@ -64,7 +64,7 @@ class GerritProjects(object):
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def search(self, query, limit=None, skip=None):
+    def search(self, query, limit=25, skip=0):
         """
         Queries projects visible to the caller. The query string must be provided by the
         query parameter.

@@ -71,7 +71,7 @@ class GerritProjectBranches(object):
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"
 
-    def list(self, pattern_dispatcher=None, limit=None, skip=None):
+    def list(self, pattern_dispatcher=None, limit=25, skip=0):
         """
         List the branches of a project.
 

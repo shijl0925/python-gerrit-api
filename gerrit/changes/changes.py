@@ -9,7 +9,7 @@ class GerritChanges(object):
         self.gerrit = gerrit
         self.endpoint = "/changes"
 
-    def search(self, query, options=None, limit=None, skip=None):
+    def search(self, query, options=None, limit=25, skip=0):
         """
         Queries changes visible to the caller.
 

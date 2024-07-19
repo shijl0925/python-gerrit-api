@@ -10,7 +10,7 @@ class GerritGroups(object):
         self.gerrit = gerrit
         self.endpoint = "/groups"
 
-    def list(self, pattern_dispatcher=None, options=None, limit=None, skip=None):
+    def list(self, pattern_dispatcher=None, options=None, limit=25, skip=0):
         """
         Lists the groups accessible by the caller.
 
@@ -35,7 +35,7 @@ class GerritGroups(object):
 
         return self.gerrit.get(self.endpoint, params=params)
 
-    def search(self, query, options=None, limit=None, skip=None):
+    def search(self, query, options=None, limit=25, skip=0):
         """
         Query Groups
 

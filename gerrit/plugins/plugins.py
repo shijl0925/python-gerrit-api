@@ -43,7 +43,7 @@ class GerritPlugins(object):
         self.gerrit = gerrit
         self.endpoint = "/plugins"
 
-    def list(self, is_all=False, limit=None, skip=None, pattern_dispatcher=None):
+    def list(self, is_all=False, limit=25, skip=0, pattern_dispatcher=None):
         """
         Lists the plugins installed on the Gerrit server.
 

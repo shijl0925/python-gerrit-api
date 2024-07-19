@@ -12,8 +12,8 @@ class GerritAccounts(object):
     def search(
         self,
         query,
-        limit=None,
-        skip=None,
+        limit=25,
+        skip=0,
         detailed=False,
         suggested=False,
         all_emails=False,
