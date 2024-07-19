@@ -11,7 +11,7 @@ class GerritAccount(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "username"
-        self.endpoint = f"/accounts/{self.username}"
+        self.endpoint = f"/accounts/{self.account_id}"
 
     def get_name(self):
         """
@@ -198,15 +198,15 @@ class GerritAccount(BaseModel):
 
     @property
     def emails(self):
-        return GerritAccountEmails(username=self.username, gerrit=self.gerrit)
+        return GerritAccountEmails(account_id=self.account_id, gerrit=self.gerrit)
 
     @property
     def ssh_keys(self):
-        return GerritAccountSSHKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountSSHKeys(account_id=self.account_id, gerrit=self.gerrit)
 
     @property
     def gpg_keys(self):
-        return GerritAccountGPGKeys(username=self.username, gerrit=self.gerrit)
+        return GerritAccountGPGKeys(account_id=self.account_id, gerrit=self.gerrit)
 
     def list_capabilities(self):
         """

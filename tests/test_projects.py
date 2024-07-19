@@ -91,7 +91,7 @@ def test_get_project(gerrit_client, gerrit_object):
     assert project.name == project_name
 
     assert project != gerrit_client.projects.get(name="LineageOS/android_art")
-    assert project != gerrit_client.accounts.get(username="jialiang.shi")
+    assert project != gerrit_client.accounts.get(account="jialiang.shi")
 
 
 @pytest.mark.parametrize('gerrit_object', data, indirect=True)

@@ -8,7 +8,7 @@ class GerritAccountEmail(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "email"
-        self.endpoint = f"/accounts/{self.username}/emails/{self.email}"
+        self.endpoint = f"/accounts/{self.account_id}/emails/{self.email}"
 
     def delete(self):
         """
@@ -28,10 +28,10 @@ class GerritAccountEmail(BaseModel):
 
 
 class GerritAccountEmails(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+    def __init__(self, account_id, gerrit):
+        self.account_id = account_id
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/emails"
+        self.endpoint = f"/accounts/{self.account_id}/emails"
 
     def list(self):
         """
@@ -41,7 +41,7 @@ class GerritAccountEmails(object):
         """
         result = self.gerrit.get(self.endpoint)
         return GerritAccountEmail.parse_list(
-            result, username=self.username, gerrit=self.gerrit
+            result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def create(self, email):
@@ -60,7 +60,7 @@ class GerritAccountEmails(object):
         """
         result = self.gerrit.get(self.endpoint + f"/{email}")
         return GerritAccountEmail(
-            json=result, username=self.username, gerrit=self.gerrit
+            json=result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def set_preferred(self, email):

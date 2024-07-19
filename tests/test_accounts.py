@@ -17,10 +17,10 @@ def test_search_accounts(gerrit_client, query):
 def test_get_account(gerrit_client):
     from gerrit.utils.exceptions import NotFoundError
     with pytest.raises(NotFoundError):
-        gerrit_client.accounts.get(username="keven.shi")
+        gerrit_client.accounts.get(account="keven.shi")
 
     username = "alek1231234"
-    account = gerrit_client.accounts.get(username=username)
+    account = gerrit_client.accounts.get(account=username)
 
     logger.debug(account.to_dict())
 
@@ -36,7 +36,7 @@ def test_get_account(gerrit_client):
 
 def test_get_account_detail(gerrit_client):
     username = "alek1231234"
-    account = gerrit_client.accounts.get(username=username, detailed=True)
+    account = gerrit_client.accounts.get(account=username, detailed=True)
 
     result = account.to_dict()
     assert "name" in result
@@ -44,7 +44,7 @@ def test_get_account_detail(gerrit_client):
 
 def test_get_account_name(gerrit_client):
     username = "alek1231234"
-    account = gerrit_client.accounts.get(username=username)
+    account = gerrit_client.accounts.get(account=username)
 
     result = account.get_name()
 
@@ -53,7 +53,7 @@ def test_get_account_name(gerrit_client):
 
 def test_get_account_active(gerrit_client):
     username = "alek1231234"
-    account = gerrit_client.accounts.get(username=username)
+    account = gerrit_client.accounts.get(account=username)
 
     result = account.get_active()
 
@@ -61,14 +61,14 @@ def test_get_account_active(gerrit_client):
 
 
 def test_get_account_emails(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     emails = account.emails.list()
     assert len(emails) > 0
 
 
 def test_get_account_email(gerrit_client):
     from gerrit.utils.exceptions import NotFoundError
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     with pytest.raises(NotFoundError):
         account.emails.get(email="111111111@qq.com")
@@ -83,19 +83,19 @@ def test_get_account_email(gerrit_client):
 
 def test_register_account_email(gerrit_client):
     # from gerrit.utils.exceptions import AccountEmailAlreadyExistsError
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     # with pytest.raises(AccountEmailAlreadyExistsError):
     #     account.emails.create(email='kevin09254930sjl@gmail.com')
 
 
 def test_delete_account_name(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     account.delete_name()
 
 
 def test_set_account_name(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = {
         "name": "Keven Shi"
     }
@@ -103,19 +103,19 @@ def test_set_account_name(gerrit_client):
 
 
 def test_set_account_status(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     account.set_status(status="working")
 
 
 def test_get_account_status(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     result = account.get_status()
 
     assert "working" == result
 
 
 def test_set_account__display_name(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = {
         "display_name": "Kevin"
     }
@@ -124,20 +124,20 @@ def test_set_account__display_name(gerrit_client):
 
 @pytest.mark.xfail(reason="Request is not authorized")
 def test_set_account_active(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     account.set_active()
 
 
 @pytest.mark.xfail(reason="Request is not authorized")
 def test_delete_account_active(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     account.delete_active()
 
 
 def test_list_account_ssh_keys(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     ssh_keys = account.ssh_keys.list()
     logger.debug(f"the number of account ssh keys: {len(ssh_keys)}")
 
@@ -145,7 +145,7 @@ def test_list_account_ssh_keys(gerrit_client):
 
 
 def test_list_account_gpg_keys(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     gpg_keys = account.gpg_keys.list()
     logger.debug(f"the number of account gpg keys: {len(gpg_keys)}")
 
@@ -153,7 +153,7 @@ def test_list_account_gpg_keys(gerrit_client):
 
 
 def test_list_account_capabilities(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     result = account.list_capabilities()
 
@@ -161,7 +161,7 @@ def test_list_account_capabilities(gerrit_client):
 
 
 def test_check_account_capability(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     capability = "account-deleteOwnAccount"
     result = account.check_capability(capability)
@@ -174,28 +174,28 @@ def test_check_account_capability(gerrit_client):
 
 
 def test_get_account_groups(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     groups = account.groups
     assert len(groups) > 0
 
 
 def test_get_account_avatar(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     avatar = account.get_avatar()
     assert isinstance(avatar, bytes)
 
 
 def test_get_account_avatar_change_url(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     url = account.get_avatar_change_url()
     assert url == "http://www.gravatar.com"
 
 
 def test_get_account_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     res = account.get_user_preferences()
 
@@ -203,7 +203,7 @@ def test_get_account_preferences(gerrit_client):
 
 
 def test_set_account_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = {
         "changes_per_page": 50
     }
@@ -213,7 +213,7 @@ def test_set_account_preferences(gerrit_client):
 
 
 def test_get_account_diff_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     res = account.get_diff_preferences()
 
@@ -221,7 +221,7 @@ def test_get_account_diff_preferences(gerrit_client):
 
 
 def test_set_account_diff_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = {
         "line_length": 120
     }
@@ -231,7 +231,7 @@ def test_set_account_diff_preferences(gerrit_client):
 
 
 def test_get_account_edit_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
 
     res = account.get_edit_preferences()
 
@@ -239,7 +239,7 @@ def test_get_account_edit_preferences(gerrit_client):
 
 
 def test_set_account_edit_preferences(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = {
         "line_length": 100
     }
@@ -249,14 +249,14 @@ def test_set_account_edit_preferences(gerrit_client):
 
 
 def test_get_account_watched_projects(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     projects = account.get_watched_projects()
 
     assert len(projects) >= 0
 
 
 def test_add_account_watched_projects(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = [
         {
             "project": "LineageOS/android_packages_apps_Dialer",
@@ -271,7 +271,7 @@ def test_add_account_watched_projects(gerrit_client):
 
 
 def test_delete_account_watched_projects(gerrit_client):
-    account = gerrit_client.accounts.get(username="self")
+    account = gerrit_client.accounts.get(account="self")
     input_ = [
         {
             "project": "LineageOS/android_packages_apps_Dialer",

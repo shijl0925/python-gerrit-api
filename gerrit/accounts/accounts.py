@@ -52,16 +52,16 @@ class GerritAccounts(object):
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, username, detailed=False):
+    def get(self, account, detailed=False):
         """
         Returns an account
 
-        :param username: username or _account_id
+        :param account: username or email or _account_id or 'self'
         :param detailed: boolean type, If True then fetch info in more details, such as:
             registered_on
         :return:
         """
-        endpoint = self.endpoint + f"/{username}/"
+        endpoint = self.endpoint + f"/{account}/"
         if detailed:
             endpoint += "detail"
         result = self.gerrit.get(endpoint)

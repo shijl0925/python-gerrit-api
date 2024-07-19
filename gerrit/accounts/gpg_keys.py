@@ -7,7 +7,7 @@ from gerrit.utils.models import BaseModel
 class GerritAccountGPGKey(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.endpoint = f"/accounts/{self.username}/gpgkeys"
+        self.endpoint = f"/accounts/{self.account_id}/gpgkeys"
 
     def delete(self):
         """
@@ -19,10 +19,10 @@ class GerritAccountGPGKey(BaseModel):
 
 
 class GerritAccountGPGKeys(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+    def __init__(self, account_id, gerrit):
+        self.account_id = account_id
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/gpgkeys"
+        self.endpoint = f"/accounts/{self.account_id}/gpgkeys"
 
     def list(self):
         """
@@ -38,7 +38,7 @@ class GerritAccountGPGKeys(object):
             keys.append(gpg_key)
 
         return GerritAccountGPGKey.parse_list(
-            keys, username=self.username, gerrit=self.gerrit
+            keys, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def get(self, id_):
@@ -50,7 +50,7 @@ class GerritAccountGPGKeys(object):
         """
         result = self.gerrit.get(self.endpoint + f"/{id_}")
         return GerritAccountGPGKey(
-            json=result, username=self.username, gerrit=self.gerrit
+            json=result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def modify(self, input_):

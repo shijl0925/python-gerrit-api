@@ -8,7 +8,7 @@ class GerritAccountSSHKey(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.entity_name = "seq"
-        self.endpoint = f"/accounts/{self.username}/sshkeys"
+        self.endpoint = f"/accounts/{self.account_id}/sshkeys"
 
     def delete(self):
         """
@@ -20,10 +20,10 @@ class GerritAccountSSHKey(BaseModel):
 
 
 class GerritAccountSSHKeys(object):
-    def __init__(self, username, gerrit):
-        self.username = username
+    def __init__(self, account_id, gerrit):
+        self.account_id = account_id
         self.gerrit = gerrit
-        self.endpoint = f"/accounts/{self.username}/sshkeys"
+        self.endpoint = f"/accounts/{self.account_id}/sshkeys"
 
     def list(self):
         """
@@ -33,7 +33,7 @@ class GerritAccountSSHKeys(object):
         """
         result = self.gerrit.get(self.endpoint)
         return GerritAccountSSHKey.parse_list(
-            result, username=self.username, gerrit=self.gerrit
+            result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def get(self, seq):
@@ -45,7 +45,7 @@ class GerritAccountSSHKeys(object):
         """
         result = self.gerrit.get(self.endpoint + f"/{str(seq)}")
         return GerritAccountSSHKey(
-            json=result, username=self.username, gerrit=self.gerrit
+            json=result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def add(self, ssh_key):
@@ -60,7 +60,7 @@ class GerritAccountSSHKeys(object):
             self.endpoint, data=ssh_key, headers={"Content-Type": "plain/text"}
         )
         return GerritAccountSSHKey(
-            json=result, username=self.username, gerrit=self.gerrit
+            json=result, account_id=self.account_id, gerrit=self.gerrit
         )
 
     def delete(self, seq):
