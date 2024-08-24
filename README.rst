@@ -1,6 +1,8 @@
 Project description
 ===================
 
+.. image:: https://repobeats.axiom.co/api/embed/89080ed0f569186ab5d752a9585870f515e2f131.svg
+
 .. image:: https://img.shields.io/pypi/pyversions/python-gerrit-api.svg
     :target: https://pypi.python.org/pypi/python-gerrit-api
 .. image:: https://img.shields.io/pypi/v/python-gerrit-api.svg
