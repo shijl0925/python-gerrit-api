@@ -30,6 +30,8 @@ class GerritClient:
         use_netrc=False,
         ssl_verify=True,
         cert=None,
+        cookies=None,
+        cookie_jar=None,
         timeout=60,
         max_retries=None,
         auth_suffix="/a",
@@ -49,6 +51,12 @@ class GerritClient:
 
         if cert is not None:
             _session.cert = cert
+
+        if cookies is not None:
+            _session.cookies.update(cookies)
+
+        if cookie_jar is not None:
+            _session.cookies = cookie_jar
 
         if max_retries is not None:
             retry_adapter = HTTPAdapter(max_retries=max_retries)
