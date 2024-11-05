@@ -34,43 +34,46 @@ class GerritClient:
         cookie_jar=None,
         timeout=60,
         max_retries=None,
+        session=None,
         auth_suffix="/a",
     ):
         self._base_url = strip_trailing_slash(base_url)
 
+        # make request session if one isn't provided
+        if session is None:
+            session = requests.Session()
+
         if use_netrc:
             password = self.get_password_from_netrc_file()
 
-        # make request session
-        _session = requests.Session()
         if username and password:
-            _session.auth = (username, password)
+            session.auth = (username, password)
 
         if ssl_verify:
-            _session.verify = ssl_verify
+            session.verify = ssl_verify
 
         if cert is not None:
-            _session.cert = cert
+            session.cert = cert
 
         if cookies is not None:
-            _session.cookies.update(cookies)
+            session.cookies.update(cookies)
 
         if cookie_jar is not None:
-            _session.cookies = cookie_jar
+            session.cookies = cookie_jar
 
         if max_retries is not None:
             retry_adapter = HTTPAdapter(max_retries=max_retries)
-            _session.mount("http://", retry_adapter)
-            _session.mount("https://", retry_adapter)
+            session.mount("http://", retry_adapter)
+            session.mount("https://", retry_adapter)
 
-        self.session = _session
+        self.session = session
 
         self.requester = Requester(
             base_url=base_url,
             session=self.session,
             timeout=timeout,
         )
-        if username and password:
+        if self.session.auth is not None:
             self.auth_suffix = auth_suffix
         else:
             self.auth_suffix = ""
