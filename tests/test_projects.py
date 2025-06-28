@@ -79,7 +79,7 @@ def test_get_project(gerrit_client, gerrit_object):
     for attr in attrs:
         logger.debug(f"{attr}, {hasattr(project, attr)}, {getattr(project, attr)}")
 
-    assert all([hasattr(project, attr) for attr in attrs])
+    assert all(hasattr(project, attr) for attr in attrs)
 
     project_id = project.id
     assert str(project) == f"{project_id}"

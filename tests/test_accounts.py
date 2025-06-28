@@ -28,7 +28,7 @@ def test_get_account(gerrit_client):
     for attr in attrs:
         logger.debug(f"{attr}, {hasattr(account, attr)}, {getattr(account, attr)}")
 
-    assert all([hasattr(account, attr) for attr in attrs])
+    assert all(hasattr(account, attr) for attr in attrs)
 
     assert "username" in account.to_dict()
     assert "email" in account.to_dict()
