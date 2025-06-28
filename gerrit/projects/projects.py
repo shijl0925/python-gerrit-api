@@ -70,7 +70,9 @@ class GerritProjects:
         )
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
         if is_all:
-            params.clear()
+            # params.clear()
+            del params["n"]
+            del params["S"]
             params["all"] = int(is_all)
         params["d"] = int(description)
 
