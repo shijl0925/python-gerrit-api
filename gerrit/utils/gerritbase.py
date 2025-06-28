@@ -23,7 +23,7 @@ class GerritBase:
     def __repr__(self):
         return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         raise NotImplementedError
 
     def poll(self):
@@ -53,7 +53,7 @@ class GerritBase:
         """
         return self._data
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """
         Return true if the other object represents a connection to the
         same server
@@ -61,3 +61,6 @@ class GerritBase:
         if not isinstance(other, self.__class__):
             return False
         return other.endpoint == self.endpoint  # pylint: disable=no-member
+
+    def __hash__(self) -> int:
+        return hash(self.endpoint)
