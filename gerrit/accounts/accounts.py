@@ -50,7 +50,6 @@ class GerritAccounts:
             None,
             ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
         )
-        # option = None if not option else option
         params = {
             k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
         }
