@@ -109,8 +109,6 @@ def test_get_revision_files(gerrit_client, latest_change_id):
     files = revision.files
     assert len(files) > 0
     assert len(files.keys()) > 0
-    # assert "extract-files.sh" in files
-    # assert isinstance(files.get("extract-files.sh"), GerritChangeRevisionFile)
 
     for item in files:
         assert isinstance(item, GerritChangeRevisionFile)
