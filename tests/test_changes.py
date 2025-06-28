@@ -49,7 +49,7 @@ def test_get_change(gerrit_client, latest_change_id):
     for attr in attrs:
         logger.debug(f"{attr}, {hasattr(change, attr)}, {getattr(change, attr)}")
 
-    assert all([hasattr(change, attr) for attr in attrs])
+    assert all(hasattr(change, attr) for attr in attrs)
 
 
 @pytest.mark.xfail(reason="Request is not authorized")
