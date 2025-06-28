@@ -4,3 +4,5 @@
 __version__ = "3.0.9"
 
 from gerrit.base import GerritClient
+
+__all__ = ["GerritClient"]
