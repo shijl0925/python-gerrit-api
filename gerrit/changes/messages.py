@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeMessage(GerritBase):
-    def __init__(self, id: str, change: str, gerrit):
+    def __init__(self, id: str, change: str, gerrit: GerritClient):
         self.id = id
         self.change = change
         self.gerrit = gerrit
@@ -47,7 +48,7 @@ class GerritChangeMessage(GerritBase):
 
 
 class GerritChangeMessages:
-    def __init__(self, change, gerrit):
+    def __init__(self, change, gerrit: GerritClient):
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/messages"

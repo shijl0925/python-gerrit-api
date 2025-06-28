@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import GPGKeyNotFoundError, GerritAPIException
 
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccountGPGKey(GerritBase):
-    def __init__(self, id, account, gerrit):
+    def __init__(self, id, account, gerrit: GerritClient):
         self.id = id
         self.account = account
         self.gerrit = gerrit
@@ -30,7 +31,7 @@ class GerritAccountGPGKey(GerritBase):
 
 
 class GerritAccountGPGKeys:
-    def __init__(self, account, gerrit):
+    def __init__(self, account, gerrit: GerritClient):
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/gpgkeys"

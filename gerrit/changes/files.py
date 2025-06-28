@@ -6,6 +6,7 @@ from typing import Optional
 from base64 import b64decode
 from urllib.parse import quote_plus
 import requests
+from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     UnknownFile,
     FileContentNotFoundError,
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeRevisionFile:
-    def __init__(self, path: str, json: dict, change: str, revision: str, gerrit):
+    def __init__(self, path: str, json: dict, change: str, revision: str, gerrit: GerritClient):
         self.path = path
         self.json = json
         self.change = change
@@ -111,7 +112,7 @@ class GerritChangeRevisionFile:
 
 
 class GerritChangeRevisionFiles:
-    def __init__(self, change, revision, gerrit):
+    def __init__(self, change, revision, gerrit: GerritClient):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit

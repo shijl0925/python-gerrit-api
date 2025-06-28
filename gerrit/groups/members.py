@@ -3,7 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
-
+from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     GroupMemberNotFoundError,
     GroupMemberAlreadyExistsError,
@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritGroupMembers:
-    def __init__(self, group_id, gerrit):
+    def __init__(self, group_id, gerrit: GerritClient):
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/members"

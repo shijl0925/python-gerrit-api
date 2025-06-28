@@ -5,6 +5,7 @@ import logging
 from base64 import b64decode
 from urllib.parse import quote_plus, unquote_plus
 import requests
+from gerrit import GerritClient
 from gerrit.utils.common import params_creator
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProjectBranch(GerritBase):
-    def __init__(self, name: str, project: str, gerrit):
+    def __init__(self, name: str, project: str, gerrit: GerritClient):
         self.name = name
         self.project = project
         self.gerrit = gerrit
@@ -89,7 +90,7 @@ class GerritProjectBranch(GerritBase):
 class GerritProjectBranches:
     branch_prefix = "refs/heads/"
 
-    def __init__(self, project, gerrit):
+    def __init__(self, project, gerrit: GerritClient):
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"

@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 
 
 class GerritGroupSubGroups:
-    def __init__(self, group_id, gerrit):
+    def __init__(self, group_id, gerrit: GerritClient):
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/groups/"

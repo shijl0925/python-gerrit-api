@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeRevisionComment(GerritBase):
-    def __init__(self, id: str, change: str, revision: str, gerrit):
+    def __init__(self, id: str, change: str, revision: str, gerrit: GerritClient):
         self.id = id
         self.change = change
         self.revision = revision
@@ -52,7 +53,7 @@ class GerritChangeRevisionComment(GerritBase):
 
 
 class GerritChangeRevisionComments:
-    def __init__(self, change, revision, gerrit):
+    def __init__(self, change, revision, gerrit: GerritClient):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit

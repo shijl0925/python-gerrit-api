@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     ReviewerNotFoundError,
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeReviewer(GerritBase):
-    def __init__(self, account: str, change: str, gerrit):
+    def __init__(self, account: str, change: str, gerrit: GerritClient):
         self.account = account
         self.change = change
         self.gerrit = gerrit
@@ -95,7 +96,7 @@ class GerritChangeReviewer(GerritBase):
 
 
 class GerritChangeReviewers:
-    def __init__(self, change, gerrit):
+    def __init__(self, change, gerrit: GerritClient):
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers"

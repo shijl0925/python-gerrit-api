@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritProjectWebHook(GerritBase):
-    def __init__(self, name: str, project: str, gerrit):
+    def __init__(self, name: str, project: str, gerrit: GerritClient):
         self.name = name
         self.project = project
         self.gerrit = gerrit
@@ -27,7 +28,7 @@ class GerritProjectWebHook(GerritBase):
 
 
 class GerritProjectWebHooks:
-    def __init__(self, project, gerrit):
+    def __init__(self, project, gerrit: GerritClient):
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes"

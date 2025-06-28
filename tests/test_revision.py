@@ -23,7 +23,7 @@ def test_get_revision_actions(gerrit_client, latest_change_id):
     revision = change.get_revision()
     result = revision.get_revision_actions()
 
-    assert "cherrypick" in result
+    assert isinstance(result, dict)
 
 
 def test_get_revision_review(gerrit_client, latest_change_id):

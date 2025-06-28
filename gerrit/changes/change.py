@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from typing import Dict
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.changes.reviewers import GerritChangeReviewers
 from gerrit.changes.revision import GerritChangeRevision
@@ -11,7 +12,7 @@ from gerrit.utils.exceptions import ChangeEditNotFoundError
 
 
 class GerritChange(GerritBase):
-    def __init__(self, id: str, gerrit):
+    def __init__(self, id: str, gerrit: GerritClient):
         self.id = id
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.id}"

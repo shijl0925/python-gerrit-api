@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.groups.members import GerritGroupMembers
 from gerrit.groups.subgroups import GerritGroupSubGroups
 
 
 class GerritGroup(GerritBase):
-    def __init__(self, group_id: int, gerrit):
+    def __init__(self, group_id: int, gerrit: GerritClient):
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}"

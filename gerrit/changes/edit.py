@@ -2,11 +2,12 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from urllib.parse import quote_plus
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeEdit(GerritBase):
-    def __init__(self, change: str, gerrit):
+    def __init__(self, change: str, gerrit: GerritClient):
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/edit"
