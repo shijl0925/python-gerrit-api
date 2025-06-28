@@ -5,6 +5,7 @@ import logging
 from typing import Any, Union, Dict, List, Optional
 from urllib.parse import quote_plus
 import requests
+from gerrit import GerritClient
 from gerrit.projects.project import GerritProject
 from gerrit.utils.common import params_creator
 from gerrit.utils.exceptions import (
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProjects:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/projects"
 
@@ -69,6 +70,7 @@ class GerritProjects:
         )
         params = params_creator(tuples, pattern_types, pattern_dispatcher)
         if is_all:
+            params.clear()
             params["all"] = int(is_all)
         params["d"] = int(description)
 

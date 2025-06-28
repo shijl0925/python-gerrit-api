@@ -12,7 +12,7 @@ class GerritBase:
     inherited from
     """
 
-    def __init__(self, pull=True):
+    def __init__(self, pull: bool = True):
         """
         Initialize a gerrit connection
         """

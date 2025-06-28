@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.accounts.emails import GerritAccountEmails
 from gerrit.accounts.ssh_keys import GerritAccountSSHKeys
@@ -8,11 +9,11 @@ from gerrit.accounts.gpg_keys import GerritAccountGPGKeys
 
 
 class GerritAccount(GerritBase):
-    def __init__(self, account, gerrit):
+    def __init__(self, account, gerrit: GerritClient):
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}"
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return str(self.account)

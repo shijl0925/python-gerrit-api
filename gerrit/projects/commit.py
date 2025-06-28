@@ -12,7 +12,7 @@ class GerritProjectCommit(GerritBase):
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/commits/{self.commit}"
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return self.commit

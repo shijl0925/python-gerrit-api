@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from gerrit import GerritClient
 from gerrit.changes.change import GerritChange
 from gerrit.utils.exceptions import ChangeNotFoundError, GerritAPIException
 
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChanges:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/changes"
 

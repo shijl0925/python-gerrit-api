@@ -3,13 +3,14 @@
 # @Author: Jialiang Shi
 from base64 import b64decode
 from urllib.parse import quote_plus
+from gerrit import GerritClient
 from gerrit.changes.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.comments import GerritChangeRevisionComments
 from gerrit.changes.files import GerritChangeRevisionFiles
 
 
 class GerritChangeRevision:
-    def __init__(self, gerrit, change, revision="current"):
+    def __init__(self, gerrit: GerritClient, change: str, revision: str = "current"):
         self.change = change
         self.revision = revision
         self.gerrit = gerrit

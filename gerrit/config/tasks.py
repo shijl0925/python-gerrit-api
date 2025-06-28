@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
+
 class Task:
-    def __init__(self, task_id: str, gerrit):
+    def __init__(self, task_id: str, gerrit: GerritClient):
         self.id = task_id
         self.gerrit = gerrit
         self.endpoint = f"/config/server/tasks/{self.id}"
@@ -18,7 +20,7 @@ class Task:
 
 
 class Tasks:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/config/server/tasks"
 

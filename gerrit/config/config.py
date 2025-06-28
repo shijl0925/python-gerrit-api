@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.config.caches import Caches
 from gerrit.config.tasks import Tasks
 
 
 class GerritConfig:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/config/server"
 

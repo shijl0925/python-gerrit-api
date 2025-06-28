@@ -15,7 +15,7 @@ class GerritAccountGPGKey(GerritBase):
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/gpgkeys/{self.id}"
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return self.id

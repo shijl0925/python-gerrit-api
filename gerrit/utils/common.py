@@ -4,7 +4,7 @@
 import json
 
 
-def strip_trailing_slash(url):
+def strip_trailing_slash(url: str) -> str:
     """
     remove url's trailing slash
     :param url: url

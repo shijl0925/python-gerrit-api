@@ -11,7 +11,7 @@ class GerritGroup(GerritBase):
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}"
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return self.id

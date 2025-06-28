@@ -12,7 +12,7 @@ class GerritProjectWebHook(GerritBase):
         self.endpoint = (
             f"/config/server/webhooks~projects/{self.project}/remotes/{self.name}"
         )
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return self.name

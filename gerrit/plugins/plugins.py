@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
 from gerrit.utils.common import params_creator
 
 
 class GerritPlugin:
-    def __init__(self, id_: str, gerrit):
+    def __init__(self, id_: str, gerrit: GerritClient):
         self.id_ = id_
         self.gerrit = gerrit
         self.endpoint = f"/plugins/{self.id_}"
@@ -39,7 +40,7 @@ class GerritPlugin:
 
 
 class GerritPlugins:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/plugins"
 

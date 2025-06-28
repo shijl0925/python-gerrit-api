@@ -6,12 +6,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from gerrit.utils.requester import Requester
 from gerrit.utils.common import decode_response, strip_trailing_slash
-from gerrit.config.config import GerritConfig
-from gerrit.projects.projects import GerritProjects
-from gerrit.accounts.accounts import GerritAccounts
-from gerrit.groups.groups import GerritGroups
-from gerrit.plugins.plugins import GerritPlugins
-from gerrit.changes.changes import GerritChanges
 
 
 class GerritClient:
@@ -107,6 +101,7 @@ class GerritClient:
 
         :return:
         """
+        from gerrit.config.config import GerritConfig
         return GerritConfig(gerrit=self)
 
     @property
@@ -115,6 +110,7 @@ class GerritClient:
         Project related REST APIs
         :return:
         """
+        from gerrit.projects.projects import GerritProjects
         return GerritProjects(gerrit=self)
 
     @property
@@ -124,6 +120,7 @@ class GerritClient:
 
         :return:
         """
+        from gerrit.changes.changes import GerritChanges
         return GerritChanges(gerrit=self)
 
     @property
@@ -133,6 +130,7 @@ class GerritClient:
 
         :return:
         """
+        from gerrit.accounts.accounts import GerritAccounts
         return GerritAccounts(gerrit=self)
 
     @property
@@ -142,6 +140,7 @@ class GerritClient:
 
         :return:
         """
+        from gerrit.groups.groups import GerritGroups
         return GerritGroups(gerrit=self)
 
     @property
@@ -151,6 +150,7 @@ class GerritClient:
 
         :return:
         """
+        from gerrit.plugins.plugins import GerritPlugins
         return GerritPlugins(gerrit=self)
 
     @property

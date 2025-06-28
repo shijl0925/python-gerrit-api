@@ -11,7 +11,7 @@ class GerritChangeEdit(GerritBase):
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/edit"
 
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return f"change {self.change} edit"

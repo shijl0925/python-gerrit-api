@@ -3,7 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
-from gerrit.accounts.account import GerritAccount
+from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     AccountNotFoundError,
     AccountAlreadyExistsError,
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccounts:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/accounts"
 
@@ -69,11 +69,15 @@ class GerritAccounts:
         :param account: username or email or _account_id or 'self'
         :return:
         """
+        from gerrit.accounts.account import GerritAccount
+
         try:
             endpoint = self.endpoint + f"/{account}/"
             result = self.gerrit.get(endpoint)
 
             account_ = result.get("_account_id")
+            if account_ is None:
+                raise ValueError("Account ID not found")
             return GerritAccount(account=account_, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:

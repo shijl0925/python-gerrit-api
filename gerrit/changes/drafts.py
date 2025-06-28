@@ -13,7 +13,7 @@ class GerritChangeRevisionDraft(GerritBase):
         self.endpoint = (
             f"/changes/{self.change}/revisions/{self.revision}/drafts/{self.id}"
         )
-        super().__init__(self)
+        super().__init__()
 
     def __str__(self):
         return self.id

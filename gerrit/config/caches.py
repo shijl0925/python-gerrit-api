@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from gerrit import GerritClient
+
 class Cache:
-    def __init__(self, name: str, gerrit):
+    def __init__(self, name: str, gerrit: GerritClient):
         self.name = name
         self.gerrit = gerrit
         self.endpoint = f"/config/server/caches/{self.name}"
@@ -17,7 +19,7 @@ class Cache:
 
 
 class Caches:
-    def __init__(self, gerrit):
+    def __init__(self, gerrit: GerritClient):
         self.gerrit = gerrit
         self.endpoint = "/config/server/caches"
 
