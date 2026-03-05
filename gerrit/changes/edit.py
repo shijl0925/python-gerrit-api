@@ -47,7 +47,7 @@ class GerritChangeEdit(GerritBase):
         self.gerrit.put(
             self.endpoint + f"/{quote_plus(file)}",
             data=file_content,
-            headers={"Content-Type": "plain/text"},
+            headers={"Content-Type": "text/plain"},
         )
 
     def restore_file_content(self, file):

@@ -208,14 +208,18 @@ class GerritChangeRevision:
         """
         endpoint = self.endpoint + "/patch"
 
+        query_params = []
         if zip_:
-            endpoint += endpoint + "?zip"
+            query_params.append("zip")
 
         if download:
-            endpoint += endpoint + "?download"
+            query_params.append("download")
 
         if path:
-            endpoint += endpoint + f"?path={quote_plus(path)}"
+            query_params.append(f"path={quote_plus(path)}")
+
+        if query_params:
+            endpoint += "?" + "&".join(query_params)
 
         result = self.gerrit.get(endpoint)
         if decode:
@@ -259,7 +263,7 @@ class GerritChangeRevision:
         return self.gerrit.post(
             self.endpoint + "/test.submit_type",
             data=input_,
-            headers={"Content-Type": "plain/text"},
+            headers={"Content-Type": "text/plain"},
         )
 
     def test_submit_rule(self, input_):
@@ -273,7 +277,7 @@ class GerritChangeRevision:
         return self.gerrit.post(
             self.endpoint + "/test.submit_rule",
             data=input_,
-            headers={"Content-Type": "plain/text"},
+            headers={"Content-Type": "text/plain"},
         )
 
     @property

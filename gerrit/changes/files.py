@@ -82,7 +82,7 @@ class GerritChangeRevisionFile:
         """
         endpoint = self.endpoint + "/diff"
         if intraline:
-            endpoint += endpoint + "?intraline"
+            endpoint += "?intraline"
 
         return self.gerrit.get(endpoint)
 
