@@ -8,7 +8,7 @@ from gerrit.groups.subgroups import GerritGroupSubGroups
 
 
 class GerritGroup(GerritBase):
-    def __init__(self, group_id: int, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient):
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}"
