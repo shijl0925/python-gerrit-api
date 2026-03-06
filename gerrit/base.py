@@ -182,7 +182,7 @@ class GerritClient:
         :return:
         """
         url = self.get_endpoint_url(endpoint)
-        logger.debug(f"Sending GET request to {url}")
+        logger.debug("Sending GET request to %s", url)
         response = self.requester.get(url, **kwargs)
         result = decode_response(response)
         return result
@@ -195,7 +195,7 @@ class GerritClient:
         :return:
         """
         url = self.get_endpoint_url(endpoint)
-        logger.debug(f"Sending POST request to {url}")
+        logger.debug("Sending POST request to %s", url)
         response = self.requester.post(url, **kwargs)
         result = decode_response(response)
         return result
@@ -208,7 +208,7 @@ class GerritClient:
         :return:
         """
         url = self.get_endpoint_url(endpoint)
-        logger.debug(f"Sending PUT request to {url}")
+        logger.debug("Sending PUT request to %s", url)
         response = self.requester.put(url, **kwargs)
         result = decode_response(response)
         return result
@@ -221,5 +221,5 @@ class GerritClient:
         :return:
         """
         url = self.get_endpoint_url(endpoint)
-        logger.debug(f"Sending DELETE request to {url}")
+        logger.debug("Sending DELETE request to %s", url)
         self.requester.delete(url)

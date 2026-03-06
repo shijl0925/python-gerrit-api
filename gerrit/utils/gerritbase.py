@@ -63,4 +63,4 @@ class GerritBase:
         return other.endpoint == self.endpoint  # pylint: disable=no-member
 
     def __hash__(self) -> int:
-        return hash(self.endpoint)
+        return hash(self.endpoint)  # pylint: disable=no-member
