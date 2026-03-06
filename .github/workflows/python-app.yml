@@ -66,7 +66,7 @@ jobs:
     #   run: |
     #     mypy gerrit --install-types
     - name: SonarCloud Scan
-      if: ${{ matrix.python-version == '3.10' }}
+      if: ${{ matrix.python-version == '3.10' && secrets.SONAR_TOKEN != '' }}
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
