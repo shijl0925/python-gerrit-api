@@ -1,340 +1,475 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+"""
+Unit tests for gerrit.projects — all HTTP calls are mocked.
+"""
 import logging
 import pytest
+import requests
+from unittest.mock import MagicMock
 from urllib.parse import quote_plus
+
+from tests.conftest import PROJECT_DATA
 
 logger = logging.getLogger(__name__)
 
+BRANCH_DATA = {
+    "ref": "refs/heads/master",
+    "revision": "67ebf73496383c6777035e374d2d664009e2aa5c",
+    "can_delete": False,
+}
+
+TAG_DATA = {
+    "ref": "refs/tags/v1.0",
+    "revision": "67ebf73496383c6777035e374d2d664009e2aa5c",
+    "object": "abc123",
+    "message": "v1.0 release",
+}
+
+COMMIT_DATA = {
+    "commit": "1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467",
+    "author": {"name": "Test Author", "email": "author@example.com"},
+    "committer": {"name": "Test Committer", "email": "committer@example.com"},
+    "message": "Test commit message",
+    "parents": [{"commit": "parent123"}],
+    "subject": "Test commit message",
+}
+
+
+# ---------------------------------------------------------------------------
+# GerritProjects (manager)
+# ---------------------------------------------------------------------------
+
+class TestGerritProjects:
+
+    def test_list_projects(self, mock_gerrit):
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.list(limit=25, skip=0)
+        assert len(result) > 0
+
+    def test_list_projects_with_state(self, mock_gerrit):
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.list(limit=25, state="ACTIVE")
+        assert isinstance(result, dict)
+
+    def test_list_projects_all_and_state_raises(self, mock_gerrit):
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        with pytest.raises(ValueError):
+            projects.list(is_all=True, state="ACTIVE")
+
+    def test_list_projects_with_pattern(self, mock_gerrit):
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.list(pattern_dispatcher={"prefix": "my"})
+        assert isinstance(result, dict)
+
+    def test_list_projects_with_branch(self, mock_gerrit):
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.list(branch="master")
+        assert isinstance(result, dict)
+
+    def test_list_projects_is_all(self, mock_gerrit):
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA, "other": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.list(is_all=True)
+        assert len(result) > 0
+
+    def test_search_projects(self, mock_gerrit):
+        mock_gerrit.get.return_value = [PROJECT_DATA]
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.search(query="name:myProject")
+        assert len(result) >= 1
+
+    def test_get_project(self, mock_gerrit):
+        mock_gerrit.get.return_value = PROJECT_DATA
+
+        from gerrit.projects.projects import GerritProjects
+        from gerrit.projects.project import GerritProject
+        projects = GerritProjects(gerrit=mock_gerrit)
+        project = projects.get(name="myProject")
+        assert isinstance(project, GerritProject)
+        assert project.name == PROJECT_DATA["name"]
+
+    def test_get_project_not_found(self, mock_gerrit):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_gerrit.get.side_effect = http_error
+
+        from gerrit.projects.projects import GerritProjects
+        from gerrit.utils.exceptions import ProjectNotFoundError
+        projects = GerritProjects(gerrit=mock_gerrit)
+        with pytest.raises(ProjectNotFoundError):
+            projects.get(name="nonexistent")
+
+    def test_create_project(self, mock_gerrit):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        # First get → 404 (not found), then put, then get again → project data × 2
+        mock_gerrit.get.side_effect = [http_error, PROJECT_DATA, PROJECT_DATA]
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        result = projects.create("newProject", {"description": "New project"})
+        assert result is not None
+        mock_gerrit.put.assert_called_once()
+
+    def test_create_project_already_exists(self, mock_gerrit):
+        mock_gerrit.get.return_value = PROJECT_DATA
+
+        from gerrit.projects.projects import GerritProjects
+        from gerrit.utils.exceptions import ProjectAlreadyExistsError
+        projects = GerritProjects(gerrit=mock_gerrit)
+        with pytest.raises(ProjectAlreadyExistsError):
+            projects.create("myProject", {})
+
+    def test_delete_project(self, mock_gerrit):
+        mock_gerrit.get.return_value = PROJECT_DATA
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        projects.delete("myProject")
+        mock_gerrit.post.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritProject (single project)
+# ---------------------------------------------------------------------------
+
+class TestGerritProject:
+
+    def test_project_str_and_repr(self, mock_project):
+        assert str(mock_project) == PROJECT_DATA["id"]
+        assert "GerritProject" in repr(mock_project)
+
+    def test_project_attributes(self, mock_project):
+        attrs = ["id", "name", "parent", "state", "labels", "web_links"]
+        for attr in attrs:
+            assert hasattr(mock_project, attr), f"Missing attribute: {attr}"
+
+    def test_project_to_dict(self, mock_project):
+        info = mock_project.to_dict()
+        assert info.get("name") == PROJECT_DATA["name"]
+        assert info.get("id") == PROJECT_DATA["id"]
+
+    def test_project_equality(self, mock_project, mock_gerrit):
+        """Two GerritProject objects with same endpoint should be equal."""
+        mock_gerrit.get.return_value = PROJECT_DATA
+        from gerrit.projects.project import GerritProject
+        other = GerritProject(project_id=PROJECT_DATA["id"], gerrit=mock_gerrit)
+        assert mock_project == other
+
+    def test_project_inequality(self, mock_project, mock_gerrit):
+        mock_gerrit.get.return_value = {**PROJECT_DATA, "id": "otherProject", "name": "otherProject"}
+        from gerrit.projects.project import GerritProject
+        other = GerritProject(project_id="otherProject", gerrit=mock_gerrit)
+        assert mock_project != other
+
+    def test_get_description(self, mock_project):
+        mock_project.gerrit.get.return_value = "A test project"
+        result = mock_project.get_description()
+        assert result == "A test project"
+
+    def test_set_description(self, mock_project):
+        mock_project.gerrit.put.return_value = "Updated description"
+        mock_project.set_description({"description": "Updated"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_delete_description(self, mock_project):
+        mock_project.delete_description()
+        mock_project.gerrit.delete.assert_called()
+
+    def test_delete_project(self, mock_project):
+        mock_project.delete()
+        mock_project.gerrit.post.assert_called()
+
+    def test_get_parent(self, mock_project):
+        mock_project.gerrit.get.return_value = "All-Projects"
+        result = mock_project.get_parent()
+        assert result == "All-Projects"
+
+    def test_set_parent(self, mock_project):
+        mock_project.gerrit.put.return_value = "New-Parent"
+        mock_project.set_parent({"parent": "New-Parent"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_get_head(self, mock_project):
+        mock_project.gerrit.get.return_value = "refs/heads/master"
+        result = mock_project.get_head()
+        assert result == "refs/heads/master"
+
+    def test_set_head(self, mock_project):
+        mock_project.gerrit.put.return_value = "refs/heads/main"
+        mock_project.set_head({"ref": "refs/heads/main"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_get_access_rights(self, mock_project):
+        access = {"inherits_from": {"name": "All-Projects"}, "local": {}}
+        mock_project.gerrit.get.return_value = access
+        result = mock_project.get_access_rights()
+        assert "inherits_from" in result
+
+    def test_set_access_rights(self, mock_project):
+        mock_project.gerrit.post.return_value = {"inherits_from": {"name": "All-Projects"}}
+        mock_project.set_access_rights({"add": {}, "remove": {}})
+        mock_project.gerrit.post.assert_called()
+
+    def test_child_projects(self, mock_project):
+        mock_project.gerrit.get.return_value = [PROJECT_DATA]
+        children = mock_project.child_projects
+        assert len(children) >= 0
+
+    def test_get_commit(self, mock_project):
+        mock_project.gerrit.get.return_value = COMMIT_DATA
+        from gerrit.projects.commit import GerritProjectCommit
+        commit = mock_project.get_commit("1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467")
+        assert isinstance(commit, GerritProjectCommit)
+
+    def test_get_commit_not_found(self, mock_project):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_project.gerrit.get.side_effect = http_error
+
+        from gerrit.utils.exceptions import CommitNotFoundError
+        with pytest.raises(CommitNotFoundError):
+            mock_project.get_commit("0000000000")
+
+    def test_get_config(self, mock_project):
+        mock_project.gerrit.get.return_value = {"description": "test", "use_content_merge": "INHERIT"}
+        result = mock_project.get_config()
+        assert "description" in result
+
+    def test_set_config(self, mock_project):
+        mock_project.gerrit.put.return_value = {"description": "updated"}
+        mock_project.set_config({"description": "updated"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_run_gc(self, mock_project):
+        mock_project.gerrit.post.return_value = {"status": "ok"}
+        mock_project.run_garbage_collection({"show_progress": True})
+        mock_project.gerrit.post.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectBranches
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectBranches:
+
+    def test_list_branches(self, mock_project):
+        mock_project.gerrit.get.return_value = [BRANCH_DATA]
+        branches = mock_project.branches.list()
+        assert len(branches) > 0
+
+    def test_get_branch(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+        from gerrit.projects.branches import GerritProjectBranch
+        branch = mock_project.branches.get(name="master")
+        assert isinstance(branch, GerritProjectBranch)
+        assert branch.name == "master"
+
+    def test_get_branch_not_found(self, mock_project):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_project.gerrit.get.side_effect = http_error
+
+        from gerrit.utils.exceptions import BranchNotFoundError
+        with pytest.raises(BranchNotFoundError):
+            mock_project.branches.get(name="NONEXISTENT")
+
+    def test_create_branch(self, mock_project):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_project.gerrit.get.side_effect = [http_error, BRANCH_DATA, BRANCH_DATA]
+
+        from gerrit.projects.branches import GerritProjectBranch
+        branch = mock_project.branches.create("new-branch", {"revision": "master"})
+        assert isinstance(branch, GerritProjectBranch)
+
+    def test_create_branch_already_exists(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+
+        from gerrit.utils.exceptions import BranchAlreadyExistsError
+        with pytest.raises(BranchAlreadyExistsError):
+            mock_project.branches.create("master", {"revision": "abc123"})
+
+    def test_delete_branch(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+        mock_project.branches.delete("master")
+        mock_project.gerrit.delete.assert_called()
+
+    def test_branch_to_dict(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+        branch = mock_project.branches.get(name="master")
+        info = branch.to_dict()
+        assert info.get("ref") == BRANCH_DATA["ref"]
+
+    def test_branch_str(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+        branch = mock_project.branches.get(name="master")
+        assert str(branch) == "master"
+
+    def test_branch_get_file_content(self, mock_project):
+        import base64
+        content = base64.b64encode(b"file content").decode("utf-8")
+        mock_project.gerrit.get.side_effect = [BRANCH_DATA, BRANCH_DATA, content, content]
+        branch = mock_project.branches.get(name="master")
+        result = branch.get_file_content("README.md")
+        assert len(result) > 0
+
+        result_decoded = branch.get_file_content("README.md", decode=True)
+        assert len(result_decoded) > 0
+
+    def test_branch_get_reflog(self, mock_project):
+        mock_project.gerrit.get.return_value = BRANCH_DATA
+        branch = mock_project.branches.get(name="master")
+        mock_project.gerrit.get.return_value = [{"old_id": "abc", "new_id": "def"}]
+        result = branch.get_reflog()
+        assert isinstance(result, list)
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectTags
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectTags:
+
+    def test_list_tags(self, mock_project):
+        mock_project.gerrit.get.return_value = [TAG_DATA]
+        tags = mock_project.tags.list()
+        assert len(tags) > 0
+
+    def test_get_tag(self, mock_project):
+        mock_project.gerrit.get.return_value = TAG_DATA
+        from gerrit.projects.tags import GerritProjectTag
+        tag = mock_project.tags.get(name="v1.0")
+        assert isinstance(tag, GerritProjectTag)
+        assert tag.name == "v1.0"
+
+    def test_get_tag_not_found(self, mock_project):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_project.gerrit.get.side_effect = http_error
+
+        from gerrit.utils.exceptions import TagNotFoundError
+        with pytest.raises(TagNotFoundError):
+            mock_project.tags.get(name="NONEXISTENT")
+
+    def test_create_tag(self, mock_project):
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_project.gerrit.get.side_effect = [http_error, TAG_DATA, TAG_DATA]
+
+        from gerrit.projects.tags import GerritProjectTag
+        tag = mock_project.tags.create("v2.0", {"revision": "abc123"})
+        assert isinstance(tag, GerritProjectTag)
+
+    def test_create_tag_already_exists(self, mock_project):
+        mock_project.gerrit.get.return_value = TAG_DATA
+
+        from gerrit.utils.exceptions import TagAlreadyExistsError
+        with pytest.raises(TagAlreadyExistsError):
+            mock_project.tags.create("v1.0", {"revision": "abc123"})
+
+    def test_delete_tag(self, mock_project):
+        mock_project.gerrit.get.return_value = TAG_DATA
+        mock_project.tags.delete("v1.0")
+        mock_project.gerrit.delete.assert_called()
+
+    def test_tag_to_dict(self, mock_project):
+        mock_project.gerrit.get.return_value = TAG_DATA
+        tag = mock_project.tags.get(name="v1.0")
+        info = tag.to_dict()
+        assert info.get("ref") == TAG_DATA["ref"]
+
+    def test_tag_str(self, mock_project):
+        mock_project.gerrit.get.return_value = TAG_DATA
+        tag = mock_project.tags.get(name="v1.0")
+        assert str(tag) == "v1.0"
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectCommit
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectCommit:
+
+    def _get_commit(self, mock_project):
+        mock_project.gerrit.get.return_value = COMMIT_DATA
+        return mock_project.get_commit("1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467")
+
+    def test_commit_str(self, mock_project):
+        commit = self._get_commit(mock_project)
+        assert str(commit) == "1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467"
+
+    def test_commit_to_dict(self, mock_project):
+        commit = self._get_commit(mock_project)
+        detail = commit.to_dict()
+        assert "author" in detail
+        assert "commit" in detail
+        assert "message" in detail
+
+    def test_commit_get_include_in(self, mock_project):
+        commit = self._get_commit(mock_project)
+        mock_project.gerrit.get.return_value = {"branches": ["master"], "tags": ["v1.0"]}
+        result = commit.get_include_in()
+        assert "branches" in result
+        assert "tags" in result
+
+    def test_commit_get_file_content(self, mock_project):
+        import base64
+        content = base64.b64encode(b"hello world").decode("utf-8")
+        commit = self._get_commit(mock_project)
+        mock_project.gerrit.get.return_value = content
+        result = commit.get_file_content("README.md")
+        assert len(result) > 0
+
+        result_decoded = commit.get_file_content("README.md", decode=True)
+        assert len(result_decoded) > 0
+
+    def test_commit_list_change_files(self, mock_project):
+        commit = self._get_commit(mock_project)
+        mock_project.gerrit.get.return_value = {"README.md": {}, "src/main.py": {}}
+        files = commit.list_change_files()
+        assert "README.md" in files  # files is a dict
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectDashboards and Labels
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectDashboardsAndLabels:
+
+    def test_list_dashboards(self, mock_project):
+        mock_project.gerrit.get.return_value = []
+        dashboards = mock_project.dashboards.list()
+        assert len(dashboards) >= 0
+
+    def test_list_labels(self, mock_project):
+        mock_project.gerrit.get.return_value = []
+        labels = mock_project.labels.list()
+        assert len(labels) >= 0
 
-@pytest.fixture()
-def gerrit_object(request):
-    param = request.param
-    return param
-
-
-data = [
-    {
-        "project_name": "LineageOS/android",
-        "branch": "lineage-20.0",
-        "tag": "cm-10.2-M1",
-        "file": "default.xml",
-    },
-    {
-        "project_name": "LineageOS/Superuser",
-        "branch": "master",
-        "tag": "cm-10.2.1",
-        "file": "README.md",
-    },
-]
-
-
-@pytest.mark.parametrize('is_all, limit, skip, pattern_dispatcher, project_type, description, branch, state',
-                         [(False, 25, 0, None, None, False, None, "ACTIVE"),
-                          (False, 25, 25, None, None, False, None, "ACTIVE"),
-                          (True, 25, 0, None, None, False, None, None),
-                          (False, 25, 0, {"prefix": "Lineage"}, None, False, None, None),
-                          (False, 25, 0, None, "all", False, None, None),
-                          (False, 25, 0, None, None, True, None, None),
-                          (False, 25, 0, None, None, False, "master", None),
-                          ])
-def test_list_projects(gerrit_client, is_all, limit, skip, pattern_dispatcher, project_type, description, branch, state):
-    resp = gerrit_client.projects.list(is_all, limit, skip, pattern_dispatcher, project_type, description, branch, state)
-
-    assert len(resp) > 0
-
-
-def test_list_all_project(gerrit_client):
-    with pytest.raises(ValueError):
-        gerrit_client.projects.list(is_all=True, state="ACTIVE")
-
-    resp = gerrit_client.projects.list(is_all=True)
-
-    assert len(resp) > 25
-
-
-@pytest.mark.parametrize('query', ["name:LineageOS/android", "inname:LineageOS",
-                                   "state:read-only", "parent:Head-Developers"])
-def test_search_projects(gerrit_client, query):
-    resp = gerrit_client.projects.search(query=query)
-
-    assert len(resp) >= 1
-
-
-@pytest.mark.parametrize('gerrit_object', data, indirect=True)
-def test_get_project(gerrit_client, gerrit_object):
-    from gerrit.projects.project import GerritProject
-    from gerrit.utils.exceptions import ProjectNotFoundError
-    with pytest.raises(ProjectNotFoundError):
-        gerrit_client.projects.get(name="test-project0000000")
-
-    project_name = gerrit_object["project_name"]
-    project = gerrit_client.projects.get(name=project_name)
-    logger.debug(project.to_dict())
-
-    assert isinstance(project, GerritProject)
-
-    attrs = ["id", "name", "parent", "state", "labels", "web_links"]
-    for attr in attrs:
-        logger.debug(f"{attr}, {hasattr(project, attr)}, {getattr(project, attr)}")
-
-    assert all(hasattr(project, attr) for attr in attrs)
-
-    project_id = project.id
-    assert str(project) == f"{project_id}"
-    assert repr(project) == f"<gerrit.projects.project.GerritProject {project_id}>"
-
-    project_info = project.to_dict()
-    assert project_info.get("name") == project_name
-    assert project_info.get("id") == quote_plus(project_name)
-
-    assert project.name == project_name
-
-    assert project != gerrit_client.projects.get(name="LineageOS/android_art")
-    assert project != gerrit_client.accounts.get(account="jialiang.shi")
-
-
-@pytest.mark.parametrize('gerrit_object', data, indirect=True)
-def test_get_project_access_rights(gerrit_client, gerrit_object):
-    project_name = gerrit_object["project_name"]
-    project = gerrit_client.projects.get(name=project_name)
-    access_rights = project.get_access_rights()
-    assert "inherits_from" in access_rights.keys()
-
-
-@pytest.mark.parametrize('project_name, expected',
-                         [("LineageOS/android", "Head-Developers"),
-                          ("LineageOS/android_device_google_tangorpro", "PROJECT-Google-tangorpro")
-                          ])
-def test_get_project_parent(gerrit_client, project_name, expected):
-    project = gerrit_client.projects.get(name=project_name)
-    HEAD = project.get_parent()
-    assert HEAD == expected
-
-
-@pytest.mark.parametrize('project_name, expected',
-                         [("LineageOS/android", "refs/heads/master")])
-def test_get_project_head(gerrit_client, project_name, expected):
-    project = gerrit_client.projects.get(name=project_name)
-    HEAD = project.get_head()
-    assert HEAD == expected
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_set_project_description(gerrit_client):
-    input_ = {
-        "description": "Git Repo Project",
-        "commit_message": "Update the project description"
-    }
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-    project.set_description(input_)
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_delete_project_description(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-    project.delete_description()
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_create_project(gerrit_client):
-    from gerrit.utils.exceptions import ProjectAlreadyExistsError
-    input_ = {
-        "description": "This is a demo project.",
-        "submit_type": "INHERIT",
-        "owners": [
-            "MyProject-Owners"
-        ]
-    }
-    project_name = "LineageOS/android"  # "git-repo"
-    with pytest.raises(ProjectAlreadyExistsError):
-        gerrit_client.projects.create(project_name, input_)
-
-    project = gerrit_client.projects.create('MyProject', input_)
-    assert project.name == "MyProject"
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_delete_project(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    gerrit_client.projects.delete(project_name)
-
-    project = gerrit_client.projects.get(project_name)
-    project.delete()
-
-
-def test_get_child_projects(gerrit_client):
-    project_name = "Head-Developers"
-    project = gerrit_client.projects.get(name=project_name)
-    children = project.child_projects
-
-    assert len(children) >= 0
-
-
-@pytest.mark.parametrize('gerrit_object', data, indirect=True)
-def test_project_branches(gerrit_client, gerrit_object):
-    project_name = gerrit_object["project_name"]
-    project = gerrit_client.projects.get(name=project_name)
-    branches = project.branches.list()
-    assert len(branches) > 0
-
-    from gerrit.utils.exceptions import BranchNotFoundError
-    with pytest.raises(BranchNotFoundError):
-        project.branches.get(name="TEST-BRANCH")
-
-    branch_name = gerrit_object["branch"]
-    branch = project.branches.get(name=branch_name)
-    assert branch.name == branch_name
-    assert str(branch) == f"{branch_name}"
-
-    master_info = branch.to_dict()
-    assert master_info.get("ref") == f"refs/heads/{branch_name}"
-
-    file_name = gerrit_object["file"]
-    file = branch.get_file_content(file=file_name)
-    assert len(file) > 0
-
-    file = branch.get_file_content(file=file_name, decode=True)
-    assert len(file) > 0
-
-
-def test_project_branch_is_mergeable(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(name=project_name)
-    branch_name = "lineage-20.0"
-    branch = project.branches.get(name=branch_name)
-    input_ = {
-        'source': 'lineage-19.1',
-        'strategy': 'recursive'
-    }
-    res = branch.is_mergeable(input_)
-    assert "mergeable" in res.keys()
-
-    from gerrit.utils.exceptions import BranchNotFoundError
-    with pytest.raises(BranchNotFoundError):
-        input_ = {
-            'source': 'lineage-19.2',
-            'strategy': 'recursive'
-        }
-        branch.is_mergeable(input_)
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_create_project_branch(gerrit_client):
-    from gerrit.utils.exceptions import BranchAlreadyExistsError
-    input_ = {
-        'revision': '1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467'
-    }
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-
-    with pytest.raises(BranchAlreadyExistsError):
-        project.branches.create('lineage-20.0', input_)
-
-    new_branch = project.branches.create('stable', input_)
-    assert new_branch.name == "stable"
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_delete_project_branch(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-    project.branches.delete("lineage-20.0")
-
-
-@pytest.mark.parametrize('gerrit_object', data, indirect=True)
-def test_project_tags(gerrit_client, gerrit_object):
-    project_name = gerrit_object["project_name"]
-    project = gerrit_client.projects.get(name=project_name)
-    tags = project.tags.list()
-    assert len(tags) > 0
-
-    from gerrit.utils.exceptions import TagNotFoundError
-    with pytest.raises(TagNotFoundError):
-        project.tags.get(name="TEST-TAG")
-
-    tag_name = gerrit_object["tag"]
-    tag = project.tags.get(name=tag_name)
-    assert tag.name == tag_name
-    assert str(tag) == f"{tag_name}"
-
-    tag_info = tag.to_dict()
-    assert tag_info.get("ref") == f"refs/tags/{tag_name}"
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_create_project_tag(gerrit_client):
-    from gerrit.utils.exceptions import TagAlreadyExistsError
-    input_ = {
-        "message": "annotation",
-        'revision': '8351e4f8077fa038ea3ecbf60925581c8c40ccc4'
-    }
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-
-    with pytest.raises(TagAlreadyExistsError):
-        project.tags.create('cm-10.2-M1', input_)
-
-    new_branch = project.tags.create('cm-10.2', input_)
-    assert new_branch.name == "cm-10.2"
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_delete_project_tag(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(project_name)
-    project.tags.delete("cm-10.2-M1")
-
-
-def test_get_project_commit(gerrit_client):
-    project_name = "LineageOS/android"  # "git-repo"
-    project = gerrit_client.projects.get(name=project_name)
-
-    hash_ = "1b16713d0ca30ecc9f6f3ac78554d57b5d4fa467"
-    commit = project.get_commit(hash_)
-
-    from gerrit.utils.exceptions import CommitNotFoundError
-    with pytest.raises(CommitNotFoundError):
-        project.get_commit(commit="00000000000000000000")
-
-    assert str(commit) == f"{hash_}"
-
-    detail = commit.to_dict()
-    assert "author" in detail
-    assert "commit" in detail
-    assert "message" in detail
-    assert "parents" in detail
-    assert "subject" in detail
-
-    include_in = commit.get_include_in()
-    assert "branches" in include_in
-    assert "tags" in include_in
-
-    file_name = "default.xml"
-    content = commit.get_file_content(file_name)
-    assert len(content) > 0
-
-    content = commit.get_file_content(file_name, decode=True)
-    assert len(content) > 0
-
-    assert file_name in commit.list_change_files()
-
-
-@pytest.mark.xfail(reason="Request is not authorized")
-def test_get_project_labels(gerrit_client):
-    project_name = "LineageOS/android_frameworks_base"
-    project = gerrit_client.projects.get(name=project_name)
-
-    labels = project.labels.list()
-    assert len(labels) >= 0
-
-
-def test_get_project_dashboards(gerrit_client):
-    project_name = "LineageOS/android_frameworks_base"
-    project = gerrit_client.projects.get(name=project_name)
-
-    dashboards = project.dashboards.list()
-    assert len(dashboards) >= 0
