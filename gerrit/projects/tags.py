@@ -123,3 +123,28 @@ class GerritProjectTags:
         """
         self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
+
+    def delete_tags(self, input_):
+        """
+        Delete one or more tags.
+
+        .. code-block:: python
+
+            input_ = {
+                "tags": [
+                    "v1.0",
+                    "v2.0"
+                ]
+            }
+            project = client.projects.get('myproject')
+            project.tags.delete_tags(input_)
+
+        :param input_: the DeleteTagsInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#delete-tags-input
+        :return:
+        """
+        self.gerrit.post(
+            self.endpoint + ":delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )

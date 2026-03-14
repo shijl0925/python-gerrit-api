@@ -237,6 +237,19 @@ class TestGerritProject:
         children = mock_project.child_projects
         assert len(children) >= 0
 
+    def test_get_child_project(self, mock_project):
+        mock_project.gerrit.get.return_value = PROJECT_DATA
+        result = mock_project.get_child_project("childProject")
+        mock_project.gerrit.get.assert_called()
+        assert result is not None
+
+    def test_get_child_project_recursive(self, mock_project):
+        mock_project.gerrit.get.return_value = PROJECT_DATA
+        result = mock_project.get_child_project("childProject", recursive=True)
+        call_args = mock_project.gerrit.get.call_args
+        assert call_args[1].get("params", {}).get("recursive") == 1
+        assert result is not None
+
     def test_get_commit(self, mock_project):
         mock_project.gerrit.get.return_value = COMMIT_DATA
         from gerrit.projects.commit import GerritProjectCommit
@@ -319,6 +332,14 @@ class TestGerritProjectBranches:
         mock_project.branches.delete("master")
         mock_project.gerrit.delete.assert_called()
 
+    def test_delete_branches(self, mock_project):
+        input_ = {"branches": ["stable-1.0", "stable-2.0"]}
+        mock_project.branches.delete_branches(input_)
+        mock_project.gerrit.post.assert_called_once()
+        call_args = mock_project.gerrit.post.call_args
+        assert ":delete" in call_args[0][0]
+        assert call_args[1]["json"] == input_
+
     def test_branch_to_dict(self, mock_project):
         mock_project.gerrit.get.return_value = BRANCH_DATA
         branch = mock_project.branches.get(name="master")
@@ -399,6 +420,14 @@ class TestGerritProjectTags:
         mock_project.tags.delete("v1.0")
         mock_project.gerrit.delete.assert_called()
 
+    def test_delete_tags(self, mock_project):
+        input_ = {"tags": ["v1.0", "v2.0"]}
+        mock_project.tags.delete_tags(input_)
+        mock_project.gerrit.post.assert_called_once()
+        call_args = mock_project.gerrit.post.call_args
+        assert ":delete" in call_args[0][0]
+        assert call_args[1]["json"] == input_
+
     def test_tag_to_dict(self, mock_project):
         mock_project.gerrit.get.return_value = TAG_DATA
         tag = mock_project.tags.get(name="v1.0")
@@ -467,6 +496,22 @@ class TestGerritProjectDashboardsAndLabels:
         mock_project.gerrit.get.return_value = []
         dashboards = mock_project.dashboards.list()
         assert len(dashboards) >= 0
+
+    def test_get_dashboard(self, mock_project):
+        dashboard_data = {"id": "master:closed", "project": "myProject", "title": "Closed Changes"}
+        mock_project.gerrit.get.return_value = dashboard_data
+        from gerrit.projects.dashboards import GerritProjectDashboard
+        dashboard = mock_project.dashboards.get("master:closed")
+        assert isinstance(dashboard, GerritProjectDashboard)
+
+    def test_set_dashboard(self, mock_project):
+        dashboard_data = {"id": "master:closed", "project": "myProject", "title": "Closed Changes"}
+        mock_project.gerrit.get.return_value = dashboard_data
+        from gerrit.projects.dashboards import GerritProjectDashboard
+        dashboard = mock_project.dashboards.get("master:closed")
+        mock_project.gerrit.put.return_value = dashboard_data
+        dashboard.set({"id": "master:closed", "commit_message": "Update dashboard"})
+        mock_project.gerrit.put.assert_called()
 
     def test_list_labels(self, mock_project):
         mock_project.gerrit.get.return_value = []

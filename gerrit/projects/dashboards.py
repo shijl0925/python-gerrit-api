@@ -16,6 +16,27 @@ class GerritProjectDashboard(GerritBase):
     def __str__(self):
         return str(self.id)
 
+    def set(self, input_):
+        """
+        Updates a project dashboard.
+
+        .. code-block:: python
+
+            input_ = {
+                "id": "master:closed",
+                "commit_message": "Update the default dashboard"
+            }
+            dashboard = project.dashboards.get('master:closed')
+            result = dashboard.set(input_)
+
+        :param input_: the DashboardInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#dashboard-input
+        :return:
+        """
+        return self.gerrit.put(
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
+        )
+
     def delete(self):
         """
         Deletes a project dashboard.

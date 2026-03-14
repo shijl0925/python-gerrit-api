@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from urllib.parse import quote_plus
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.projects.commit import GerritProjectCommit
@@ -384,6 +385,23 @@ class GerritProject(GerritBase):
         :return:
         """
         return self.gerrit.get(self.endpoint + "/children/")
+
+    def get_child_project(self, name, recursive=False):
+        """
+        Retrieves a child project. If a non-direct child project should be
+        retrieved the parameter recursive must be set.
+
+        :param name: the name of the child project
+        :param recursive: if True, non-direct child projects are also considered
+        :return:
+        """
+        params = {}
+        if recursive:
+            params["recursive"] = 1
+        return self.gerrit.get(
+            self.endpoint + f"/children/{quote_plus(name)}",
+            params=params if params else None,
+        )
 
     @property
     def tags(self):
