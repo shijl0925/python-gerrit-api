@@ -38,6 +38,7 @@ setup(
     version=get_version(),
     description="Python wrapper for the Gerrit REST API.",
     long_description=long_description,
+    long_description_content_type="text/x-rst",
     url="https://github.com/shijl0925/python-gerrit-api",
     author="Jialiang Shi",
     author_email="kevin09254930sjl@gmail.com",
