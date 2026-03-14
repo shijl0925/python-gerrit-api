@@ -50,13 +50,13 @@ jobs:
         pytest -s -n 4
         coverage report
     - name: Run codacy-coverage-reporter
-      if: ${{ matrix.python-version == '3.12' && secrets.CODACY_PROJECT_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' }}
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage.xml
     - name: Upload coverage reports to Codecov
-      if: ${{ matrix.python-version == '3.12' && secrets.CODECOV_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' }}
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
     #   run: |
     #     mypy gerrit --install-types
     - name: SonarCloud Scan
-      if: ${{ matrix.python-version == '3.12' && secrets.SONAR_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' }}
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
