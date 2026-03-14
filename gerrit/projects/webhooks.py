@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritProjectWebHook(GerritBase):
-    def __init__(self, name: str, project: str, gerrit: GerritClient):
+    def __init__(self, name: str, project: str, gerrit: GerritClient) -> None:
         self.name = name
         self.project = project
         self.gerrit = gerrit
@@ -15,10 +16,10 @@ class GerritProjectWebHook(GerritBase):
         )
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Delete a webhook for a project.
 
@@ -28,12 +29,12 @@ class GerritProjectWebHook(GerritBase):
 
 
 class GerritProjectWebHooks:
-    def __init__(self, project, gerrit: GerritClient):
+    def __init__(self, project: str, gerrit: GerritClient) -> None:
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/config/server/webhooks~projects/{self.project}/remotes"
 
-    def list(self):
+    def list(self) -> Dict[str, Any]:
         """
         List existing webhooks for a project.
 
@@ -43,7 +44,7 @@ class GerritProjectWebHooks:
 
         return result
 
-    def create(self, name, input_):
+    def create(self, name: str, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create or update a webhook for a project.
 
@@ -67,7 +68,7 @@ class GerritProjectWebHooks:
         )
         return result
 
-    def get(self, name):
+    def get(self, name: str) -> "GerritProjectWebHook":
         """
         Get information about one webhook.
 
@@ -78,7 +79,7 @@ class GerritProjectWebHooks:
         name = result.get("name")
         return GerritProjectWebHook(name=name, project=self.project, gerrit=self.gerrit)
 
-    def delete(self, name):
+    def delete(self, name: str) -> None:
         """
         Delete a webhook for a project.
 

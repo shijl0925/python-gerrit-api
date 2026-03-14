@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict, List
 import requests
 from gerrit import GerritClient
 from gerrit.utils.exceptions import (
@@ -27,7 +28,7 @@ class GerritAccounts:
         detailed: bool = False,
         suggested: bool = False,
         all_emails: bool = False,
-    ):
+    ) -> List:
         """
         Queries accounts visible to the caller.
 
@@ -61,7 +62,7 @@ class GerritAccounts:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, account):
+    def get(self, account: str):
         """
         Returns an account
 
@@ -84,7 +85,7 @@ class GerritAccounts:
                 raise AccountNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, username, input_):
+    def create(self, username: str, input_: Dict[str, Any]):
         """
         Creates a new account.
 

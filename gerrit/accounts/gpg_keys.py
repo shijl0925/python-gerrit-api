@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict, List
 import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
@@ -11,17 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccountGPGKey(GerritBase):
-    def __init__(self, id, account, gerrit: GerritClient):
+    def __init__(self, id: str, account: str, gerrit: GerritClient) -> None:
         self.id = id
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/gpgkeys/{self.id}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes a GPG key of a user.
 
@@ -31,12 +32,12 @@ class GerritAccountGPGKey(GerritBase):
 
 
 class GerritAccountGPGKeys:
-    def __init__(self, account, gerrit: GerritClient):
+    def __init__(self, account: str, gerrit: GerritClient) -> None:
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/gpgkeys"
 
-    def list(self):
+    def list(self) -> List[Dict[str, Any]]:
         """
         Returns the GPG keys of an account.
 
@@ -51,7 +52,7 @@ class GerritAccountGPGKeys:
 
         return keys
 
-    def get(self, id_):
+    def get(self, id_: str) -> "GerritAccountGPGKey":
         """
         Retrieves a GPG key of a user.
 
@@ -69,7 +70,7 @@ class GerritAccountGPGKeys:
                 raise GPGKeyNotFoundError(message)
             raise GerritAPIException from error
 
-    def modify(self, input_):
+    def modify(self, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Add or delete one or more GPG keys for a user.
 
@@ -122,7 +123,7 @@ class GerritAccountGPGKeys:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete(self, id_):
+    def delete(self, id_: str) -> None:
         """
         Deletes a GPG key of a user.
 

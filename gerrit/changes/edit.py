@@ -2,22 +2,23 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 from urllib.parse import quote_plus
+from typing import Any, Dict
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeEdit(GerritBase):
-    def __init__(self, change: str, gerrit: GerritClient):
+    def __init__(self, change: str, gerrit: GerritClient) -> None:
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/edit"
 
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"change {self.change} edit"
 
-    def get_change_file_content(self, file):
+    def get_change_file_content(self, file: str) -> str:
         """
         Retrieves content of a file from a change edit.
         The content of the file is returned as text encoded inside base64.
@@ -27,7 +28,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/{quote_plus(file)}")
 
-    def get_file_meta_data(self, file):
+    def get_file_meta_data(self, file: str) -> Dict[str, Any]:
         """
         Retrieves meta data of a file from a change edit.
 
@@ -36,7 +37,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/{quote_plus(file)}/meta")
 
-    def put_change_file_content(self, file, file_content):
+    def put_change_file_content(self, file: str, file_content: str) -> None:
         """
         Put content of a file to a change edit.
 
@@ -50,7 +51,7 @@ class GerritChangeEdit(GerritBase):
             headers={"Content-Type": "text/plain"},
         )
 
-    def restore_file_content(self, file):
+    def restore_file_content(self, file: str) -> None:
         """
         restores file content
 
@@ -62,7 +63,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def rename_file(self, old_path, new_path):
+    def rename_file(self, old_path: str, new_path: str) -> None:
         """
         rename file
 
@@ -75,7 +76,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete_file(self, file):
+    def delete_file(self, file: str) -> None:
         """
         Deletes a file from a change edit.
 
@@ -84,7 +85,7 @@ class GerritChangeEdit(GerritBase):
         """
         self.gerrit.delete(self.endpoint + f"/{quote_plus(file)}")
 
-    def change_commit_message(self, input_):
+    def change_commit_message(self, input_: Dict[str, Any]) -> None:
         """
         Modify commit message.
 
@@ -107,7 +108,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint + ":message", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_commit_message(self):
+    def get_commit_message(self) -> str:
         """
         Retrieves commit message from change edit.
         The commit message is returned as base64 encoded string.
@@ -116,7 +117,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + ":message")
 
-    def publish(self, input_):
+    def publish(self, input_: Dict[str, Any]) -> None:
         """
         Promotes change edit to a regular patch set.
 
@@ -138,7 +139,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint + ":publish", json=input_, headers=self.gerrit.default_headers
         )
 
-    def rebase(self):
+    def rebase(self) -> None:
         """
         Rebase change edit on top of the latest patch set.
         When change was rebased on top of the latest patch set, response '204 No Content'
@@ -150,7 +151,7 @@ class GerritChangeEdit(GerritBase):
         """
         self.gerrit.post(self.endpoint + ":rebase")
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes change edit.
 

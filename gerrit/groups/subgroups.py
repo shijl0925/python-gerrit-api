@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import List
 from gerrit import GerritClient
 
 
 class GerritGroupSubGroups:
-    def __init__(self, group_id, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient) -> None:
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/groups/"
 
-    def list(self):
+    def list(self) -> List:
         """
         Lists the direct subgroups of a group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -26,7 +27,7 @@ class GerritGroupSubGroups:
 
         return subgroups
 
-    def get(self, subgroup):
+    def get(self, subgroup: str):
         """
         Retrieves a subgroup.
         This endpoint is only allowed for Gerrit internal groups;
@@ -40,7 +41,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def add(self, subgroup):
+    def add(self, subgroup: str):
         """
         Adds an internal or external group as subgroup to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -54,7 +55,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def remove(self, subgroup):
+    def remove(self, subgroup: str) -> None:
         """
         Removes a subgroup from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;

@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import List
 import requests
 from gerrit import GerritClient
 from gerrit.utils.exceptions import (
@@ -14,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class GerritGroupMembers:
-    def __init__(self, group_id, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient) -> None:
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/members"
 
-    def list(self):
+    def list(self) -> List:
         """
         Lists the direct members of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -36,7 +37,7 @@ class GerritGroupMembers:
 
         return accounts
 
-    def get(self, account):
+    def get(self, account: str):
         """
         Retrieves a group member.
         This endpoint is only allowed for Gerrit internal groups;
@@ -55,7 +56,7 @@ class GerritGroupMembers:
                 raise GroupMemberNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, account):
+    def add(self, account: str):
         """
         Adds a user as member to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -73,7 +74,7 @@ class GerritGroupMembers:
             self.gerrit.put(self.endpoint + f"/{account}")
             return self.get(account)
 
-    def remove(self, account):
+    def remove(self, account: str) -> None:
         """
         Removes a user from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;

@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import urllib.parse as urlparse
+from typing import Any, Dict, Optional
+import requests
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
@@ -37,7 +39,7 @@ class Requester:
         self.session = kwargs.get("session")
         self.timeout = kwargs.get("timeout", timeout)
 
-    def _update_url_scheme(self, url):
+    def _update_url_scheme(self, url: str) -> str:
         """
         Updates scheme of given url to the one used in Gerrit base_url.
         """
@@ -55,8 +57,13 @@ class Requester:
         return url
 
     def get_request_dict(
-        self, params=None, data=None, json=None, headers=None, **kwargs
-    ):
+        self,
+        params: Optional[Dict[str, Any]] = None,
+        data: Any = None,
+        json: Any = None,
+        headers: Optional[Dict[str, str]] = None,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
         """
         :param params:
         :param data:
@@ -99,14 +106,14 @@ class Requester:
 
     def get(
         self,
-        url,
-        params=None,
-        headers=None,
-        allow_redirects=True,
-        stream=False,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
+        stream: bool = False,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> requests.Response:
         """
         :param url:
         :param params:
@@ -131,16 +138,16 @@ class Requester:
 
     def post(
         self,
-        url,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        data: Any = None,
+        json: Any = None,
+        files: Any = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> requests.Response:
         """
         :param url:
         :param params:
@@ -169,16 +176,16 @@ class Requester:
 
     def put(
         self,
-        url,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        params: Optional[Dict[str, Any]] = None,
+        data: Any = None,
+        json: Any = None,
+        files: Any = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> requests.Response:
         """
         :param url:
         :param params:
@@ -207,12 +214,12 @@ class Requester:
 
     def delete(
         self,
-        url,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> requests.Response:
         """
         :param url:
         :param headers:
@@ -230,7 +237,7 @@ class Requester:
         return response
 
     @staticmethod
-    def confirm_status(res):  # pylint: disable=too-many-branches
+    def confirm_status(res: requests.Response) -> None:  # pylint: disable=too-many-branches
         """
         check response status code
         :param res:
