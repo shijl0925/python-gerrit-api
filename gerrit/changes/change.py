@@ -24,6 +24,41 @@ class GerritChange(GerritBase):
     def __str__(self):
         return self.id
 
+    def list_actions(self):
+        """
+        Lists the actions that can be executed on the change by the calling user.
+        The information is useful for tools to check if the action is currently
+        allowed given the user and change state.
+
+        :return:
+        """
+        return self.gerrit.get(self.endpoint + "/actions")
+
+    def add_message(self, input_):
+        """
+        Adds a message to a change without posting a review.
+        This method is supported since v3.3.0.
+
+        .. code-block:: python
+
+            input_ = {
+                "message": "Some nits need to be fixed.",
+                "notify": "NONE"
+            }
+
+            change = client.changes.get('Project~stable~I10394472cbd17dd12454f229e4f6de00b143a444')
+            change.add_message(input_)
+
+        :param input_: a body with a ``message`` field (and optional ``notify``),
+          https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#add-change-message
+        :return:
+        """
+        self.gerrit.post(
+            self.endpoint + "/message",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
+
     def get_detail(self, options=None):
         """
         retrieve a change with labels, detailed labels, detailed accounts, reviewer updates, and messages.

@@ -109,6 +109,19 @@ class TestGerritChange:
         result = mock_change.get_detail(options=["LABELS"])
         assert "labels" in result
 
+    def test_list_actions(self, mock_change):
+        actions = {"submit": {"method": "POST", "label": "Submit", "enabled": True}}
+        mock_change.gerrit.get.return_value = actions
+        result = mock_change.list_actions()
+        assert isinstance(result, dict)
+        assert "submit" in result
+
+    def test_add_message(self, mock_change):
+        mock_change.add_message({"message": "Some nits need to be fixed."})
+        mock_change.gerrit.post.assert_called()
+        call_args = mock_change.gerrit.post.call_args
+        assert "/message" in call_args[0][0]
+
     def test_get_meta_diff(self, mock_change):
         meta = {"removed": [], "added": []}
         mock_change.gerrit.get.return_value = meta
