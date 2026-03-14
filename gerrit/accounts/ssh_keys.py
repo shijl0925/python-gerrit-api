@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import SSHKeyNotFoundError, GerritAPIException
@@ -11,17 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccountSSHKey(GerritBase):
-    def __init__(self, seq, account, gerrit: GerritClient):
+    def __init__(self, seq: int, account: str, gerrit: GerritClient) -> None:
         self.seq = seq
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/sshkeys"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.seq)
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes an SSH key of a user.
 
@@ -31,12 +32,12 @@ class GerritAccountSSHKey(GerritBase):
 
 
 class GerritAccountSSHKeys:
-    def __init__(self, account, gerrit: GerritClient):
+    def __init__(self, account: str, gerrit: GerritClient) -> None:
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/sshkeys"
 
-    def list(self):
+    def list(self) -> List[Dict[str, Any]]:
         """
         Returns the SSH keys of an account.
 
@@ -45,7 +46,7 @@ class GerritAccountSSHKeys:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, seq):
+    def get(self, seq: int) -> "GerritAccountSSHKey":
         """
         Retrieves an SSH key of a user.
 
@@ -65,7 +66,7 @@ class GerritAccountSSHKeys:
                 raise SSHKeyNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, ssh_key):
+    def add(self, ssh_key: str) -> Dict[str, Any]:
         """
         Adds an SSH key for a user.
         The SSH public key must be provided as raw content in the request body.
@@ -78,7 +79,7 @@ class GerritAccountSSHKeys:
         )
         return result
 
-    def delete(self, seq):
+    def delete(self, seq: int) -> None:
         """
         Deletes an SSH key of a user.
 

@@ -4,6 +4,7 @@
 import logging
 from base64 import b64decode
 from urllib.parse import quote_plus, unquote_plus
+from typing import Any, Dict, List, Optional
 import requests
 from gerrit import GerritClient
 from gerrit.utils.common import params_creator
@@ -18,17 +19,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProjectBranch(GerritBase):
-    def __init__(self, name: str, project: str, gerrit: GerritClient):
+    def __init__(self, name: str, project: str, gerrit: GerritClient) -> None:
         self.name = name
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches/{quote_plus(self.name)}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def get_file_content(self, file, decode=False):
+    def get_file_content(self, file: str, decode: bool = False) -> str:
         """
         Gets the content of a file from the HEAD revision of a certain branch.
         The content is returned as base64 encoded string.
@@ -42,7 +43,7 @@ class GerritProjectBranch(GerritBase):
             return b64decode(result).decode("utf-8")
         return result
 
-    def is_mergeable(self, input_):
+    def is_mergeable(self, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Gets whether the source is mergeable with the target branch.
 
@@ -70,7 +71,7 @@ class GerritProjectBranch(GerritBase):
 
         return self.gerrit.get(self.endpoint + "/mergeable", params=input_)
 
-    def get_reflog(self):
+    def get_reflog(self) -> List[Dict[str, Any]]:
         """
         Gets the reflog of a certain branch.
 
@@ -78,7 +79,7 @@ class GerritProjectBranch(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/reflog")
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Delete a branch.
 
@@ -90,12 +91,12 @@ class GerritProjectBranch(GerritBase):
 class GerritProjectBranches:
     branch_prefix = "refs/heads/"
 
-    def __init__(self, project, gerrit: GerritClient):
+    def __init__(self, project: str, gerrit: GerritClient) -> None:
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"
 
-    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0):
+    def list(self, pattern_dispatcher: Optional[Dict[str, str]] = None, limit: int = 25, skip: int = 0) -> List:
         """
         List the branches of a project.
 
@@ -113,7 +114,7 @@ class GerritProjectBranches:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, name):
+    def get(self, name: str) -> "GerritProjectBranch":
         """
         get a branch by ref
 
@@ -134,7 +135,7 @@ class GerritProjectBranches:
                 raise BranchNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_):
+    def create(self, name: str, input_: Dict[str, Any]) -> "GerritProjectBranch":
         """
         Creates a new branch.
 
@@ -166,7 +167,7 @@ class GerritProjectBranches:
 
             return self.get(name)
 
-    def delete(self, name):
+    def delete(self, name: str) -> None:
         """
         Delete a branch.
 

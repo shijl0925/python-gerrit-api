@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.groups.members import GerritGroupMembers
@@ -8,16 +9,16 @@ from gerrit.groups.subgroups import GerritGroupSubGroups
 
 
 class GerritGroup(GerritBase):
-    def __init__(self, group_id: str, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient) -> None:
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Retrieves the name of a group.
 
@@ -25,7 +26,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/name")
 
-    def get_detail(self):
+    def get_detail(self) -> Dict[str, Any]:
         """
         Retrieves a group with the direct members and the directly included groups.
 
@@ -33,7 +34,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/detail")
 
-    def set_name(self, input_):
+    def set_name(self, input_: Dict[str, Any]) -> str:
         """
         Renames a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -55,7 +56,7 @@ class GerritGroup(GerritBase):
             self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_description(self):
+    def get_description(self) -> str:
         """
         Retrieves the description of a group.
 
@@ -63,7 +64,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_):
+    def set_description(self, input_: Dict[str, Any]) -> str:
         """
         Sets the description of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -86,7 +87,7 @@ class GerritGroup(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def delete_description(self):
+    def delete_description(self) -> None:
         """
         Deletes the description of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -96,7 +97,7 @@ class GerritGroup(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/description")
 
-    def get_options(self):
+    def get_options(self) -> Dict[str, Any]:
         """
         Retrieves the options of a group.
 
@@ -104,7 +105,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/options")
 
-    def set_options(self, input_):
+    def set_options(self, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Sets the options of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -127,7 +128,7 @@ class GerritGroup(GerritBase):
             self.endpoint + "/options", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_owner(self):
+    def get_owner(self) -> Dict[str, Any]:
         """
         Retrieves the owner group of a Gerrit internal group.
 
@@ -135,7 +136,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/owner")
 
-    def set_owner(self, input_):
+    def set_owner(self, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Sets the owner group of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -157,7 +158,7 @@ class GerritGroup(GerritBase):
             self.endpoint + "/owner", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_audit_log(self):
+    def get_audit_log(self) -> List[Dict[str, Any]]:
         """
         Gets the audit log of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -167,7 +168,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/log.audit")
 
-    def index(self):
+    def index(self) -> None:
         """
         Adds or updates the internal group in the secondary index.
 

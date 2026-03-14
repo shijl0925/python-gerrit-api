@@ -3,22 +3,23 @@
 # @Author: Jialiang Shi
 from base64 import b64decode
 from urllib.parse import quote_plus
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritProjectCommit(GerritBase):
-    def __init__(self, commit: str, project: str, gerrit: GerritClient):
+    def __init__(self, commit: str, project: str, gerrit: GerritClient) -> None:
         self.commit = commit
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/commits/{self.commit}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.commit
 
-    def get_include_in(self):
+    def get_include_in(self) -> Dict[str, Any]:
         """
         Retrieves the branches and tags in which a change is included.
 
@@ -26,7 +27,7 @@ class GerritProjectCommit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/in")
 
-    def get_file_content(self, file, decode=False):
+    def get_file_content(self, file: str, decode: bool = False) -> str:
         """
         Gets the content of a file from a certain commit.
 
@@ -39,7 +40,7 @@ class GerritProjectCommit(GerritBase):
             return b64decode(result).decode("utf-8")
         return result
 
-    def cherry_pick(self, input_):
+    def cherry_pick(self, input_: Dict[str, Any]) -> Dict[str, Any]:
         """
         Cherry-picks a commit of a project to a destination branch.
 
@@ -62,7 +63,7 @@ class GerritProjectCommit(GerritBase):
         )
         return result
 
-    def list_change_files(self):
+    def list_change_files(self) -> Dict[str, Any]:
         """
         Lists the files that were modified, added or deleted in a commit.
 

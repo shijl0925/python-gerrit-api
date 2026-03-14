@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import requests
+from typing import Any, Dict, List, Optional
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
@@ -15,17 +16,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeReviewer(GerritBase):
-    def __init__(self, account: str, change: str, gerrit: GerritClient):
+    def __init__(self, account: str, change: str, gerrit: GerritClient) -> None:
         self.account = account
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers/{self.account}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.account)
 
-    def delete(self, input_=None):
+    def delete(self, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a reviewer from a change.
         Deleting a reviewer also removes that user from the attention set.
@@ -55,7 +56,7 @@ class GerritChangeReviewer(GerritBase):
                 headers=self.gerrit.default_headers,
             )
 
-    def list_votes(self):
+    def list_votes(self) -> Dict[str, Any]:
         """
         Lists the votes for a specific reviewer of the change.
 
@@ -63,7 +64,7 @@ class GerritChangeReviewer(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/votes/")
 
-    def delete_vote(self, label, input_=None):
+    def delete_vote(self, label: str, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a single vote from a change.
         Note, that even when the last vote of a reviewer is removed the reviewer itself is still
@@ -96,12 +97,12 @@ class GerritChangeReviewer(GerritBase):
 
 
 class GerritChangeReviewers:
-    def __init__(self, change, gerrit: GerritClient):
+    def __init__(self, change: str, gerrit: GerritClient) -> None:
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers"
 
-    def list(self):
+    def list(self) -> List[Dict[str, Any]]:
         """
         Lists the reviewers of a change.
 
@@ -110,7 +111,7 @@ class GerritChangeReviewers:
         result = self.gerrit.get(self.endpoint + "/")
         return result
 
-    def get(self, account):
+    def get(self, account: str) -> "GerritChangeReviewer":
         """
         Retrieves a reviewer of a change.
 
@@ -130,7 +131,7 @@ class GerritChangeReviewers:
                 raise ReviewerNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, input_):
+    def add(self, input_: Dict[str, Any]) -> "GerritChangeReviewer":
         """
         Adds one user or all members of one group as reviewer to the change.
 

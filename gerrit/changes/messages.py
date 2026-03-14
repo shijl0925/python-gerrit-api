@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict, List, Optional
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeMessage(GerritBase):
-    def __init__(self, id: str, change: str, gerrit: GerritClient):
+    def __init__(self, id: str, change: str, gerrit: GerritClient) -> None:
         self.id = id
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/messages/{self.id}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def delete(self, input_=None):
+    def delete(self, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a change message.
         Note that only users with the Administrate Server global capability are permitted to
@@ -48,12 +49,12 @@ class GerritChangeMessage(GerritBase):
 
 
 class GerritChangeMessages:
-    def __init__(self, change, gerrit: GerritClient):
+    def __init__(self, change: str, gerrit: GerritClient) -> None:
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/messages"
 
-    def list(self):
+    def list(self) -> List[Dict[str, Any]]:
         """
         Lists all the messages of a change including detailed account information.
 
@@ -62,7 +63,7 @@ class GerritChangeMessages:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, id_):
+    def get(self, id_: str) -> "GerritChangeMessage":
         """
         Retrieves a change message including detailed account information.
 
