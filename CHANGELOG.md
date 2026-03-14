@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [3.1.0]
+
+### Added
+
+### Fixed
+- Fixed `long_description_content_type` missing in setup.py
+
+### Changed
+- Bumped version to 3.1.0
+
+### Removed
+
 ## [3.0.1]
 
 ### Added
