@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict, List, Optional
 import requests
-from typing import Any, Dict, List, Optional, Union
 from gerrit import GerritClient
 from gerrit.groups.group import GerritGroup
 from gerrit.utils.common import params_creator

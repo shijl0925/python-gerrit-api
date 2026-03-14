@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
-import requests
 from typing import Any, Dict, List
+import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import SSHKeyNotFoundError, GerritAPIException

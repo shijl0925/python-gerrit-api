@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict
 import requests
-from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.projects.commit import GerritProjectCommit

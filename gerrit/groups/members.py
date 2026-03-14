@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import List
 import requests
-from typing import Any, List
 from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     GroupMemberNotFoundError,

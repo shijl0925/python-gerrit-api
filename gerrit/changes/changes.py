@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
-import requests
 from typing import Any, Dict, List, Optional
+import requests
 from gerrit import GerritClient
 from gerrit.changes.change import GerritChange
 from gerrit.utils.exceptions import ChangeNotFoundError, GerritAPIException

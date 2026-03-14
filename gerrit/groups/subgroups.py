@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from typing import Any, List
+from typing import List
 from gerrit import GerritClient
 
 

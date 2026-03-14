@@ -3,7 +3,7 @@
 # @Author: Jialiang Shi
 from base64 import b64decode
 from urllib.parse import quote_plus
-from typing import Any, Dict, List
+from typing import Any, Dict
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 

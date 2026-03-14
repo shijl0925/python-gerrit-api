@@ -3,7 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import netrc
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 import requests
 from requests.adapters import HTTPAdapter
 from requests.cookies import RequestsCookieJar
