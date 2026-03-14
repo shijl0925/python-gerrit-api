@@ -21,9 +21,10 @@ jobs:
     strategy:
       matrix:
         include:
+          - {python-version: '3.14', os: 'ubuntu-latest'}
+          - {python-version: '3.13', os: 'ubuntu-latest'}
           - {python-version: '3.12', os: 'ubuntu-latest'}
           - {python-version: '3.11', os: 'ubuntu-latest'}
-          - {python-version: '3.10', os: 'ubuntu-latest'}
           - {python-version: '3.9', os: 'ubuntu-latest'}
           - {python-version: '3.8', os: 'ubuntu-latest'}
 
@@ -49,13 +50,13 @@ jobs:
         pytest -s -n 4
         coverage report
     - name: Run codacy-coverage-reporter
-      if: ${{ matrix.python-version == '3.10' && secrets.CODACY_PROJECT_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' && secrets.CODACY_PROJECT_TOKEN != '' }}
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage.xml
     - name: Upload coverage reports to Codecov
-      if: ${{ matrix.python-version == '3.10' && secrets.CODECOV_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' && secrets.CODECOV_TOKEN != '' }}
       uses: codecov/codecov-action@v5
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -66,7 +67,7 @@ jobs:
     #   run: |
     #     mypy gerrit --install-types
     - name: SonarCloud Scan
-      if: ${{ matrix.python-version == '3.10' && secrets.SONAR_TOKEN != '' }}
+      if: ${{ matrix.python-version == '3.12' && secrets.SONAR_TOKEN != '' }}
       uses: SonarSource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
