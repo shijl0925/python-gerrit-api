@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
-import requests
 from urllib.parse import quote_plus
+import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.projects.commit import GerritProjectCommit
