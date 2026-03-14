@@ -54,6 +54,28 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
+    def add_subgroups(self, input_):
+        """
+        Adds multiple groups as subgroups to a Gerrit internal group in a single request.
+        This endpoint is only allowed for Gerrit internal groups;
+        attempting to call on a non-internal group will return 405 Method Not Allowed.
+
+        .. code-block:: python
+
+            input_ = {
+                "groups": ["MyGroup", "MyOtherGroup"]
+            }
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            result = group.subgroup.add_subgroups(input_)
+
+        :param input_: the GroupsInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#add-subgroups
+        :return:
+        """
+        return self.gerrit.post(
+            self.endpoint[:-1], json=input_, headers=self.gerrit.default_headers
+        )
+
     def remove(self, subgroup):
         """
         Removes a subgroup from a Gerrit internal group.
@@ -64,3 +86,27 @@ class GerritGroupSubGroups:
         :return:
         """
         self.gerrit.delete(self.endpoint + f"/{subgroup}")
+
+    def remove_subgroups(self, input_):
+        """
+        Removes multiple subgroups from a Gerrit internal group in a single request.
+        This endpoint is only allowed for Gerrit internal groups;
+        attempting to call on a non-internal group will return 405 Method Not Allowed.
+
+        .. code-block:: python
+
+            input_ = {
+                "groups": ["MyGroup", "MyOtherGroup"]
+            }
+            group = client.groups.get('0017af503a22f7b3fa6ce2cd3b551734d90701b4')
+            group.subgroup.remove_subgroups(input_)
+
+        :param input_: the GroupsInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-groups.html#remove-subgroups
+        :return:
+        """
+        self.gerrit.post(
+            self.endpoint[:-1] + ".delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
