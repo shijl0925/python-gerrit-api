@@ -118,10 +118,18 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
+    def get_username(self):
+        """
+        Retrieves the username of an account.
+
+        :return:
+        """
+        return self.gerrit.get(self.endpoint + "/username")
+
     def set_displayname(self, input_):
         """
         Sets the display name of an account.
-        support this method since v3.2.0
+        This method is supported since v3.2.0.
 
         .. code-block:: python
 
@@ -141,6 +149,15 @@ class GerritAccount(GerritBase):
             json=input_,
             headers=self.gerrit.default_headers,
         )
+
+    def get_displayname(self):
+        """
+        Retrieves the display name of an account.
+        This method is supported since v3.2.0.
+
+        :return:
+        """
+        return self.gerrit.get(self.endpoint + "/displayname")
 
     def get_active(self):
         """

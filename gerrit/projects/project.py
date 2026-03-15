@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from urllib.parse import quote_plus
 import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
@@ -11,6 +12,7 @@ from gerrit.projects.tags import GerritProjectTags
 from gerrit.projects.dashboards import GerritProjectDashboards
 from gerrit.projects.labels import GerritProjectLabels
 from gerrit.projects.webhooks import GerritProjectWebHooks
+from gerrit.projects.submit_requirements import GerritProjectSubmitRequirements
 from gerrit.utils.exceptions import CommitNotFoundError, GerritAPIException
 
 logger = logging.getLogger(__name__)
@@ -385,6 +387,23 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/children/")
 
+    def get_child_project(self, name, recursive=False):
+        """
+        Retrieves a child project. If a non-direct child project should be
+        retrieved the parameter recursive must be set.
+
+        :param name: the name of the child project
+        :param recursive: if True, non-direct child projects are also considered
+        :return:
+        """
+        params = {}
+        if recursive:
+            params["recursive"] = 1
+        return self.gerrit.get(
+            self.endpoint + f"/children/{quote_plus(name)}",
+            params=params if params else None,
+        )
+
     @property
     def tags(self):
         """
@@ -431,6 +450,15 @@ class GerritProject(GerritBase):
         :return:
         """
         return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
+
+    @property
+    def submit_requirements(self):
+        """
+        gerrit submit requirements operations
+
+        :return:
+        """
+        return GerritProjectSubmitRequirements(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):

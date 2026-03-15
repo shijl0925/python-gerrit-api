@@ -227,6 +227,20 @@ class TestGerritGroupMembers:
         mock_group.members.remove(1000096)
         mock_group.gerrit.delete.assert_called()
 
+    def test_add_members_batch(self, mock_group):
+        members_info = [{"_account_id": 1000096}, {"_account_id": 1000097}]
+        mock_group.gerrit.post.return_value = members_info
+        result = mock_group.members.add_members({"members": ["jane.roe", "john.doe"]})
+        mock_group.gerrit.post.assert_called()
+        call_args = mock_group.gerrit.post.call_args
+        assert call_args[0][0].endswith("/members")
+
+    def test_remove_members_batch(self, mock_group):
+        mock_group.members.remove_members({"members": ["jane.roe", "john.doe"]})
+        mock_group.gerrit.post.assert_called()
+        call_args = mock_group.gerrit.post.call_args
+        assert call_args[0][0].endswith("/members.delete")
+
 
 # ---------------------------------------------------------------------------
 # GerritGroupSubGroups
@@ -258,4 +272,18 @@ class TestGerritGroupSubGroups:
     def test_remove_subgroup(self, mock_group):
         mock_group.subgroup.remove("sub_group_id")
         mock_group.gerrit.delete.assert_called()
+
+    def test_add_subgroups_batch(self, mock_group):
+        subgroups_info = [{"id": "sub_group_id"}]
+        mock_group.gerrit.post.return_value = subgroups_info
+        result = mock_group.subgroup.add_subgroups({"groups": ["MyGroup", "MyOtherGroup"]})
+        mock_group.gerrit.post.assert_called()
+        call_args = mock_group.gerrit.post.call_args
+        assert call_args[0][0].endswith("/groups")
+
+    def test_remove_subgroups_batch(self, mock_group):
+        mock_group.subgroup.remove_subgroups({"groups": ["MyGroup", "MyOtherGroup"]})
+        mock_group.gerrit.post.assert_called()
+        call_args = mock_group.gerrit.post.call_args
+        assert call_args[0][0].endswith("/groups.delete")
 

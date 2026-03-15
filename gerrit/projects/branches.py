@@ -175,3 +175,28 @@ class GerritProjectBranches:
         """
         self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
+
+    def delete_branches(self, input_):
+        """
+        Delete one or more branches.
+
+        .. code-block:: python
+
+            input_ = {
+                "branches": [
+                    "stable-1.0",
+                    "stable-2.0"
+                ]
+            }
+            project = client.projects.get('myproject')
+            project.branches.delete_branches(input_)
+
+        :param input_: the DeleteBranchesInput entity,
+          https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#delete-branches-input
+        :return:
+        """
+        self.gerrit.post(
+            self.endpoint + ":delete",
+            json=input_,
+            headers=self.gerrit.default_headers,
+        )
