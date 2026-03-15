@@ -12,6 +12,7 @@ from gerrit.projects.tags import GerritProjectTags
 from gerrit.projects.dashboards import GerritProjectDashboards
 from gerrit.projects.labels import GerritProjectLabels
 from gerrit.projects.webhooks import GerritProjectWebHooks
+from gerrit.projects.submit_requirements import GerritProjectSubmitRequirements
 from gerrit.utils.exceptions import CommitNotFoundError, GerritAPIException
 
 logger = logging.getLogger(__name__)
@@ -449,6 +450,15 @@ class GerritProject(GerritBase):
         :return:
         """
         return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
+
+    @property
+    def submit_requirements(self):
+        """
+        gerrit submit requirements operations
+
+        :return:
+        """
+        return GerritProjectSubmitRequirements(project=self.id, gerrit=self.gerrit)
 
     @property
     def webhooks(self):

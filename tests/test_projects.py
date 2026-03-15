@@ -518,3 +518,70 @@ class TestGerritProjectDashboardsAndLabels:
         labels = mock_project.labels.list()
         assert len(labels) >= 0
 
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectSubmitRequirements
+# ---------------------------------------------------------------------------
+
+SR_DATA = {
+    "name": "Code-Review",
+    "description": "At least one maximum vote for label 'Code-Review' is required",
+    "submittability_expression": "label:Code-Review=MAX,user=non_uploader",
+    "allow_override_in_child_projects": True,
+}
+
+
+class TestGerritProjectSubmitRequirements:
+
+    def test_list_submit_requirements(self, mock_project):
+        mock_project.gerrit.get.return_value = [SR_DATA]
+        srs = mock_project.submit_requirements.list()
+        assert len(srs) >= 1
+
+    def test_get_submit_requirement(self, mock_project):
+        mock_project.gerrit.get.return_value = SR_DATA
+        from gerrit.projects.submit_requirements import GerritProjectSubmitRequirement
+        sr = mock_project.submit_requirements.get("Code-Review")
+        assert isinstance(sr, GerritProjectSubmitRequirement)
+        assert sr.name == SR_DATA["name"]
+
+    def test_create_submit_requirement(self, mock_project):
+        mock_project.gerrit.put.return_value = SR_DATA
+        result = mock_project.submit_requirements.create(
+            "Code-Review",
+            {
+                "submittability_expression": "label:Code-Review=MAX,user=non_uploader",
+                "allow_override_in_child_projects": True,
+            },
+        )
+        mock_project.gerrit.put.assert_called_once()
+        call_args = mock_project.gerrit.put.call_args
+        assert "Code-Review" in call_args[0][0]
+
+    def test_delete_submit_requirement(self, mock_project):
+        mock_project.submit_requirements.delete("Code-Review")
+        mock_project.gerrit.delete.assert_called_once()
+        call_args = mock_project.gerrit.delete.call_args
+        assert "Code-Review" in call_args[0][0]
+
+    def test_submit_requirement_update(self, mock_project):
+        mock_project.gerrit.get.return_value = SR_DATA
+        from gerrit.projects.submit_requirements import GerritProjectSubmitRequirement
+        sr = mock_project.submit_requirements.get("Code-Review")
+        updated = {**SR_DATA, "allow_override_in_child_projects": False}
+        mock_project.gerrit.post.return_value = updated
+        result = sr.update({"allow_override_in_child_projects": False})
+        mock_project.gerrit.post.assert_called()
+        call_args = mock_project.gerrit.post.call_args
+        assert "Code-Review" in call_args[0][0]
+
+    def test_submit_requirement_delete(self, mock_project):
+        mock_project.gerrit.get.return_value = SR_DATA
+        sr = mock_project.submit_requirements.get("Code-Review")
+        sr.delete()
+        mock_project.gerrit.delete.assert_called()
+
+    def test_submit_requirements_property_type(self, mock_project):
+        from gerrit.projects.submit_requirements import GerritProjectSubmitRequirements
+        assert isinstance(mock_project.submit_requirements, GerritProjectSubmitRequirements)
