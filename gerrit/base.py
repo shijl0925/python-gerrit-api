@@ -98,6 +98,16 @@ class GerritClient:
         return f"{self._base_url}{self.auth_suffix}{endpoint}"
 
     @property
+    def access(self):
+        """
+        Access related REST APIs
+
+        :return:
+        """
+        from gerrit.access import GerritAccess
+        return GerritAccess(gerrit=self)
+
+    @property
     def config(self):
         """
         Config related REST APIs

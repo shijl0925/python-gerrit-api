@@ -159,10 +159,22 @@ class TestGerritAccount:
         mock_account.set_displayname(input_)
         mock_account.gerrit.put.assert_called()
 
+    def test_get_displayname(self, mock_account):
+        mock_account.gerrit.get.return_value = "Kevin"
+        result = mock_account.get_displayname()
+        assert result == "Kevin"
+        mock_account.gerrit.get.assert_called()
+
     def test_set_username(self, mock_account):
         mock_account.gerrit.put.return_value = {"username": "newuser"}
         mock_account.set_username({"username": "newuser"})
         mock_account.gerrit.put.assert_called()
+
+    def test_get_username(self, mock_account):
+        mock_account.gerrit.get.return_value = "testuser"
+        result = mock_account.get_username()
+        assert result == "testuser"
+        mock_account.gerrit.get.assert_called()
 
     def test_set_http_password(self, mock_account):
         mock_account.gerrit.put.return_value = "password123"
@@ -287,6 +299,20 @@ class TestGerritAccountEmails:
         from gerrit.utils.exceptions import AccountEmailAlreadyExistsError
         with pytest.raises(AccountEmailAlreadyExistsError):
             mock_account.emails.create("test@example.com")
+
+    def test_create_email_with_input(self, mock_account):
+        # When email doesn't exist, create() with EmailInput should call PUT with body
+        email_data = {"email": "new@example.com", "preferred": False}
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        # 1st get: 404 (existence check); 2nd get: returns data; 3rd get: GerritAccountEmail.poll()
+        mock_account.gerrit.get.side_effect = [http_error, email_data, email_data]
+        input_ = {"email": "new@example.com", "preferred": False, "no_confirmation": True}
+        mock_account.emails.create("new@example.com", input_)
+        mock_account.gerrit.put.assert_called_once()
+        call_args = mock_account.gerrit.put.call_args
+        assert call_args[1]["json"] == input_
 
 
 # ---------------------------------------------------------------------------

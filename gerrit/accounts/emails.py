@@ -58,10 +58,23 @@ class GerritAccountEmails:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def create(self, email):
+    def create(self, email, input_=None):
         """
         Registers a new email address for the user.
 
+        .. code-block:: python
+
+            input_ = {
+                "email": "john.doe@example.com",
+                "preferred": False,
+                "no_confirmation": False
+            }
+            account = client.accounts.get('kevin.shi')
+            result = account.emails.create('john.doe@example.com', input_)
+
+        :param email: the email address to register
+        :param input_: the EmailInput entity (optional),
+          https://gerrit-review.googlesource.com/Documentation/rest-api-accounts.html#email-input
         :return:
         """
         try:
@@ -70,7 +83,14 @@ class GerritAccountEmails:
             logger.error(message)
             raise AccountEmailAlreadyExistsError(message)
         except AccountEmailNotFoundError:
-            self.gerrit.put(self.endpoint + f"/{email}")
+            if input_ is not None:
+                self.gerrit.put(
+                    self.endpoint + f"/{email}",
+                    json=input_,
+                    headers=self.gerrit.default_headers,
+                )
+            else:
+                self.gerrit.put(self.endpoint + f"/{email}")
             return self.get(email)
 
     def get(self, email):
