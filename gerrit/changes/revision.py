@@ -340,16 +340,6 @@ class GerritChangeRevision:
             headers=self.gerrit.default_headers,
         )
 
-    def list_port_cherry_picks(self):
-        """
-        Lists the cherry-pick of this patch set.
-        If there are multiple cherry-picks, a list of all cherry-picks is returned.
-        If the patch set is not a cherry-pick, the response is an empty list.
-
-        :return:
-        """
-        return self.gerrit.get(self.endpoint + "/port_cherry_picks")
-
     def list_reviewers(self):
         """
         Lists the reviewers of a revision.

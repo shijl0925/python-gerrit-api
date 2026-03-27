@@ -314,16 +314,6 @@ class TestGerritAccountEmails:
         call_args = mock_account.gerrit.put.call_args
         assert call_args[1]["json"] == input_
 
-    def test_email_confirm(self, mock_account):
-        email_data = {"email": "test@example.com", "preferred": True}
-        mock_account.gerrit.get.return_value = email_data
-        email = mock_account.emails.get("test@example.com")
-        mock_account.gerrit.put.reset_mock()
-        email.confirm()
-        mock_account.gerrit.put.assert_called_once()
-        call_args = mock_account.gerrit.put.call_args
-        assert "/confirmed" in call_args[0][0]
-
 
 # ---------------------------------------------------------------------------
 # GerritAccountSSHKeys & GerritAccountGPGKeys

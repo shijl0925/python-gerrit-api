@@ -42,16 +42,6 @@ class GerritAccountEmail(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/preferred")
 
-    def confirm(self):
-        """
-        Marks the email address of an account as confirmed.
-        This is only needed for email addresses that are not automatically
-        confirmed when they're created.
-
-        :return:
-        """
-        self.gerrit.put(self.endpoint + "/confirmed")
-
 
 class GerritAccountEmails:
     def __init__(self, account, gerrit: GerritClient):

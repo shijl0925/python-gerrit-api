@@ -145,15 +145,6 @@ class TestGerritChangeRevision:
         result = revision.cherry_pick({"message": "cherry-pick", "destination": "stable"})
         revision.gerrit.post.assert_called()
 
-    def test_list_port_cherry_picks(self, revision):
-        cherry_picks = [{"change_id": "Iabc123", "project": "myProject", "branch": "stable"}]
-        revision.gerrit.get.return_value = cherry_picks
-        result = revision.list_port_cherry_picks()
-        assert isinstance(result, list)
-        assert len(result) >= 0
-        call_args = revision.gerrit.get.call_args
-        assert "/port_cherry_picks" in call_args[0][0]
-
     def test_list_reviewers(self, revision):
         revision.gerrit.get.return_value = [{"_account_id": 1000096}]
         result = revision.list_reviewers()

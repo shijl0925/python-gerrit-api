@@ -519,7 +519,6 @@ class TestGerritProjectDashboardsAndLabels:
         assert len(labels) >= 0
 
 
-
 # ---------------------------------------------------------------------------
 # GerritProjectSubmitRequirements
 # ---------------------------------------------------------------------------

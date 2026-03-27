@@ -8,7 +8,7 @@ class GerritGroupSubGroups:
     def __init__(self, group_id, gerrit: GerritClient):
         self.id = group_id
         self.gerrit = gerrit
-        self.endpoint = f"/groups/{self.id}/groups/"
+        self.endpoint = f"/groups/{self.id}/groups"
 
     def list(self):
         """
@@ -18,7 +18,7 @@ class GerritGroupSubGroups:
 
         :return:
         """
-        result = self.gerrit.get(self.endpoint)
+        result = self.gerrit.get(self.endpoint + "/")
         subgroups = []
         for item in result:
             group_id = item.get("id")
@@ -73,7 +73,7 @@ class GerritGroupSubGroups:
         :return:
         """
         return self.gerrit.post(
-            self.endpoint[:-1], json=input_, headers=self.gerrit.default_headers
+            self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
     def remove(self, subgroup):
@@ -106,7 +106,7 @@ class GerritGroupSubGroups:
         :return:
         """
         self.gerrit.post(
-            self.endpoint[:-1] + ".delete",
+            self.endpoint + ".delete",
             json=input_,
             headers=self.gerrit.default_headers,
         )
