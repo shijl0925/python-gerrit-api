@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict, List, Optional
 import requests
 from gerrit import GerritClient
 from gerrit.groups.group import GerritGroup
@@ -16,13 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class GerritGroups:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/groups"
 
     def list(
-        self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0
-    ):
+        self, pattern_dispatcher: Optional[Dict[str, Any]] = None, options: Optional[List[str]] = None, limit: int = 25, skip: int = 0
+    ) -> List[Any]:
         """
         Lists the groups accessible by the caller.
 
@@ -47,7 +48,7 @@ class GerritGroups:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def search(self, query, options=None, limit: int = 25, skip: int = 0):
+    def search(self, query: str, options: Optional[List[str]] = None, limit: int = 25, skip: int = 0) -> List[Any]:
         """
         Query Groups
 
@@ -73,7 +74,7 @@ class GerritGroups:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, id_):
+    def get(self, id_: Any) -> Any:
         """
         Retrieves a group.
 
@@ -93,7 +94,7 @@ class GerritGroups:
                 raise GroupNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_):
+    def create(self, name: str, input_: Dict[str, Any]) -> Any:
         """
         Creates a new Gerrit internal group.
 

@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, List
 from gerrit import GerritClient
 
 class Task:
-    def __init__(self, task_id: str, gerrit: GerritClient):
+    def __init__(self, task_id: str, gerrit: GerritClient) -> None:
         self.id = task_id
         self.gerrit = gerrit
         self.endpoint = f"/config/server/tasks/{self.id}"
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Kills a task from the background work queue that the Gerrit daemon is currently performing,
         or will perform in the near future.
@@ -20,11 +21,11 @@ class Task:
 
 
 class Tasks:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/config/server/tasks"
 
-    def list(self):
+    def list(self) -> List[Any]:
         """
         Lists the tasks from the background work queues that the Gerrit daemon is currently
         performing, or will perform in the near future.
@@ -34,7 +35,7 @@ class Tasks:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, id_):
+    def get(self, id_: str) -> Task:
         """
         Retrieves a task from the background work queue that the Gerrit daemon is currently
         performing, or will perform in the near future.
@@ -48,7 +49,7 @@ class Tasks:
         task_id = result.get("id")
         return Task(task_id=task_id, gerrit=self.gerrit)
 
-    def delete(self, id_):
+    def delete(self, id_: str) -> None:
         """
         Kills a task from the background work queue that the Gerrit daemon is currently performing,
         or will perform in the near future.
