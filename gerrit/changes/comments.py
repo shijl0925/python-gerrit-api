@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeRevisionComment(GerritBase):
-    def __init__(self, id: str, change: str, revision: str, gerrit: GerritClient):
+    def __init__(self, id: str, change: str, revision: str, gerrit: GerritClient) -> None:
         self.id = id
         self.change = change
         self.revision = revision
@@ -16,10 +17,10 @@ class GerritChangeRevisionComment(GerritBase):
         )
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def delete(self, input_=None):
+    def delete(self, input_=None) -> Any:
         """
         Deletes a published comment of a revision. Instead of deleting the whole comment,
         this endpoint just replaces the comment’s message with a new message, which contains
@@ -53,13 +54,13 @@ class GerritChangeRevisionComment(GerritBase):
 
 
 class GerritChangeRevisionComments:
-    def __init__(self, change, revision, gerrit: GerritClient):
+    def __init__(self, change: str, revision: str, gerrit: GerritClient) -> None:
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/comments"
 
-    def list(self):
+    def list(self) -> Any:
         """
         Lists the published comments of a revision.
 
@@ -74,7 +75,7 @@ class GerritChangeRevisionComments:
                 comments.append(comment)
         return comments
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
         Retrieves a published comment of a revision.
 

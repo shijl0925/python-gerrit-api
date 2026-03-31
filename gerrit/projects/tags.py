@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 from urllib.parse import quote_plus
 import requests
@@ -18,17 +19,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProjectTag(GerritBase):
-    def __init__(self, name: str, project: str, gerrit: GerritClient):
+    def __init__(self, name: str, project: str, gerrit: GerritClient) -> None:
         self.name = name
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/tags/{quote_plus(self.name)}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Delete a tag.
 
@@ -40,12 +41,12 @@ class GerritProjectTag(GerritBase):
 class GerritProjectTags:
     tag_prefix = "refs/tags/"
 
-    def __init__(self, project, gerrit: GerritClient):
+    def __init__(self, project: str, gerrit: GerritClient) -> None:
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/tags"
 
-    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0):
+    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0) -> Any:
         """
         List the tags of a project.
 
@@ -62,7 +63,7 @@ class GerritProjectTags:
         )
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, name):
+    def get(self, name) -> Any:
         """
         get a tag by ref
 
@@ -81,7 +82,7 @@ class GerritProjectTags:
                 raise TagNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_):
+    def create(self, name, input_) -> Any:
         """
         Creates a new tag on the project.
 
@@ -114,7 +115,7 @@ class GerritProjectTags:
 
             return self.get(name)
 
-    def delete(self, name):
+    def delete(self, name) -> None:
         """
         Delete a tag.
 
@@ -124,7 +125,7 @@ class GerritProjectTags:
         self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
 
-    def delete_tags(self, input_):
+    def delete_tags(self, input_) -> None:
         """
         Delete one or more tags.
 

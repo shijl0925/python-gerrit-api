@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 import requests
 from gerrit import GerritClient
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccounts:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/accounts"
 
@@ -27,7 +28,7 @@ class GerritAccounts:
         detailed: bool = False,
         suggested: bool = False,
         all_emails: bool = False,
-    ):
+    ) -> Any:
         """
         Queries accounts visible to the caller.
 
@@ -61,7 +62,7 @@ class GerritAccounts:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, account):
+    def get(self, account) -> Any:
         """
         Returns an account
 
@@ -84,7 +85,7 @@ class GerritAccounts:
                 raise AccountNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, username, input_):
+    def create(self, username, input_) -> Any:
         """
         Creates a new account.
 

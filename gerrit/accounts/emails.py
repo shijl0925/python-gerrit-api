@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 import requests
 from gerrit import GerritClient
@@ -16,17 +17,17 @@ logger = logging.getLogger(__name__)
 
 
 class GerritAccountEmail(GerritBase):
-    def __init__(self, email, account, gerrit: GerritClient):
+    def __init__(self, email: str, account: Any, gerrit: GerritClient) -> None:
         self.email = email
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/emails/{self.email}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes an email address of an account.
 
@@ -34,7 +35,7 @@ class GerritAccountEmail(GerritBase):
         """
         self.gerrit.delete(self.endpoint)
 
-    def set_preferred(self):
+    def set_preferred(self) -> None:
         """
         Sets an email address as preferred email address for an account.
 
@@ -44,12 +45,12 @@ class GerritAccountEmail(GerritBase):
 
 
 class GerritAccountEmails:
-    def __init__(self, account, gerrit: GerritClient):
+    def __init__(self, account: Any, gerrit: GerritClient) -> None:
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}/emails"
 
-    def list(self):
+    def list(self) -> Any:
         """
         Returns the email addresses that are configured for the specified user.
 
@@ -58,7 +59,7 @@ class GerritAccountEmails:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def create(self, email, input_=None):
+    def create(self, email, input_=None) -> Any:
         """
         Registers a new email address for the user.
 
@@ -93,7 +94,7 @@ class GerritAccountEmails:
                 self.gerrit.put(self.endpoint + f"/{email}")
             return self.get(email)
 
-    def get(self, email):
+    def get(self, email) -> Any:
         """
         Retrieves an email address of a user.
 
@@ -112,7 +113,7 @@ class GerritAccountEmails:
                 raise AccountEmailNotFoundError(message)
             raise GerritAPIException from error
 
-    def set_preferred(self, email):
+    def set_preferred(self, email) -> None:
         """
         Sets an email address as preferred email address for an account.
 
@@ -122,7 +123,7 @@ class GerritAccountEmails:
         self.get(email)
         self.gerrit.put(self.endpoint + f"/{email}/preferred")
 
-    def delete(self, email):
+    def delete(self, email) -> None:
         """
         Deletes an email address of an account.
 

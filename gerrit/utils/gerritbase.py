@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ class GerritBase:
     inherited from
     """
 
-    def __init__(self, pull: bool = True):
+    def __init__(self, pull: bool = True) -> None:
         """
         Initialize a gerrit connection
         """
@@ -20,13 +21,13 @@ class GerritBase:
         if pull:
             self.poll()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
 
     def __str__(self) -> str:
         raise NotImplementedError
 
-    def poll(self):
+    def poll(self) -> None:
         data = self._poll()
         self._data = data
 
@@ -39,7 +40,7 @@ class GerritBase:
                 except AttributeError:
                     pass
 
-    def _poll(self):
+    def _poll(self) -> Any:
         res = self.gerrit.get(self.endpoint)  # pylint: disable=no-member
 
         if isinstance(res, list) and res:
@@ -47,13 +48,13 @@ class GerritBase:
 
         return res
 
-    def to_dict(self):
+    def to_dict(self) -> Optional[Dict[str, Any]]:
         """
         Print out all the data in this object for debugging.
         """
         return self._data
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
         """
         Return true if the other object represents a connection to the
         same server

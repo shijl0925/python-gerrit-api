@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 
 class Cache:
-    def __init__(self, name: str, gerrit: GerritClient):
+    def __init__(self, name: str, gerrit: GerritClient) -> None:
         self.name = name
         self.gerrit = gerrit
         self.endpoint = f"/config/server/caches/{self.name}"
 
-    def flush(self):
+    def flush(self) -> None:
         """
         Flushes a cache.
 
@@ -19,11 +20,11 @@ class Cache:
 
 
 class Caches:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/config/server/caches"
 
-    def list(self):
+    def list(self) -> Any:
         """
         Lists the caches of the server. Caches defined by plugins are included.
 
@@ -38,7 +39,7 @@ class Caches:
 
         return caches
 
-    def get(self, name):
+    def get(self, name) -> Any:
         """
         Retrieves information about a cache.
 
@@ -50,7 +51,7 @@ class Caches:
         name = result.get("name")
         return Cache(name=name, gerrit=self.gerrit)
 
-    def flush(self, name):
+    def flush(self, name) -> None:
         """
         Flushes a cache.
 
@@ -59,7 +60,7 @@ class Caches:
         """
         self.gerrit.post(self.endpoint + f"/{name}/flush")
 
-    def operation(self, input_):
+    def operation(self, input_) -> None:
         """
         Cache Operations
 

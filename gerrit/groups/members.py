@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 import requests
 from gerrit import GerritClient
@@ -14,12 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class GerritGroupMembers:
-    def __init__(self, group_id, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient) -> None:
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/members"
 
-    def list(self):
+    def list(self) -> Any:
         """
         Lists the direct members of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -36,7 +37,7 @@ class GerritGroupMembers:
 
         return accounts
 
-    def get(self, account):
+    def get(self, account) -> Any:
         """
         Retrieves a group member.
         This endpoint is only allowed for Gerrit internal groups;
@@ -55,7 +56,7 @@ class GerritGroupMembers:
                 raise GroupMemberNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, account):
+    def add(self, account) -> Any:
         """
         Adds a user as member to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -73,7 +74,7 @@ class GerritGroupMembers:
             self.gerrit.put(self.endpoint + f"/{account}")
             return self.get(account)
 
-    def add_members(self, input_):
+    def add_members(self, input_) -> Any:
         """
         Adds multiple users as members to a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;
@@ -95,7 +96,7 @@ class GerritGroupMembers:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def remove(self, account):
+    def remove(self, account) -> None:
         """
         Removes a user from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -107,7 +108,7 @@ class GerritGroupMembers:
         self.get(account)
         self.gerrit.delete(self.endpoint + f"/{account}")
 
-    def remove_members(self, input_):
+    def remove_members(self, input_) -> None:
         """
         Removes multiple members from a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;

@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
-from typing import Optional
+from typing import Any, Optional
 from base64 import b64decode
 from urllib.parse import quote_plus
 import requests
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeRevisionFile:
-    def __init__(self, path: str, json: dict, change: str, revision: str, gerrit: GerritClient):
+    def __init__(self, path: str, json: dict, change: str, revision: str, gerrit: GerritClient) -> None:
         self.path = path
         self.json = json
         self.change = change
@@ -29,16 +29,16 @@ class GerritChangeRevisionFile:
             f"/files/{quote_plus(self.path)}"
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.path
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         return self.json
 
-    def get_content(self, decode=False):
+    def get_content(self, decode=False) -> Any:
         """
         Gets the content of a file from a certain revision.
         The content is returned as base64 encoded string.
@@ -58,7 +58,7 @@ class GerritChangeRevisionFile:
                 raise FileContentNotFoundError(message)
             raise GerritAPIException from error
 
-    def download_content(self):
+    def download_content(self) -> Any:
         """
         Downloads the content of a file from a certain revision, in a safe format that poses no
         risk for inadvertent execution of untrusted code.
@@ -72,7 +72,7 @@ class GerritChangeRevisionFile:
         """
         return self.gerrit.get(self.endpoint + "/download")
 
-    def get_diff(self, intraline=False):
+    def get_diff(self, intraline=False) -> Any:
         """
         Gets the diff of a file from a certain revision.
 
@@ -86,7 +86,7 @@ class GerritChangeRevisionFile:
 
         return self.gerrit.get(endpoint)
 
-    def get_blame(self):
+    def get_blame(self) -> Any:
         """
         Gets the blame of a file from a certain revision.
 
@@ -94,7 +94,7 @@ class GerritChangeRevisionFile:
         """
         return self.gerrit.get(self.endpoint + "/blame")
 
-    def set_reviewed(self):
+    def set_reviewed(self) -> None:
         """
         Marks a file of a revision as reviewed by the calling user.
 
@@ -102,7 +102,7 @@ class GerritChangeRevisionFile:
         """
         self.gerrit.put(self.endpoint + "/reviewed")
 
-    def delete_reviewed(self):
+    def delete_reviewed(self) -> None:
         """
         Deletes the reviewed flag of the calling user from a file of a revision.
 
@@ -112,7 +112,7 @@ class GerritChangeRevisionFile:
 
 
 class GerritChangeRevisionFiles:
-    def __init__(self, change, revision, gerrit: GerritClient):
+    def __init__(self, change: str, revision: str, gerrit: GerritClient) -> None:
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
@@ -125,7 +125,7 @@ class GerritChangeRevisionFiles:
         base: Optional[int] = None,
         q: Optional[str] = None,
         parent: Optional[int] = None,
-    ):
+    ) -> Any:
         """
         Lists the files that were modified, added or deleted in a revision.
         The reviewed, base, q, and parent are mutually exclusive. That is, only one of them may be used at a time.
@@ -150,7 +150,7 @@ class GerritChangeRevisionFiles:
 
         return result
 
-    def poll(self):
+    def poll(self) -> Any:
         """
 
         :return:
@@ -164,7 +164,7 @@ class GerritChangeRevisionFiles:
 
         return files
 
-    def iterkeys(self):
+    def iterkeys(self) -> None:
         """
         Iterate over the paths of all files
 
@@ -176,7 +176,7 @@ class GerritChangeRevisionFiles:
         for file in self._data:
             yield file["path"]
 
-    def keys(self):
+    def keys(self) -> Any:
         """
         Return a list of the file paths
 
@@ -184,14 +184,14 @@ class GerritChangeRevisionFiles:
         """
         return list(self.iterkeys())
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
 
         :return:
         """
         return len(self.keys())
 
-    def __contains__(self, ref):
+    def __contains__(self, ref) -> bool:
         """
 
         :param ref:
@@ -199,7 +199,7 @@ class GerritChangeRevisionFiles:
         """
         return ref in self.keys()
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         """
 
         :return:
@@ -216,7 +216,7 @@ class GerritChangeRevisionFiles:
                 gerrit=self.gerrit,
             )
 
-    def __getitem__(self, path):
+    def __getitem__(self, path) -> Any:
         """
         get a file by path
 
@@ -239,7 +239,7 @@ class GerritChangeRevisionFiles:
         else:
             raise UnknownFile(path)
 
-    def get(self, path):
+    def get(self, path) -> Any:
         """
         get a file by path
 

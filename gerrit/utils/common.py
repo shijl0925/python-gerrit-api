@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import json
+from typing import Any, Dict, Optional, Tuple
 
 
 def strip_trailing_slash(url: str) -> str:
@@ -15,7 +16,7 @@ def strip_trailing_slash(url: str) -> str:
     return url
 
 
-def decode_response(response):
+def decode_response(response: Any) -> Any:
     """Strip off Gerrit's magic prefix and decode a response.
     :returns:
         Decoded JSON content as a dict, or raw text if content could not be
@@ -44,7 +45,11 @@ def decode_response(response):
         raise ValueError(f"Invalid json content: {content}")
 
 
-def params_creator(tuples, pattern_types, pattern_dispatcher):
+def params_creator(
+    tuples: Any,
+    pattern_types: Dict[str, Any],
+    pattern_dispatcher: Optional[Dict[str, Any]],
+) -> Dict[str, Any]:
     p, v = None, None
     if pattern_dispatcher is not None and pattern_dispatcher:
         for item in pattern_types:

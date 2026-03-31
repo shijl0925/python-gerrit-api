@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritProjectDashboard(GerritBase):
-    def __init__(self, id: str, project: str, gerrit: GerritClient):
+    def __init__(self, id: str, project: str, gerrit: GerritClient) -> None:
         self.id = id
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/dashboards/{self.id}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.id)
 
-    def set(self, input_):
+    def set(self, input_) -> Any:
         """
         Updates a project dashboard.
 
@@ -37,7 +38,7 @@ class GerritProjectDashboard(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes a project dashboard.
 
@@ -47,12 +48,12 @@ class GerritProjectDashboard(GerritBase):
 
 
 class GerritProjectDashboards:
-    def __init__(self, project, gerrit: GerritClient):
+    def __init__(self, project: str, gerrit: GerritClient) -> None:
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/dashboards"
 
-    def list(self):
+    def list(self) -> Any:
         """
         List custom dashboards for a project.
 
@@ -61,7 +62,7 @@ class GerritProjectDashboards:
         result = self.gerrit.get(self.endpoint + "/")
         return result
 
-    def create(self, id_, input_):
+    def create(self, id_, input_) -> Any:
         """
         Creates a project dashboard, if a project dashboard with the given dashboard ID doesn't
         exist yet.
@@ -85,7 +86,7 @@ class GerritProjectDashboards:
         )
         return result
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
         Retrieves a project dashboard. The dashboard can be defined on that project or be inherited
         from a parent project.
@@ -100,7 +101,7 @@ class GerritProjectDashboards:
             id=dashboard_id, project=self.project, gerrit=self.gerrit
         )
 
-    def delete(self, id_):
+    def delete(self, id_) -> None:
         """
         Deletes a project dashboard.
 

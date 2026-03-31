@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 from urllib.parse import quote_plus
 import requests
@@ -19,16 +20,16 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProject(GerritBase):
-    def __init__(self, project_id: str, gerrit: GerritClient):
+    def __init__(self, project_id: str, gerrit: GerritClient) -> None:
         self.id = project_id
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.id}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def get_description(self):
+    def get_description(self) -> Any:
         """
         Retrieves the description of a project.
 
@@ -36,7 +37,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_):
+    def set_description(self, input_) -> Any:
         """
         Sets the description of a project.
 
@@ -59,7 +60,7 @@ class GerritProject(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def delete_description(self):
+    def delete_description(self) -> None:
         """
         Deletes the description of a project.
 
@@ -67,7 +68,7 @@ class GerritProject(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/description")
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Delete the project, requires delete-project plugin
 
@@ -75,7 +76,7 @@ class GerritProject(GerritBase):
         """
         self.gerrit.post(self.endpoint + "/delete-project~delete")
 
-    def get_parent(self):
+    def get_parent(self) -> Any:
         """
         Retrieves the name of a project’s parent project. For the All-Projects root project an empty
         string is returned.
@@ -84,7 +85,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/parent")
 
-    def set_parent(self, input_):
+    def set_parent(self, input_) -> Any:
         """
         Sets the parent project for a project.
 
@@ -105,7 +106,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/parent", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_head(self):
+    def get_head(self) -> Any:
         """
         Retrieves for a project the name of the branch to which HEAD points.
 
@@ -113,7 +114,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/HEAD")
 
-    def set_head(self, input_):
+    def set_head(self, input_) -> Any:
         """
         Sets HEAD for a project.
 
@@ -133,7 +134,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/HEAD", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_config(self):
+    def get_config(self) -> Any:
         """
         Gets some configuration information about a project.
         Note that this config info is not simply the contents of project.config; it generally
@@ -144,7 +145,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/config")
 
-    def set_config(self, input_):
+    def set_config(self, input_) -> Any:
         """
         Sets the configuration of a project.
 
@@ -175,7 +176,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/config", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_statistics(self):
+    def get_statistics(self) -> Any:
         """
         Return statistics for the repository of a project.
 
@@ -183,7 +184,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/statistics.git")
 
-    def run_garbage_collection(self, input_):
+    def run_garbage_collection(self, input_) -> Any:
         """
         Run the Git garbage collection for the repository of a project.
 
@@ -203,7 +204,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/gc", json=input_, headers=self.gerrit.default_headers
         )
 
-    def ban_commits(self, input_):
+    def ban_commits(self, input_) -> Any:
         """
         Marks commits as banned for the project.
 
@@ -227,7 +228,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/ban", json=input_, headers=self.gerrit.default_headers
         )
 
-    def get_access_rights(self):
+    def get_access_rights(self) -> Any:
         """
         Lists the access rights for a single project.
 
@@ -235,7 +236,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/access")
 
-    def set_access_rights(self, input_):
+    def set_access_rights(self, input_) -> Any:
         """
         Sets access rights for the project using the diff schema provided by ProjectAccessInput.
         https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#set-access
@@ -248,7 +249,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/access", json=input_, headers=self.gerrit.default_headers
         )
 
-    def create_change(self, input_):
+    def create_change(self, input_) -> Any:
         """
         Create Change for review. This endpoint is functionally equivalent to create change in the
         change API, but it has the project name in the URL, which is easier to route in sharded
@@ -277,7 +278,7 @@ class GerritProject(GerritBase):
         )
         return result
 
-    def create_access_rights_change(self, input_):
+    def create_access_rights_change(self, input_) -> Any:
         """
         Sets access rights for the project using the diff schema provided by ProjectAccessInput
         This takes the same input as Update Access Rights, but creates a pending change for review.
@@ -295,7 +296,7 @@ class GerritProject(GerritBase):
         )
         return result
 
-    def check_access(self, options):
+    def check_access(self, options) -> Any:
         """
         runs access checks for other users.
 
@@ -311,7 +312,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/check.access?{options}")
 
-    def index(self, input_):
+    def index(self, input_) -> None:
         """
         Adds or updates the current project (and children, if specified) in the secondary index.
         The indexing task is executed asynchronously in background and this command returns
@@ -334,7 +335,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/index", json=input_, headers=self.gerrit.default_headers
         )
 
-    def index_all_changes(self):
+    def index_all_changes(self) -> None:
         """
         Adds or updates the current project (and children, if specified) in the secondary index.
         The indexing task is executed asynchronously in background and this command returns
@@ -344,7 +345,7 @@ class GerritProject(GerritBase):
         """
         self.gerrit.post(self.endpoint + "/index.changes")
 
-    def check_consistency(self, input_):
+    def check_consistency(self, input_) -> Any:
         """
         Performs consistency checks on the project.
 
@@ -370,7 +371,7 @@ class GerritProject(GerritBase):
         )
 
     @property
-    def branches(self):
+    def branches(self) -> Any:
         """
         List the branches of a project. except the refs/meta/config
 
@@ -379,7 +380,7 @@ class GerritProject(GerritBase):
         return GerritProjectBranches(self.id, self.gerrit)
 
     @property
-    def child_projects(self):
+    def child_projects(self) -> Any:
         """
         List the direct child projects of a project.
 
@@ -387,7 +388,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/children/")
 
-    def get_child_project(self, name, recursive=False):
+    def get_child_project(self, name, recursive=False) -> Any:
         """
         Retrieves a child project. If a non-direct child project should be
         retrieved the parameter recursive must be set.
@@ -405,7 +406,7 @@ class GerritProject(GerritBase):
         )
 
     @property
-    def tags(self):
+    def tags(self) -> Any:
         """
         List the tags of a project.
 
@@ -413,7 +414,7 @@ class GerritProject(GerritBase):
         """
         return GerritProjectTags(self.id, self.gerrit)
 
-    def get_commit(self, commit):
+    def get_commit(self, commit) -> Any:
         """
         Retrieves a commit of a project.
 
@@ -434,7 +435,7 @@ class GerritProject(GerritBase):
             raise GerritAPIException from error
 
     @property
-    def dashboards(self):
+    def dashboards(self) -> Any:
         """
         gerrit dashboards operations
 
@@ -443,7 +444,7 @@ class GerritProject(GerritBase):
         return GerritProjectDashboards(project=self.id, gerrit=self.gerrit)
 
     @property
-    def labels(self):
+    def labels(self) -> Any:
         """
         gerrit labels or gerrit labels operations
 
@@ -452,7 +453,7 @@ class GerritProject(GerritBase):
         return GerritProjectLabels(project=self.id, gerrit=self.gerrit)
 
     @property
-    def submit_requirements(self):
+    def submit_requirements(self) -> Any:
         """
         gerrit submit requirements operations
 
@@ -461,7 +462,7 @@ class GerritProject(GerritBase):
         return GerritProjectSubmitRequirements(project=self.id, gerrit=self.gerrit)
 
     @property
-    def webhooks(self):
+    def webhooks(self) -> Any:
         """
         gerrit webhooks operations, requires webhooks plugin
 

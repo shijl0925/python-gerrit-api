@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import netrc
+from typing import Any, Dict, Optional, Tuple, Union
 import requests
 from requests.adapters import HTTPAdapter
 from gerrit.utils.requester import Requester
@@ -21,19 +22,19 @@ class GerritClient:
 
     def __init__(
         self,
-        base_url,
-        username=None,
-        password=None,
-        use_netrc=False,
-        ssl_verify=True,
-        cert=None,
-        cookies=None,
-        cookie_jar=None,
-        timeout=60,
-        max_retries=None,
-        session=None,
-        auth_suffix="/a",
-    ):
+        base_url: str,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        use_netrc: bool = False,
+        ssl_verify: Union[bool, str] = True,
+        cert: Optional[Union[str, Tuple[str, str]]] = None,
+        cookies: Optional[Dict[str, str]] = None,
+        cookie_jar: Optional[Any] = None,
+        timeout: int = 60,
+        max_retries: Optional[int] = None,
+        session: Optional[Any] = None,
+        auth_suffix: str = "/a",
+    ) -> None:
         self._base_url = strip_trailing_slash(base_url)
 
         # make request session if one isn't provided
@@ -75,7 +76,7 @@ class GerritClient:
         else:
             self.auth_suffix = ""
 
-    def get_password_from_netrc_file(self):
+    def get_password_from_netrc_file(self) -> str:
         """
         Providing the password form .netrc file for getting Host name.
         :return: The related password from .netrc file as a string.
@@ -89,7 +90,7 @@ class GerritClient:
             )
         return auth_tokens[2]
 
-    def get_endpoint_url(self, endpoint):
+    def get_endpoint_url(self, endpoint: str) -> str:
         """
         Return the complete url including host and port for a given endpoint.
         :param endpoint: service endpoint as str
@@ -98,7 +99,7 @@ class GerritClient:
         return f"{self._base_url}{self.auth_suffix}{endpoint}"
 
     @property
-    def access(self):
+    def access(self) -> Any:
         """
         Access related REST APIs
 
@@ -108,7 +109,7 @@ class GerritClient:
         return GerritAccess(gerrit=self)
 
     @property
-    def config(self):
+    def config(self) -> Any:
         """
         Config related REST APIs
 
@@ -118,7 +119,7 @@ class GerritClient:
         return GerritConfig(gerrit=self)
 
     @property
-    def projects(self):
+    def projects(self) -> Any:
         """
         Project related REST APIs
         :return:
@@ -127,7 +128,7 @@ class GerritClient:
         return GerritProjects(gerrit=self)
 
     @property
-    def changes(self):
+    def changes(self) -> Any:
         """
         Change related REST APIs
 
@@ -137,7 +138,7 @@ class GerritClient:
         return GerritChanges(gerrit=self)
 
     @property
-    def accounts(self):
+    def accounts(self) -> Any:
         """
         Account related REST APIs
 
@@ -147,7 +148,7 @@ class GerritClient:
         return GerritAccounts(gerrit=self)
 
     @property
-    def groups(self):
+    def groups(self) -> Any:
         """
         Group related REST APIs
 
@@ -157,7 +158,7 @@ class GerritClient:
         return GerritGroups(gerrit=self)
 
     @property
-    def plugins(self):
+    def plugins(self) -> Any:
         """
         Plugin related REST APIs
 
@@ -167,7 +168,7 @@ class GerritClient:
         return GerritPlugins(gerrit=self)
 
     @property
-    def version(self):
+    def version(self) -> Any:
         """
         get the version of the Gerrit server.
 
@@ -176,7 +177,7 @@ class GerritClient:
         return self.config.get_version()
 
     @property
-    def server(self):
+    def server(self) -> Any:
         """
         get the information about the Gerrit server configuration.
 
@@ -184,7 +185,7 @@ class GerritClient:
         """
         return self.config.get_server_info()
 
-    def get(self, endpoint, **kwargs):
+    def get(self, endpoint: str, **kwargs: Any) -> Any:
         """
         Send HTTP GET to the endpoint.
 
@@ -197,7 +198,7 @@ class GerritClient:
         result = decode_response(response)
         return result
 
-    def post(self, endpoint, **kwargs):
+    def post(self, endpoint: str, **kwargs: Any) -> Any:
         """
         Send HTTP POST to the endpoint.
 
@@ -210,7 +211,7 @@ class GerritClient:
         result = decode_response(response)
         return result
 
-    def put(self, endpoint, **kwargs):
+    def put(self, endpoint: str, **kwargs: Any) -> Any:
         """
         Send HTTP PUT to the endpoint.
 
@@ -223,7 +224,7 @@ class GerritClient:
         result = decode_response(response)
         return result
 
-    def delete(self, endpoint):
+    def delete(self, endpoint: str) -> None:
         """
         Send HTTP DELETE to the endpoint.
 

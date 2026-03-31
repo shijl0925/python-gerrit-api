@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritChangeRevisionDraft(GerritBase):
-    def __init__(self, id: str, change: str, revision: str, gerrit: GerritClient):
+    def __init__(self, id: str, change: str, revision: str, gerrit: GerritClient) -> None:
         self.id = id
         self.change = change
         self.revision = revision
@@ -16,10 +17,10 @@ class GerritChangeRevisionDraft(GerritBase):
         )
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def update(self, input_):
+    def update(self, input_) -> Any:
         """
         Updates a draft comment on a revision.
 
@@ -43,7 +44,7 @@ class GerritChangeRevisionDraft(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes a draft comment from a revision.
 
@@ -53,13 +54,13 @@ class GerritChangeRevisionDraft(GerritBase):
 
 
 class GerritChangeRevisionDrafts:
-    def __init__(self, change, revision, gerrit: GerritClient):
+    def __init__(self, change: str, revision: str, gerrit: GerritClient) -> None:
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}/drafts"
 
-    def list(self):
+    def list(self) -> Any:
         """
         Lists the draft comments of a revision that belong to the calling user.
 
@@ -75,7 +76,7 @@ class GerritChangeRevisionDrafts:
 
         return drafts
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
         Retrieves a draft comment of a revision that belongs to the calling user.
 
@@ -89,7 +90,7 @@ class GerritChangeRevisionDrafts:
             id=id, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
-    def create(self, input_):
+    def create(self, input_) -> Any:
         """
         Creates a draft comment on a revision.
 
@@ -113,7 +114,7 @@ class GerritChangeRevisionDrafts:
         )
         return result
 
-    def delete(self, id_):
+    def delete(self, id_) -> None:
         """
         Deletes a draft comment from a revision.
 

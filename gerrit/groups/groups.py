@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 import requests
 from gerrit import GerritClient
@@ -16,13 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class GerritGroups:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/groups"
 
     def list(
         self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0
-    ):
+    ) -> Any:
         """
         Lists the groups accessible by the caller.
 
@@ -47,7 +48,7 @@ class GerritGroups:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def search(self, query, options=None, limit: int = 25, skip: int = 0):
+    def search(self, query, options=None, limit: int = 25, skip: int = 0) -> Any:
         """
         Query Groups
 
@@ -73,7 +74,7 @@ class GerritGroups:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
         Retrieves a group.
 
@@ -93,7 +94,7 @@ class GerritGroups:
                 raise GroupNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_):
+    def create(self, name, input_) -> Any:
         """
         Creates a new Gerrit internal group.
 

@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 from gerrit.utils.common import params_creator
 
 
 class GerritPlugin:
-    def __init__(self, id_: str, gerrit: GerritClient):
+    def __init__(self, id_: str, gerrit: GerritClient) -> None:
         self.id_ = id_
         self.gerrit = gerrit
         self.endpoint = f"/plugins/{self.id_}"
 
-    def enable(self):
+    def enable(self) -> Any:
         """
         Enables a plugin on the Gerrit server.
 
@@ -20,7 +21,7 @@ class GerritPlugin:
         result = self.gerrit.post(self.endpoint + "/gerrit~enable")
         return result
 
-    def disable(self):
+    def disable(self) -> Any:
         """
         Disables a plugin on the Gerrit server.
 
@@ -29,7 +30,7 @@ class GerritPlugin:
         result = self.gerrit.post(self.endpoint + "/gerrit~disable")
         return result
 
-    def reload(self):
+    def reload(self) -> Any:
         """
         Reloads a plugin on the Gerrit server.
 
@@ -40,7 +41,7 @@ class GerritPlugin:
 
 
 class GerritPlugins:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/plugins"
 
@@ -50,7 +51,7 @@ class GerritPlugins:
         limit: int = 25,
         skip: int = 0,
         pattern_dispatcher=None,
-    ):
+    ) -> Any:
         """
         Lists the plugins installed on the Gerrit server.
 
@@ -73,7 +74,7 @@ class GerritPlugins:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
 
         :param id_: plugin id
@@ -84,7 +85,7 @@ class GerritPlugins:
         plugin_id = result.get("id")
         return GerritPlugin(id_=plugin_id, gerrit=self.gerrit)
 
-    def install(self, id_, input_):
+    def install(self, id_, input_) -> Any:
         """
         Installs a new plugin on the Gerrit server.
 

@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 from gerrit import GerritClient
 from gerrit.config.caches import Caches
 from gerrit.config.tasks import Tasks
 
 
 class GerritConfig:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/config/server"
 
-    def get_version(self):
+    def get_version(self) -> Any:
         """
         get the version of the Gerrit server.
 
@@ -19,7 +20,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/version")
 
-    def get_server_info(self):
+    def get_server_info(self) -> Any:
         """
         get the information about the Gerrit server configuration.
 
@@ -27,7 +28,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/info")
 
-    def check_consistency(self, input_):
+    def check_consistency(self, input_) -> Any:
         """
         Runs consistency checks and returns detected problems.
 
@@ -49,7 +50,7 @@ class GerritConfig:
             headers=self.gerrit.default_headers,
         )
 
-    def reload_config(self):
+    def reload_config(self) -> Any:
         """
         Reloads the gerrit.config configuration.
 
@@ -57,7 +58,7 @@ class GerritConfig:
         """
         return self.gerrit.post(self.endpoint + "/reload")
 
-    def confirm_email(self, input_):
+    def confirm_email(self, input_) -> None:
         """
         Confirms that the user owns an email address.
         If the token is invalid or if it's the token of another user the request fails and the
@@ -81,10 +82,10 @@ class GerritConfig:
         )
 
     @property
-    def caches(self):
+    def caches(self) -> Any:
         return Caches(gerrit=self.gerrit)
 
-    def get_summary(self, option=None):
+    def get_summary(self, option=None) -> Any:
         """
         Retrieves a summary of the current server state.
 
@@ -96,7 +97,7 @@ class GerritConfig:
             endpoint += f"?{option}"
         return self.gerrit.get(endpoint)
 
-    def list_capabilities(self):
+    def list_capabilities(self) -> Any:
         """
         Lists the capabilities that are available in the system.
         There are two kinds of capabilities: core and plugin-owned capabilities.
@@ -106,10 +107,10 @@ class GerritConfig:
         return self.gerrit.get(self.endpoint + "/capabilities")
 
     @property
-    def tasks(self):
+    def tasks(self) -> Any:
         return Tasks(gerrit=self.gerrit)
 
-    def get_top_menus(self):
+    def get_top_menus(self) -> Any:
         """
         Returns the list of additional top menu entries.
 
@@ -117,7 +118,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/top-menus")
 
-    def get_default_user_preferences(self):
+    def get_default_user_preferences(self) -> Any:
         """
         Returns the default user preferences for the server.
 
@@ -125,7 +126,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences")
 
-    def set_default_user_preferences(self, input_):
+    def set_default_user_preferences(self, input_) -> Any:
         """
         Sets the default user preferences for the server.
 
@@ -146,7 +147,7 @@ class GerritConfig:
             headers=self.gerrit.default_headers,
         )
 
-    def get_default_diff_preferences(self):
+    def get_default_diff_preferences(self) -> Any:
         """
         Returns the default diff preferences for the server.
 
@@ -154,7 +155,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences.diff")
 
-    def set_default_diff_preferences(self, input_):
+    def set_default_diff_preferences(self, input_) -> Any:
         """
         Sets the default diff preferences for the server.
 
@@ -186,7 +187,7 @@ class GerritConfig:
             headers=self.gerrit.default_headers,
         )
 
-    def get_default_edit_preferences(self):
+    def get_default_edit_preferences(self) -> Any:
         """
         Returns the default edit preferences for the server.
 
@@ -194,7 +195,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences.edit")
 
-    def set_default_edit_preferences(self, input_):
+    def set_default_edit_preferences(self, input_) -> Any:
         """
         Sets the default edit preferences for the server.
 
@@ -224,7 +225,7 @@ class GerritConfig:
             headers=self.gerrit.default_headers,
         )
 
-    def index_changes(self, input_):
+    def index_changes(self, input_) -> None:
         """
         Index a set of changes
 

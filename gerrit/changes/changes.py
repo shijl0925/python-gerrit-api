@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any
 import logging
 import requests
 from gerrit import GerritClient
@@ -12,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChanges:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/changes"
 
-    def search(self, query: str, options=None, limit: int = 25, skip: int = 0):
+    def search(self, query: str, options=None, limit: int = 25, skip: int = 0) -> Any:
         """
         Queries changes visible to the caller.
 
@@ -42,7 +43,7 @@ class GerritChanges:
 
         return self.gerrit.get(self.endpoint + f"/?q={query}", params=params)
 
-    def get(self, id_):
+    def get(self, id_) -> Any:
         """
         Retrieves a change.
 
@@ -68,7 +69,7 @@ class GerritChanges:
                 raise ChangeNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, input_):
+    def create(self, input_) -> Any:
         """
         create a change
 
@@ -97,7 +98,7 @@ class GerritChanges:
         )
         return result
 
-    def delete(self, id_):
+    def delete(self, id_) -> None:
         """
         Deletes a change.
 
