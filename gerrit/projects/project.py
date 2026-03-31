@@ -37,7 +37,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_) -> Any:
+    def set_description(self, input_: Any) -> Any:
         """
         Sets the description of a project.
 
@@ -85,7 +85,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/parent")
 
-    def set_parent(self, input_) -> Any:
+    def set_parent(self, input_: Any) -> Any:
         """
         Sets the parent project for a project.
 
@@ -114,7 +114,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/HEAD")
 
-    def set_head(self, input_) -> Any:
+    def set_head(self, input_: Any) -> Any:
         """
         Sets HEAD for a project.
 
@@ -145,7 +145,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/config")
 
-    def set_config(self, input_) -> Any:
+    def set_config(self, input_: Any) -> Any:
         """
         Sets the configuration of a project.
 
@@ -184,7 +184,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/statistics.git")
 
-    def run_garbage_collection(self, input_) -> Any:
+    def run_garbage_collection(self, input_: Any) -> Any:
         """
         Run the Git garbage collection for the repository of a project.
 
@@ -204,7 +204,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/gc", json=input_, headers=self.gerrit.default_headers
         )
 
-    def ban_commits(self, input_) -> Any:
+    def ban_commits(self, input_: Any) -> Any:
         """
         Marks commits as banned for the project.
 
@@ -236,7 +236,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/access")
 
-    def set_access_rights(self, input_) -> Any:
+    def set_access_rights(self, input_: Any) -> Any:
         """
         Sets access rights for the project using the diff schema provided by ProjectAccessInput.
         https://gerrit-review.googlesource.com/Documentation/rest-api-projects.html#set-access
@@ -249,7 +249,7 @@ class GerritProject(GerritBase):
             self.endpoint + "/access", json=input_, headers=self.gerrit.default_headers
         )
 
-    def create_change(self, input_) -> Any:
+    def create_change(self, input_: Any) -> Any:
         """
         Create Change for review. This endpoint is functionally equivalent to create change in the
         change API, but it has the project name in the URL, which is easier to route in sharded
@@ -278,7 +278,7 @@ class GerritProject(GerritBase):
         )
         return result
 
-    def create_access_rights_change(self, input_) -> Any:
+    def create_access_rights_change(self, input_: Any) -> Any:
         """
         Sets access rights for the project using the diff schema provided by ProjectAccessInput
         This takes the same input as Update Access Rights, but creates a pending change for review.
@@ -296,7 +296,7 @@ class GerritProject(GerritBase):
         )
         return result
 
-    def check_access(self, options) -> Any:
+    def check_access(self, options: Any) -> Any:
         """
         runs access checks for other users.
 
@@ -312,7 +312,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/check.access?{options}")
 
-    def index(self, input_) -> None:
+    def index(self, input_: Any) -> None:
         """
         Adds or updates the current project (and children, if specified) in the secondary index.
         The indexing task is executed asynchronously in background and this command returns
@@ -345,7 +345,7 @@ class GerritProject(GerritBase):
         """
         self.gerrit.post(self.endpoint + "/index.changes")
 
-    def check_consistency(self, input_) -> Any:
+    def check_consistency(self, input_: Any) -> Any:
         """
         Performs consistency checks on the project.
 
@@ -388,7 +388,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/children/")
 
-    def get_child_project(self, name, recursive=False) -> Any:
+    def get_child_project(self, name: str, recursive: bool=False) -> Any:
         """
         Retrieves a child project. If a non-direct child project should be
         retrieved the parameter recursive must be set.
@@ -414,7 +414,7 @@ class GerritProject(GerritBase):
         """
         return GerritProjectTags(self.id, self.gerrit)
 
-    def get_commit(self, commit) -> Any:
+    def get_commit(self, commit: str) -> Any:
         """
         Retrieves a commit of a project.
 

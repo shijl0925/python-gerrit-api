@@ -41,7 +41,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_) -> Any:
+    def set_description(self, input_: Any) -> Any:
         """
         Sets the description of a patch set.
 
@@ -101,7 +101,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/related")
 
-    def set_review(self, input_) -> Any:
+    def set_review(self, input_: Any) -> Any:
         """
         Sets a review on a revision, optionally also publishing draft comments, setting labels,
         adding reviewers or CCs, and modifying the work in progress property.
@@ -151,7 +151,7 @@ class GerritChangeRevision:
             self.endpoint + "/review", json=input_, headers=self.gerrit.default_headers
         )
 
-    def rebase(self, input_) -> Any:
+    def rebase(self, input_: Any) -> Any:
         """
         Rebases a revision.
         Optionally, the parent revision can be changed to another patch set through the RebaseInput
@@ -186,7 +186,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.post(self.endpoint + "/submit")
 
-    def get_patch(self, zip_=False, download=False, path=None, decode=False) -> Any:
+    def get_patch(self, zip_: bool=False, download: bool=False, path: str=None, decode: bool=False) -> Any:
         """
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.
@@ -253,7 +253,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/submit_type")
 
-    def test_submit_type(self, input_) -> Any:
+    def test_submit_type(self, input_: Any) -> Any:
         """
         Tests the submit_type Prolog rule in the project, or the one given.
 
@@ -267,7 +267,7 @@ class GerritChangeRevision:
             headers={"Content-Type": "text/plain"},
         )
 
-    def test_submit_rule(self, input_) -> Any:
+    def test_submit_rule(self, input_: Any) -> Any:
         """
         Tests the submit_rule Prolog rule in the project, or the one given.
 
@@ -301,7 +301,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/robotcomments")
 
-    def get_robot_comment(self, commit_id) -> Any:
+    def get_robot_comment(self, commit_id: str) -> Any:
         """
         Retrieves a robot comment of a revision.
 
@@ -316,7 +316,7 @@ class GerritChangeRevision:
             change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
-    def cherry_pick(self, input_) -> Any:
+    def cherry_pick(self, input_: Any) -> Any:
         """
         Cherry picks a revision to a destination branch.
 
@@ -349,7 +349,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/reviewers")
 
-    def list_votes(self, account) -> Any:
+    def list_votes(self, account: str) -> Any:
         """
         Lists the votes for a specific reviewer of the revision.
 
@@ -358,7 +358,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes/")
 
-    def delete_vote(self, account, label, input_=None) -> None:
+    def delete_vote(self, account: str, label: str, input_: Any=None) -> None:
         """
         Deletes a single vote from a revision. The deletion will be possible only
         if the revision is the current revision. By using this endpoint you can prevent

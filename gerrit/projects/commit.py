@@ -27,7 +27,7 @@ class GerritProjectCommit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/in")
 
-    def get_file_content(self, file, decode=False) -> Any:
+    def get_file_content(self, file: str, decode: bool=False) -> Any:
         """
         Gets the content of a file from a certain commit.
 
@@ -40,7 +40,7 @@ class GerritProjectCommit(GerritBase):
             return b64decode(result).decode("utf-8")
         return result
 
-    def cherry_pick(self, input_) -> Any:
+    def cherry_pick(self, input_: Any) -> Any:
         """
         Cherry-picks a commit of a project to a destination branch.
 

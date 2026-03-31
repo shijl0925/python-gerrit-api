@@ -59,7 +59,7 @@ class GerritAccountEmails:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def create(self, email, input_=None) -> Any:
+    def create(self, email: str, input_: Any=None) -> Any:
         """
         Registers a new email address for the user.
 
@@ -94,7 +94,7 @@ class GerritAccountEmails:
                 self.gerrit.put(self.endpoint + f"/{email}")
             return self.get(email)
 
-    def get(self, email) -> Any:
+    def get(self, email: str) -> Any:
         """
         Retrieves an email address of a user.
 
@@ -113,7 +113,7 @@ class GerritAccountEmails:
                 raise AccountEmailNotFoundError(message)
             raise GerritAPIException from error
 
-    def set_preferred(self, email) -> None:
+    def set_preferred(self, email: str) -> None:
         """
         Sets an email address as preferred email address for an account.
 
@@ -123,7 +123,7 @@ class GerritAccountEmails:
         self.get(email)
         self.gerrit.put(self.endpoint + f"/{email}/preferred")
 
-    def delete(self, email) -> None:
+    def delete(self, email: str) -> None:
         """
         Deletes an email address of an account.
 

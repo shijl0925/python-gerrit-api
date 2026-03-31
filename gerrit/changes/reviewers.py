@@ -26,7 +26,7 @@ class GerritChangeReviewer(GerritBase):
     def __str__(self) -> str:
         return str(self.account)
 
-    def delete(self, input_=None) -> None:
+    def delete(self, input_: Any=None) -> None:
         """
         Deletes a reviewer from a change.
         Deleting a reviewer also removes that user from the attention set.
@@ -64,7 +64,7 @@ class GerritChangeReviewer(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/votes/")
 
-    def delete_vote(self, label, input_=None) -> None:
+    def delete_vote(self, label: str, input_: Any=None) -> None:
         """
         Deletes a single vote from a change.
         Note, that even when the last vote of a reviewer is removed the reviewer itself is still
@@ -111,7 +111,7 @@ class GerritChangeReviewers:
         result = self.gerrit.get(self.endpoint + "/")
         return result
 
-    def get(self, account) -> Any:
+    def get(self, account: str) -> Any:
         """
         Retrieves a reviewer of a change.
 
@@ -131,7 +131,7 @@ class GerritChangeReviewers:
                 raise ReviewerNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, input_) -> Any:
+    def add(self, input_: Any) -> Any:
         """
         Adds one user or all members of one group as reviewer to the change.
 

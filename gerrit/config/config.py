@@ -28,7 +28,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/info")
 
-    def check_consistency(self, input_) -> Any:
+    def check_consistency(self, input_: Any) -> Any:
         """
         Runs consistency checks and returns detected problems.
 
@@ -58,7 +58,7 @@ class GerritConfig:
         """
         return self.gerrit.post(self.endpoint + "/reload")
 
-    def confirm_email(self, input_) -> None:
+    def confirm_email(self, input_: Any) -> None:
         """
         Confirms that the user owns an email address.
         If the token is invalid or if it's the token of another user the request fails and the
@@ -85,7 +85,7 @@ class GerritConfig:
     def caches(self) -> Any:
         return Caches(gerrit=self.gerrit)
 
-    def get_summary(self, option=None) -> Any:
+    def get_summary(self, option: Any=None) -> Any:
         """
         Retrieves a summary of the current server state.
 
@@ -126,7 +126,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences")
 
-    def set_default_user_preferences(self, input_) -> Any:
+    def set_default_user_preferences(self, input_: Any) -> Any:
         """
         Sets the default user preferences for the server.
 
@@ -155,7 +155,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences.diff")
 
-    def set_default_diff_preferences(self, input_) -> Any:
+    def set_default_diff_preferences(self, input_: Any) -> Any:
         """
         Sets the default diff preferences for the server.
 
@@ -195,7 +195,7 @@ class GerritConfig:
         """
         return self.gerrit.get(self.endpoint + "/preferences.edit")
 
-    def set_default_edit_preferences(self, input_) -> Any:
+    def set_default_edit_preferences(self, input_: Any) -> Any:
         """
         Sets the default edit preferences for the server.
 
@@ -225,7 +225,7 @@ class GerritConfig:
             headers=self.gerrit.default_headers,
         )
 
-    def index_changes(self, input_) -> None:
+    def index_changes(self, input_: Any) -> None:
         """
         Index a set of changes
 

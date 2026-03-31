@@ -39,7 +39,7 @@ class Caches:
 
         return caches
 
-    def get(self, name) -> Any:
+    def get(self, name: str) -> Any:
         """
         Retrieves information about a cache.
 
@@ -51,7 +51,7 @@ class Caches:
         name = result.get("name")
         return Cache(name=name, gerrit=self.gerrit)
 
-    def flush(self, name) -> None:
+    def flush(self, name: str) -> None:
         """
         Flushes a cache.
 
@@ -60,7 +60,7 @@ class Caches:
         """
         self.gerrit.post(self.endpoint + f"/{name}/flush")
 
-    def operation(self, input_) -> None:
+    def operation(self, input_: Any) -> None:
         """
         Cache Operations
 

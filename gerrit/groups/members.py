@@ -37,7 +37,7 @@ class GerritGroupMembers:
 
         return accounts
 
-    def get(self, account) -> Any:
+    def get(self, account: str) -> Any:
         """
         Retrieves a group member.
         This endpoint is only allowed for Gerrit internal groups;
@@ -56,7 +56,7 @@ class GerritGroupMembers:
                 raise GroupMemberNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, account) -> Any:
+    def add(self, account: str) -> Any:
         """
         Adds a user as member to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -74,7 +74,7 @@ class GerritGroupMembers:
             self.gerrit.put(self.endpoint + f"/{account}")
             return self.get(account)
 
-    def add_members(self, input_) -> Any:
+    def add_members(self, input_: Any) -> Any:
         """
         Adds multiple users as members to a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;
@@ -96,7 +96,7 @@ class GerritGroupMembers:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def remove(self, account) -> None:
+    def remove(self, account: str) -> None:
         """
         Removes a user from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -108,7 +108,7 @@ class GerritGroupMembers:
         self.get(account)
         self.gerrit.delete(self.endpoint + f"/{account}")
 
-    def remove_members(self, input_) -> None:
+    def remove_members(self, input_: Any) -> None:
         """
         Removes multiple members from a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;

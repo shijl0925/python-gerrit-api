@@ -17,7 +17,7 @@ class GerritChangeMessage(GerritBase):
     def __str__(self) -> str:
         return self.id
 
-    def delete(self, input_=None) -> None:
+    def delete(self, input_: Any=None) -> None:
         """
         Deletes a change message.
         Note that only users with the Administrate Server global capability are permitted to
@@ -63,7 +63,7 @@ class GerritChangeMessages:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a change message including detailed account information.
 

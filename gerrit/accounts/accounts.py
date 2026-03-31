@@ -62,7 +62,7 @@ class GerritAccounts:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, account) -> Any:
+    def get(self, account: str) -> Any:
         """
         Returns an account
 
@@ -85,7 +85,7 @@ class GerritAccounts:
                 raise AccountNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, username, input_) -> Any:
+    def create(self, username: str, input_: Any) -> Any:
         """
         Creates a new account.
 

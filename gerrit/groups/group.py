@@ -34,7 +34,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/detail")
 
-    def set_name(self, input_) -> Any:
+    def set_name(self, input_: Any) -> Any:
         """
         Renames a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -64,7 +64,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_) -> Any:
+    def set_description(self, input_: Any) -> Any:
         """
         Sets the description of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -105,7 +105,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/options")
 
-    def set_options(self, input_) -> Any:
+    def set_options(self, input_: Any) -> Any:
         """
         Sets the options of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -136,7 +136,7 @@ class GerritGroup(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/owner")
 
-    def set_owner(self, input_) -> Any:
+    def set_owner(self, input_: Any) -> Any:
         """
         Sets the owner group of a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;

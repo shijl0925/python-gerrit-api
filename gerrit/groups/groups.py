@@ -22,7 +22,7 @@ class GerritGroups:
         self.endpoint = "/groups"
 
     def list(
-        self, pattern_dispatcher=None, options=None, limit: int = 25, skip: int = 0
+        self, pattern_dispatcher: Any=None, options: Any=None, limit: int = 25, skip: int = 0
     ) -> Any:
         """
         Lists the groups accessible by the caller.
@@ -48,7 +48,7 @@ class GerritGroups:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def search(self, query, options=None, limit: int = 25, skip: int = 0) -> Any:
+    def search(self, query: str, options: Any=None, limit: int = 25, skip: int = 0) -> Any:
         """
         Query Groups
 
@@ -74,7 +74,7 @@ class GerritGroups:
 
         return self.gerrit.get(endpoint, params=params)
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a group.
 
@@ -94,7 +94,7 @@ class GerritGroups:
                 raise GroupNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_) -> Any:
+    def create(self, name: str, input_: Any) -> Any:
         """
         Creates a new Gerrit internal group.
 

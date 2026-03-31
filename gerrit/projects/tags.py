@@ -46,7 +46,7 @@ class GerritProjectTags:
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/tags"
 
-    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0) -> Any:
+    def list(self, pattern_dispatcher: Any=None, limit: int = 25, skip: int = 0) -> Any:
         """
         List the tags of a project.
 
@@ -63,7 +63,7 @@ class GerritProjectTags:
         )
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, name) -> Any:
+    def get(self, name: str) -> Any:
         """
         get a tag by ref
 
@@ -82,7 +82,7 @@ class GerritProjectTags:
                 raise TagNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_) -> Any:
+    def create(self, name: str, input_: Any) -> Any:
         """
         Creates a new tag on the project.
 
@@ -115,7 +115,7 @@ class GerritProjectTags:
 
             return self.get(name)
 
-    def delete(self, name) -> None:
+    def delete(self, name: str) -> None:
         """
         Delete a tag.
 
@@ -125,7 +125,7 @@ class GerritProjectTags:
         self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
 
-    def delete_tags(self, input_) -> None:
+    def delete_tags(self, input_: Any) -> None:
         """
         Delete one or more tags.
 

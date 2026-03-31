@@ -18,7 +18,7 @@ class GerritChangeEdit(GerritBase):
     def __str__(self) -> str:
         return f"change {self.change} edit"
 
-    def get_change_file_content(self, file) -> Any:
+    def get_change_file_content(self, file: str) -> Any:
         """
         Retrieves content of a file from a change edit.
         The content of the file is returned as text encoded inside base64.
@@ -28,7 +28,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/{quote_plus(file)}")
 
-    def get_file_meta_data(self, file) -> Any:
+    def get_file_meta_data(self, file: str) -> Any:
         """
         Retrieves meta data of a file from a change edit.
 
@@ -37,7 +37,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/{quote_plus(file)}/meta")
 
-    def put_change_file_content(self, file, file_content) -> None:
+    def put_change_file_content(self, file: str, file_content: str) -> None:
         """
         Put content of a file to a change edit.
 
@@ -51,7 +51,7 @@ class GerritChangeEdit(GerritBase):
             headers={"Content-Type": "text/plain"},
         )
 
-    def restore_file_content(self, file) -> None:
+    def restore_file_content(self, file: str) -> None:
         """
         restores file content
 
@@ -63,7 +63,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def rename_file(self, old_path, new_path) -> None:
+    def rename_file(self, old_path: str, new_path: str) -> None:
         """
         rename file
 
@@ -76,7 +76,7 @@ class GerritChangeEdit(GerritBase):
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete_file(self, file) -> None:
+    def delete_file(self, file: str) -> None:
         """
         Deletes a file from a change edit.
 
@@ -85,7 +85,7 @@ class GerritChangeEdit(GerritBase):
         """
         self.gerrit.delete(self.endpoint + f"/{quote_plus(file)}")
 
-    def change_commit_message(self, input_) -> None:
+    def change_commit_message(self, input_: Any) -> None:
         """
         Modify commit message.
 
@@ -117,7 +117,7 @@ class GerritChangeEdit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + ":message")
 
-    def publish(self, input_) -> None:
+    def publish(self, input_: Any) -> None:
         """
         Promotes change edit to a regular patch set.
 

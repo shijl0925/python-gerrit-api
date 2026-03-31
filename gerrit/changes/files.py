@@ -38,7 +38,7 @@ class GerritChangeRevisionFile:
     def to_dict(self) -> Any:
         return self.json
 
-    def get_content(self, decode=False) -> Any:
+    def get_content(self, decode: bool=False) -> Any:
         """
         Gets the content of a file from a certain revision.
         The content is returned as base64 encoded string.
@@ -72,7 +72,7 @@ class GerritChangeRevisionFile:
         """
         return self.gerrit.get(self.endpoint + "/download")
 
-    def get_diff(self, intraline=False) -> Any:
+    def get_diff(self, intraline: bool=False) -> Any:
         """
         Gets the diff of a file from a certain revision.
 
@@ -164,7 +164,7 @@ class GerritChangeRevisionFiles:
 
         return files
 
-    def iterkeys(self) -> None:
+    def iterkeys(self) -> Any:
         """
         Iterate over the paths of all files
 
@@ -191,7 +191,7 @@ class GerritChangeRevisionFiles:
         """
         return len(self.keys())
 
-    def __contains__(self, ref) -> bool:
+    def __contains__(self, ref: Any) -> bool:
         """
 
         :param ref:
@@ -216,7 +216,7 @@ class GerritChangeRevisionFiles:
                 gerrit=self.gerrit,
             )
 
-    def __getitem__(self, path) -> Any:
+    def __getitem__(self, path: str) -> Any:
         """
         get a file by path
 
@@ -239,7 +239,7 @@ class GerritChangeRevisionFiles:
         else:
             raise UnknownFile(path)
 
-    def get(self, path) -> Any:
+    def get(self, path: str) -> Any:
         """
         get a file by path
 

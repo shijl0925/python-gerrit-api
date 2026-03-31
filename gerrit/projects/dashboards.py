@@ -17,7 +17,7 @@ class GerritProjectDashboard(GerritBase):
     def __str__(self) -> str:
         return str(self.id)
 
-    def set(self, input_) -> Any:
+    def set(self, input_: Any) -> Any:
         """
         Updates a project dashboard.
 
@@ -62,7 +62,7 @@ class GerritProjectDashboards:
         result = self.gerrit.get(self.endpoint + "/")
         return result
 
-    def create(self, id_, input_) -> Any:
+    def create(self, id_: str, input_: Any) -> Any:
         """
         Creates a project dashboard, if a project dashboard with the given dashboard ID doesn't
         exist yet.
@@ -86,7 +86,7 @@ class GerritProjectDashboards:
         )
         return result
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a project dashboard. The dashboard can be defined on that project or be inherited
         from a parent project.
@@ -101,7 +101,7 @@ class GerritProjectDashboards:
             id=dashboard_id, project=self.project, gerrit=self.gerrit
         )
 
-    def delete(self, id_) -> None:
+    def delete(self, id_: str) -> None:
         """
         Deletes a project dashboard.
 

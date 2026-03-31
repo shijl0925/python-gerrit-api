@@ -17,7 +17,7 @@ class GerritChanges:
         self.gerrit = gerrit
         self.endpoint = "/changes"
 
-    def search(self, query: str, options=None, limit: int = 25, skip: int = 0) -> Any:
+    def search(self, query: str, options: Any=None, limit: int = 25, skip: int = 0) -> Any:
         """
         Queries changes visible to the caller.
 
@@ -43,7 +43,7 @@ class GerritChanges:
 
         return self.gerrit.get(self.endpoint + f"/?q={query}", params=params)
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a change.
 
@@ -69,7 +69,7 @@ class GerritChanges:
                 raise ChangeNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, input_) -> Any:
+    def create(self, input_: Any) -> Any:
         """
         create a change
 
@@ -98,7 +98,7 @@ class GerritChanges:
         )
         return result
 
-    def delete(self, id_) -> None:
+    def delete(self, id_: str) -> None:
         """
         Deletes a change.
 

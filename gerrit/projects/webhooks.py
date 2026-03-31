@@ -44,7 +44,7 @@ class GerritProjectWebHooks:
 
         return result
 
-    def create(self, name, input_) -> Any:
+    def create(self, name: str, input_: Any) -> Any:
         """
         Create or update a webhook for a project.
 
@@ -68,7 +68,7 @@ class GerritProjectWebHooks:
         )
         return result
 
-    def get(self, name) -> Any:
+    def get(self, name: str) -> Any:
         """
         Get information about one webhook.
 
@@ -79,7 +79,7 @@ class GerritProjectWebHooks:
         name = result.get("name")
         return GerritProjectWebHook(name=name, project=self.project, gerrit=self.gerrit)
 
-    def delete(self, name) -> None:
+    def delete(self, name: str) -> None:
         """
         Delete a webhook for a project.
 

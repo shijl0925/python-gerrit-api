@@ -27,7 +27,7 @@ class GerritGroupSubGroups:
 
         return subgroups
 
-    def get(self, subgroup) -> Any:
+    def get(self, subgroup: str) -> Any:
         """
         Retrieves a subgroup.
         This endpoint is only allowed for Gerrit internal groups;
@@ -41,7 +41,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def add(self, subgroup) -> Any:
+    def add(self, subgroup: str) -> Any:
         """
         Adds an internal or external group as subgroup to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -55,7 +55,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def add_subgroups(self, input_) -> Any:
+    def add_subgroups(self, input_: Any) -> Any:
         """
         Adds multiple groups as subgroups to a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;
@@ -77,7 +77,7 @@ class GerritGroupSubGroups:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def remove(self, subgroup) -> None:
+    def remove(self, subgroup: str) -> None:
         """
         Removes a subgroup from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -88,7 +88,7 @@ class GerritGroupSubGroups:
         """
         self.gerrit.delete(self.endpoint + f"/{subgroup}")
 
-    def remove_subgroups(self, input_) -> None:
+    def remove_subgroups(self, input_: Any) -> None:
         """
         Removes multiple subgroups from a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;

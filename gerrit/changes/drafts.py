@@ -20,7 +20,7 @@ class GerritChangeRevisionDraft(GerritBase):
     def __str__(self) -> str:
         return self.id
 
-    def update(self, input_) -> Any:
+    def update(self, input_: Any) -> Any:
         """
         Updates a draft comment on a revision.
 
@@ -76,7 +76,7 @@ class GerritChangeRevisionDrafts:
 
         return drafts
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a draft comment of a revision that belongs to the calling user.
 
@@ -90,7 +90,7 @@ class GerritChangeRevisionDrafts:
             id=id, change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
-    def create(self, input_) -> Any:
+    def create(self, input_: Any) -> Any:
         """
         Creates a draft comment on a revision.
 
@@ -114,7 +114,7 @@ class GerritChangeRevisionDrafts:
         )
         return result
 
-    def delete(self, id_) -> None:
+    def delete(self, id_: str) -> None:
         """
         Deletes a draft comment from a revision.
 

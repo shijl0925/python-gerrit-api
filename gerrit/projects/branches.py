@@ -29,7 +29,7 @@ class GerritProjectBranch(GerritBase):
     def __str__(self) -> str:
         return self.name
 
-    def get_file_content(self, file, decode=False) -> Any:
+    def get_file_content(self, file: str, decode: bool=False) -> Any:
         """
         Gets the content of a file from the HEAD revision of a certain branch.
         The content is returned as base64 encoded string.
@@ -43,7 +43,7 @@ class GerritProjectBranch(GerritBase):
             return b64decode(result).decode("utf-8")
         return result
 
-    def is_mergeable(self, input_) -> Any:
+    def is_mergeable(self, input_: Any) -> Any:
         """
         Gets whether the source is mergeable with the target branch.
 
@@ -96,7 +96,7 @@ class GerritProjectBranches:
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"
 
-    def list(self, pattern_dispatcher=None, limit: int = 25, skip: int = 0) -> Any:
+    def list(self, pattern_dispatcher: Any=None, limit: int = 25, skip: int = 0) -> Any:
         """
         List the branches of a project.
 
@@ -114,7 +114,7 @@ class GerritProjectBranches:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, name) -> Any:
+    def get(self, name: str) -> Any:
         """
         get a branch by ref
 
@@ -135,7 +135,7 @@ class GerritProjectBranches:
                 raise BranchNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, name, input_) -> Any:
+    def create(self, name: str, input_: Any) -> Any:
         """
         Creates a new branch.
 
@@ -167,7 +167,7 @@ class GerritProjectBranches:
 
             return self.get(name)
 
-    def delete(self, name) -> None:
+    def delete(self, name: str) -> None:
         """
         Delete a branch.
 
@@ -177,7 +177,7 @@ class GerritProjectBranches:
         self.get(name)
         self.gerrit.delete(self.endpoint + f"/{quote_plus(name)}")
 
-    def delete_branches(self, input_) -> None:
+    def delete_branches(self, input_: Any) -> None:
         """
         Delete one or more branches.
 

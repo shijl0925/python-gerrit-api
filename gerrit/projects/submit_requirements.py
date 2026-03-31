@@ -17,7 +17,7 @@ class GerritProjectSubmitRequirement(GerritBase):
     def __str__(self) -> str:
         return self.name
 
-    def update(self, input_) -> Any:
+    def update(self, input_: Any) -> Any:
         """
         Updates a submit requirement for a project.
         The calling user must have write access to the refs/meta/config branch of the project.
@@ -64,7 +64,7 @@ class GerritProjectSubmitRequirements:
         """
         return self.gerrit.get(self.endpoint + "/")
 
-    def get(self, name) -> Any:
+    def get(self, name: str) -> Any:
         """
         Retrieves a submit requirement of a project.
 
@@ -77,7 +77,7 @@ class GerritProjectSubmitRequirements:
             name=sr_name, project=self.project, gerrit=self.gerrit
         )
 
-    def create(self, name, input_) -> Any:
+    def create(self, name: str, input_: Any) -> Any:
         """
         Creates a new submit requirement for a project.
         The calling user must have write access to the refs/meta/config branch of the project.
@@ -101,7 +101,7 @@ class GerritProjectSubmitRequirements:
         )
         return result
 
-    def delete(self, name) -> None:
+    def delete(self, name: str) -> None:
         """
         Deletes a submit requirement from a project.
         The calling user must have write access to the refs/meta/config branch of the project.

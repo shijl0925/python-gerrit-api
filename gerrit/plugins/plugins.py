@@ -50,7 +50,7 @@ class GerritPlugins:
         is_all: bool = False,
         limit: int = 25,
         skip: int = 0,
-        pattern_dispatcher=None,
+        pattern_dispatcher: Any=None,
     ) -> Any:
         """
         Lists the plugins installed on the Gerrit server.
@@ -74,7 +74,7 @@ class GerritPlugins:
 
         return self.gerrit.get(self.endpoint + "/", params=params)
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
 
         :param id_: plugin id
@@ -85,7 +85,7 @@ class GerritPlugins:
         plugin_id = result.get("id")
         return GerritPlugin(id_=plugin_id, gerrit=self.gerrit)
 
-    def install(self, id_, input_) -> Any:
+    def install(self, id_: str, input_: Any) -> Any:
         """
         Installs a new plugin on the Gerrit server.
 

@@ -35,7 +35,7 @@ class Tasks:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a task from the background work queue that the Gerrit daemon is currently
         performing, or will perform in the near future.
@@ -49,7 +49,7 @@ class Tasks:
         task_id = result.get("id")
         return Task(task_id=task_id, gerrit=self.gerrit)
 
-    def delete(self, id_) -> None:
+    def delete(self, id_: str) -> None:
         """
         Kills a task from the background work queue that the Gerrit daemon is currently performing,
         or will perform in the near future.

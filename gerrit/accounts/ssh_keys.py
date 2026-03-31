@@ -46,7 +46,7 @@ class GerritAccountSSHKeys:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def get(self, seq) -> Any:
+    def get(self, seq: Any) -> Any:
         """
         Retrieves an SSH key of a user.
 
@@ -66,7 +66,7 @@ class GerritAccountSSHKeys:
                 raise SSHKeyNotFoundError(message)
             raise GerritAPIException from error
 
-    def add(self, ssh_key) -> Any:
+    def add(self, ssh_key: str) -> Any:
         """
         Adds an SSH key for a user.
         The SSH public key must be provided as raw content in the request body.
@@ -79,7 +79,7 @@ class GerritAccountSSHKeys:
         )
         return result
 
-    def delete(self, seq) -> None:
+    def delete(self, seq: Any) -> None:
         """
         Deletes an SSH key of a user.
 

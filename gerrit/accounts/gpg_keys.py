@@ -52,7 +52,7 @@ class GerritAccountGPGKeys:
 
         return keys
 
-    def get(self, id_) -> Any:
+    def get(self, id_: str) -> Any:
         """
         Retrieves a GPG key of a user.
 
@@ -70,7 +70,7 @@ class GerritAccountGPGKeys:
                 raise GPGKeyNotFoundError(message)
             raise GerritAPIException from error
 
-    def modify(self, input_) -> Any:
+    def modify(self, input_: Any) -> Any:
         """
         Add or delete one or more GPG keys for a user.
 
@@ -123,7 +123,7 @@ class GerritAccountGPGKeys:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete(self, id_) -> None:
+    def delete(self, id_: str) -> None:
         """
         Deletes a GPG key of a user.
 
