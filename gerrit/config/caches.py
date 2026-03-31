@@ -4,6 +4,7 @@
 from typing import Any
 from gerrit import GerritClient
 
+
 class Cache:
     def __init__(self, name: str, gerrit: GerritClient) -> None:
         self.name = name

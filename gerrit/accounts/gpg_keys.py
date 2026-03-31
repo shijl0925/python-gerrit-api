@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 from typing import Any
 import logging
+from typing import Any, Dict, List
 import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase

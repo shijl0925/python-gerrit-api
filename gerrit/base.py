@@ -6,6 +6,7 @@ import netrc
 from typing import Any, Dict, Optional, Tuple, Union
 import requests
 from requests.adapters import HTTPAdapter
+from requests.cookies import RequestsCookieJar
 from gerrit.utils.requester import Requester
 from gerrit.utils.common import decode_response, strip_trailing_slash
 

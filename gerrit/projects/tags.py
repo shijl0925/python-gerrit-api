@@ -4,6 +4,7 @@
 from typing import Any
 import logging
 from urllib.parse import quote_plus
+from typing import Any, Dict, List, Optional
 import requests
 from gerrit import GerritClient
 from gerrit.utils.common import params_creator

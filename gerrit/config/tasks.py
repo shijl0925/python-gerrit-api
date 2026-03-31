@@ -4,6 +4,7 @@
 from typing import Any
 from gerrit import GerritClient
 
+
 class Task:
     def __init__(self, task_id: str, gerrit: GerritClient) -> None:
         self.id = task_id
