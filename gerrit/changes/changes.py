@@ -17,7 +17,7 @@ class GerritChanges:
         self.gerrit = gerrit
         self.endpoint = "/changes"
 
-    def search(self, query: str, options: Any=None, limit: int = 25, skip: int = 0) -> Any:
+    def search(self, query: str, options: Any = None, limit: int = 25, skip: int = 0) -> Any:
         """
         Queries changes visible to the caller.
 

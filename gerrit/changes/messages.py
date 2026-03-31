@@ -17,7 +17,7 @@ class GerritChangeMessage(GerritBase):
     def __str__(self) -> str:
         return self.id
 
-    def delete(self, input_: Any=None) -> None:
+    def delete(self, input_: Any = None) -> None:
         """
         Deletes a change message.
         Note that only users with the Administrate Server global capability are permitted to

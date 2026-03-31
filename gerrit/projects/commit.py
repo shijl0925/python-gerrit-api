@@ -27,7 +27,7 @@ class GerritProjectCommit(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/in")
 
-    def get_file_content(self, file: str, decode: bool=False) -> Any:
+    def get_file_content(self, file: str, decode: bool = False) -> Any:
         """
         Gets the content of a file from a certain commit.
 

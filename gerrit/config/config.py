@@ -85,7 +85,7 @@ class GerritConfig:
     def caches(self) -> Any:
         return Caches(gerrit=self.gerrit)
 
-    def get_summary(self, option: Any=None) -> Any:
+    def get_summary(self, option: Any = None) -> Any:
         """
         Retrieves a summary of the current server state.
 

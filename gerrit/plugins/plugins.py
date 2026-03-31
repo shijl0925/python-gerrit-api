@@ -50,7 +50,7 @@ class GerritPlugins:
         is_all: bool = False,
         limit: int = 25,
         skip: int = 0,
-        pattern_dispatcher: Any=None,
+        pattern_dispatcher: Any = None,
     ) -> Any:
         """
         Lists the plugins installed on the Gerrit server.

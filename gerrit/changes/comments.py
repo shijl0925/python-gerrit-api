@@ -20,7 +20,7 @@ class GerritChangeRevisionComment(GerritBase):
     def __str__(self) -> str:
         return self.id
 
-    def delete(self, input_: Any=None) -> Any:
+    def delete(self, input_: Any = None) -> Any:
         """
         Deletes a published comment of a revision. Instead of deleting the whole comment,
         this endpoint just replaces the comment’s message with a new message, which contains

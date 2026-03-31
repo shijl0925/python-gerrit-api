@@ -236,7 +236,7 @@ class Requester:
         return response
 
     @staticmethod
-    def confirm_status(res: Any) -> None:  # pylint: disable=too-many-branches
+    def confirm_status(res: Any) -> None:  # pylint: disable = too-many-branches
         """
         check response status code
         :param res:

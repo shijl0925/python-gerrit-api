@@ -59,7 +59,7 @@ class GerritAccountEmails:
         result = self.gerrit.get(self.endpoint)
         return result
 
-    def create(self, email: str, input_: Any=None) -> Any:
+    def create(self, email: str, input_: Any = None) -> Any:
         """
         Registers a new email address for the user.
 

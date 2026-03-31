@@ -186,7 +186,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.post(self.endpoint + "/submit")
 
-    def get_patch(self, zip_: bool=False, download: bool=False, path: str=None, decode: bool=False) -> Any:
+    def get_patch(self, zip_: bool = False, download: bool = False, path: str = None, decode: bool = False) -> Any:
         """
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.
@@ -358,7 +358,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes/")
 
-    def delete_vote(self, account: str, label: str, input_: Any=None) -> None:
+    def delete_vote(self, account: str, label: str, input_: Any = None) -> None:
         """
         Deletes a single vote from a revision. The deletion will be possible only
         if the revision is the current revision. By using this endpoint you can prevent

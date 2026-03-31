@@ -46,7 +46,7 @@ class GerritProjectTags:
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/tags"
 
-    def list(self, pattern_dispatcher: Any=None, limit: int = 25, skip: int = 0) -> Any:
+    def list(self, pattern_dispatcher: Any = None, limit: int = 25, skip: int = 0) -> Any:
         """
         List the tags of a project.
 

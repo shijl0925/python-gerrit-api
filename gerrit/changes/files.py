@@ -38,7 +38,7 @@ class GerritChangeRevisionFile:
     def to_dict(self) -> Any:
         return self.json
 
-    def get_content(self, decode: bool=False) -> Any:
+    def get_content(self, decode: bool = False) -> Any:
         """
         Gets the content of a file from a certain revision.
         The content is returned as base64 encoded string.
@@ -72,7 +72,7 @@ class GerritChangeRevisionFile:
         """
         return self.gerrit.get(self.endpoint + "/download")
 
-    def get_diff(self, intraline: bool=False) -> Any:
+    def get_diff(self, intraline: bool = False) -> Any:
         """
         Gets the diff of a file from a certain revision.
 

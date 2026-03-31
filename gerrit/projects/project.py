@@ -388,7 +388,7 @@ class GerritProject(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/children/")
 
-    def get_child_project(self, name: str, recursive: bool=False) -> Any:
+    def get_child_project(self, name: str, recursive: bool = False) -> Any:
         """
         Retrieves a child project. If a non-direct child project should be
         retrieved the parameter recursive must be set.

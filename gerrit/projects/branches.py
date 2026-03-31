@@ -29,7 +29,7 @@ class GerritProjectBranch(GerritBase):
     def __str__(self) -> str:
         return self.name
 
-    def get_file_content(self, file: str, decode: bool=False) -> Any:
+    def get_file_content(self, file: str, decode: bool = False) -> Any:
         """
         Gets the content of a file from the HEAD revision of a certain branch.
         The content is returned as base64 encoded string.
@@ -96,7 +96,7 @@ class GerritProjectBranches:
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/branches"
 
-    def list(self, pattern_dispatcher: Any=None, limit: int = 25, skip: int = 0) -> Any:
+    def list(self, pattern_dispatcher: Any = None, limit: int = 25, skip: int = 0) -> Any:
         """
         List the branches of a project.
 
