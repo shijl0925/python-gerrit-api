@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from typing import Any
+from typing import Any, Optional
 from base64 import b64decode
 from urllib.parse import quote_plus
 from gerrit import GerritClient
@@ -186,7 +186,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.post(self.endpoint + "/submit")
 
-    def get_patch(self, zip_: bool = False, download: bool = False, path: str = None, decode: bool = False) -> Any:
+    def get_patch(self, zip_: bool = False, download: bool = False, path: Optional[str] = None, decode: bool = False) -> Any:
         """
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.

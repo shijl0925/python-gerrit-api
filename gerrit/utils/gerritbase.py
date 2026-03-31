@@ -41,7 +41,7 @@ class GerritBase:
                     pass
 
     def _poll(self) -> Any:
-        res = self.gerrit.get(self.endpoint)  # pylint: disable = no-member
+        res = self.gerrit.get(self.endpoint)  # pylint: disable=no-member
 
         if isinstance(res, list) and res:
             return res[0]
@@ -61,7 +61,7 @@ class GerritBase:
         """
         if not isinstance(other, self.__class__):
             return False
-        return other.endpoint == self.endpoint  # pylint: disable = no-member
+        return other.endpoint == self.endpoint  # pylint: disable=no-member
 
     def __hash__(self) -> int:
-        return hash(self.endpoint)  # pylint: disable = no-member
+        return hash(self.endpoint)  # pylint: disable=no-member
