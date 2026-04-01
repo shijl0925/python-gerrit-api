@@ -118,8 +118,8 @@ class TestGerritChange:
 
     def test_add_message(self, mock_change):
         mock_change.add_message({"message": "Some nits need to be fixed."})
-        mock_change.gerrit.put.assert_called()
-        call_args = mock_change.gerrit.put.call_args
+        mock_change.gerrit.post.assert_called()
+        call_args = mock_change.gerrit.post.call_args
         assert "/message" in call_args[0][0]
 
     def test_get_meta_diff(self, mock_change):

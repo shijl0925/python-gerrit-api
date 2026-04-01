@@ -8,6 +8,7 @@ from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     AccountNotFoundError,
     AccountAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -108,14 +109,13 @@ class GerritAccounts:
         :return:
         """
         try:
-            self.get(username)
-            message = f"Account {username} already exists"
-            logger.error(message)
-            raise AccountAlreadyExistsError(message)
-        except AccountNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{username}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
-            return self.get(username)
+        except ConflictError:
+            message = f"Account {username} already exists"
+            logger.error(message)
+            raise AccountAlreadyExistsError(message)
+        return self.get(username)

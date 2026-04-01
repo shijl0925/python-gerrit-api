@@ -11,6 +11,7 @@ from gerrit.utils.common import params_creator
 from gerrit.utils.exceptions import (
     ProjectNotFoundError,
     ProjectAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -142,17 +143,16 @@ class GerritProjects:
         :return:
         """
         try:
-            self.get(project_name)
-            message = f"Project {project_name} already exists"
-            logger.error(message)
-            raise ProjectAlreadyExistsError(message)
-        except ProjectNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{quote_plus(project_name)}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
-            return self.get(project_name)
+        except ConflictError:
+            message = f"Project {project_name} already exists"
+            logger.error(message)
+            raise ProjectAlreadyExistsError(message)
+        return self.get(project_name)
 
     def delete(self, project_name: str) -> None:
         """

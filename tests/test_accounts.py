@@ -67,11 +67,8 @@ class TestGerritAccounts:
             accounts.get(account="nobody")
 
     def test_create_account(self, mock_gerrit):
-        # First call (check existence) raises 404, second call returns created account
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        mock_gerrit.get.side_effect = [http_error, ACCOUNT_DATA, ACCOUNT_DATA]
+        # put() succeeds; accounts.get() calls gerrit.get() twice (get + poll)
+        mock_gerrit.get.side_effect = [ACCOUNT_DATA, ACCOUNT_DATA]
 
         from gerrit.accounts.accounts import GerritAccounts
         accounts = GerritAccounts(gerrit=mock_gerrit)
@@ -80,10 +77,10 @@ class TestGerritAccounts:
         mock_gerrit.put.assert_called_once()
 
     def test_create_account_already_exists(self, mock_gerrit):
-        mock_gerrit.get.return_value = ACCOUNT_DATA
-
         from gerrit.accounts.accounts import GerritAccounts
-        from gerrit.utils.exceptions import AccountAlreadyExistsError
+        from gerrit.utils.exceptions import ConflictError, AccountAlreadyExistsError
+        mock_gerrit.put.side_effect = ConflictError("409 Conflict: Account already exists")
+
         accounts = GerritAccounts(gerrit=mock_gerrit)
         with pytest.raises(AccountAlreadyExistsError):
             accounts.create("testuser", {})

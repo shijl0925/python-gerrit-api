@@ -12,6 +12,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     BranchNotFoundError,
     BranchAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -68,6 +69,7 @@ class GerritProjectBranch(GerritBase):
                 message = f"Source Branch {source} does not exist"
                 logger.error(message)
                 raise BranchNotFoundError(message)
+            raise GerritAPIException(str(error)) from error
 
         return self.gerrit.get(self.endpoint + "/mergeable", params=input_)
 
@@ -154,18 +156,17 @@ class GerritProjectBranches:
         :return:
         """
         try:
-            self.get(name)
-            message = f"Branch {name} already exists"
-            logger.error(message)
-            raise BranchAlreadyExistsError(message)
-        except BranchNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{quote_plus(name)}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
+        except ConflictError:
+            message = f"Branch {name} already exists"
+            logger.error(message)
+            raise BranchAlreadyExistsError(message)
 
-            return self.get(name)
+        return self.get(name)
 
     def delete(self, name: str) -> None:
         """

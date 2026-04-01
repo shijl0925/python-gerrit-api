@@ -53,7 +53,7 @@ class GerritChange(GerritBase):
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#add-change-message
         :return:
         """
-        self.gerrit.put(
+        self.gerrit.post(
             self.endpoint + "/message",
             json=input_,
             headers=self.gerrit.default_headers,
