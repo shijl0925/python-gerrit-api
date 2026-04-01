@@ -364,6 +364,9 @@ class TestConfirmStatus:
 
     def test_reason_bytes_iso(self):
         # Byte string that can't be decoded as utf-8 but can be as iso-8859-1
-        resp = _make_response(400, reason=b"Bad \xe9")
-        with pytest.raises(ValidationError):
+        reason_bytes = b"Bad \xe9"
+        resp = _make_response(400, reason=reason_bytes)
+        with pytest.raises(ValidationError) as exc_info:
             Requester.confirm_status(resp)
+        # The fallback iso-8859-1 decoding should produce a non-empty reason in the message
+        assert "Bad" in str(exc_info.value)
