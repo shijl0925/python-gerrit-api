@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 from base64 import b64decode
 from urllib.parse import quote_plus
+from typing import Any, Dict, List, Optional
 from gerrit import GerritClient
 from gerrit.changes.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.comments import GerritChangeRevisionComments
@@ -10,19 +11,19 @@ from gerrit.changes.files import GerritChangeRevisionFiles
 
 
 class GerritChangeRevision:
-    def __init__(self, gerrit: GerritClient, change: str, revision: str = "current"):
+    def __init__(self, gerrit: GerritClient, change: str, revision: str = "current") -> None:
         self.change = change
         self.revision = revision
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/revisions/{self.revision}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<{self.__class__.__module__}.{self.__class__.__name__} {str(self)}>"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.revision)
 
-    def get_commit(self):
+    def get_commit(self) -> Dict[str, Any]:
         """
         Retrieves a parsed commit of a revision.
 
@@ -31,7 +32,7 @@ class GerritChangeRevision:
         result = self.gerrit.get(self.endpoint + "/commit")
         return result
 
-    def get_description(self):
+    def get_description(self) -> Any:
         """
         Retrieves the description of a patch set.
         If the patch set does not have a description an empty string is returned.
@@ -40,7 +41,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/description")
 
-    def set_description(self, input_):
+    def set_description(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the description of a patch set.
 
@@ -64,7 +65,7 @@ class GerritChangeRevision:
             headers=self.gerrit.default_headers,
         )
 
-    def get_merge_list(self):
+    def get_merge_list(self) -> List[Any]:
         """
         Returns the list of commits that are being integrated into a target branch by a merge
         commit. By default, the first parent is assumed to be uninteresting. By using the parent
@@ -75,7 +76,7 @@ class GerritChangeRevision:
         result = self.gerrit.get(self.endpoint + "/mergelist")
         return result
 
-    def get_revision_actions(self):
+    def get_revision_actions(self) -> Any:
         """
         Retrieves revision actions of the revision of a change.
 
@@ -83,7 +84,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/actions")
 
-    def get_review(self):
+    def get_review(self) -> Any:
         """
         Retrieves a review of a revision.
 
@@ -91,7 +92,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/review")
 
-    def get_related_changes(self):
+    def get_related_changes(self) -> Any:
         """
         Retrieves related changes of a revision. Related changes are changes that either depend on,
         or are dependencies of the revision.
@@ -100,7 +101,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/related")
 
-    def set_review(self, input_):
+    def set_review(self, input_: Dict[str, Any]) -> Any:
         """
         Sets a review on a revision, optionally also publishing draft comments, setting labels,
         adding reviewers or CCs, and modifying the work in progress property.
@@ -150,7 +151,7 @@ class GerritChangeRevision:
             self.endpoint + "/review", json=input_, headers=self.gerrit.default_headers
         )
 
-    def rebase(self, input_):
+    def rebase(self, input_: Dict[str, Any]) -> Any:
         """
         Rebases a revision.
         Optionally, the parent revision can be changed to another patch set through the RebaseInput
@@ -174,7 +175,7 @@ class GerritChangeRevision:
             self.endpoint + "/rebase", json=input_, headers=self.gerrit.default_headers
         )
 
-    def submit(self):
+    def submit(self) -> Any:
         """
         Submits a revision.
         If the revision cannot be submitted, e.g. because the submit rule doesn’t allow submitting
@@ -185,7 +186,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.post(self.endpoint + "/submit")
 
-    def get_patch(self, zip_=False, download=False, path=None, decode=False):
+    def get_patch(self, zip_: bool = False, download: bool = False, path: Optional[str] = None, decode: bool = False) -> Any:
         """
         Gets the formatted patch for one revision.
         The formatted patch is returned as text encoded inside base64 if decode is False.
@@ -226,7 +227,7 @@ class GerritChangeRevision:
             return b64decode(result).decode("utf-8")
         return result
 
-    def submit_preview(self):
+    def submit_preview(self) -> Any:
         """
         need fix bug
         Gets a file containing thin bundles of all modified projects if this change was submitted.
@@ -235,7 +236,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/preview_submit")
 
-    def is_mergeable(self):
+    def is_mergeable(self) -> Any:
         """
         Gets the method the server will use to submit (merge) the change and an indicator
         if the change is currently mergeable.
@@ -244,7 +245,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/mergeable")
 
-    def get_submit_type(self):
+    def get_submit_type(self) -> Any:
         """
         Gets the method the server will use to submit (merge) the change.
 
@@ -252,7 +253,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/submit_type")
 
-    def test_submit_type(self, input_):
+    def test_submit_type(self, input_: str) -> Any:
         """
         Tests the submit_type Prolog rule in the project, or the one given.
 
@@ -266,7 +267,7 @@ class GerritChangeRevision:
             headers={"Content-Type": "text/plain"},
         )
 
-    def test_submit_rule(self, input_):
+    def test_submit_rule(self, input_: str) -> Any:
         """
         Tests the submit_rule Prolog rule in the project, or the one given.
 
@@ -292,7 +293,7 @@ class GerritChangeRevision:
             change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
-    def list_robot_comments(self):
+    def list_robot_comments(self) -> Any:
         """
         Lists the robot comments of a revision.
 
@@ -300,7 +301,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/robotcomments")
 
-    def get_robot_comment(self, commit_id):
+    def get_robot_comment(self, commit_id: str) -> Any:
         """
         Retrieves a robot comment of a revision.
 
@@ -315,7 +316,7 @@ class GerritChangeRevision:
             change=self.change, revision=self.revision, gerrit=self.gerrit
         )
 
-    def cherry_pick(self, input_):
+    def cherry_pick(self, input_: Dict[str, Any]) -> Any:
         """
         Cherry picks a revision to a destination branch.
 
@@ -340,7 +341,7 @@ class GerritChangeRevision:
             headers=self.gerrit.default_headers,
         )
 
-    def list_reviewers(self):
+    def list_reviewers(self) -> List[Any]:
         """
         Lists the reviewers of a revision.
 
@@ -348,7 +349,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + "/reviewers")
 
-    def list_votes(self, account):
+    def list_votes(self, account: Any) -> Any:
         """
         Lists the votes for a specific reviewer of the revision.
 
@@ -357,7 +358,7 @@ class GerritChangeRevision:
         """
         return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes/")
 
-    def delete_vote(self, account, label, input_=None):
+    def delete_vote(self, account: Any, label: str, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a single vote from a revision. The deletion will be possible only
         if the revision is the current revision. By using this endpoint you can prevent

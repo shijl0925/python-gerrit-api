@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict, List
 from gerrit import GerritClient
 
 
 class GerritGroupSubGroups:
-    def __init__(self, group_id, gerrit: GerritClient):
+    def __init__(self, group_id: str, gerrit: GerritClient) -> None:
         self.id = group_id
         self.gerrit = gerrit
         self.endpoint = f"/groups/{self.id}/groups"
 
-    def list(self):
+    def list(self) -> List[Any]:
         """
         Lists the direct subgroups of a group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -26,7 +27,7 @@ class GerritGroupSubGroups:
 
         return subgroups
 
-    def get(self, subgroup):
+    def get(self, subgroup: Any) -> Any:
         """
         Retrieves a subgroup.
         This endpoint is only allowed for Gerrit internal groups;
@@ -40,7 +41,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def add(self, subgroup):
+    def add(self, subgroup: Any) -> Any:
         """
         Adds an internal or external group as subgroup to a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -54,7 +55,7 @@ class GerritGroupSubGroups:
         subgroup_id = result.get("id")
         return self.gerrit.groups.get(subgroup_id)
 
-    def add_subgroups(self, input_):
+    def add_subgroups(self, input_: Dict[str, Any]) -> Any:
         """
         Adds multiple groups as subgroups to a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;
@@ -76,7 +77,7 @@ class GerritGroupSubGroups:
             self.endpoint, json=input_, headers=self.gerrit.default_headers
         )
 
-    def remove(self, subgroup):
+    def remove(self, subgroup: Any) -> None:
         """
         Removes a subgroup from a Gerrit internal group.
         This endpoint is only allowed for Gerrit internal groups;
@@ -87,7 +88,7 @@ class GerritGroupSubGroups:
         """
         self.gerrit.delete(self.endpoint + f"/{subgroup}")
 
-    def remove_subgroups(self, input_):
+    def remove_subgroups(self, input_: Dict[str, Any]) -> None:
         """
         Removes multiple subgroups from a Gerrit internal group in a single request.
         This endpoint is only allowed for Gerrit internal groups;

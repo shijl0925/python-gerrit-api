@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import urllib.parse as urlparse
+from typing import Any, Dict, List, Optional, Tuple, Union
+from requests import Response, Session
 from gerrit.utils.exceptions import (
     NotAllowedError,
     ValidationError,
@@ -22,22 +24,22 @@ class Requester:
     This default class can handle simple authentication only.
     """
 
-    VALID_STATUS_CODES = [
+    VALID_STATUS_CODES: List[int] = [
         200,
     ]
-    AUTH_COOKIE = None
+    AUTH_COOKIE: Optional[str] = None
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         """
         :param kwargs:
         """
         timeout = 10
-        base_url = kwargs.get("base_url")
-        self.base_scheme = urlparse.urlsplit(base_url).scheme if base_url else None
-        self.session = kwargs.get("session")
-        self.timeout = kwargs.get("timeout", timeout)
+        base_url: Optional[str] = kwargs.get("base_url")
+        self.base_scheme: Optional[str] = urlparse.urlsplit(base_url).scheme if base_url else None
+        self.session: Optional[Session] = kwargs.get("session")
+        self.timeout: int = kwargs.get("timeout", timeout)
 
-    def _update_url_scheme(self, url):
+    def _update_url_scheme(self, url: str) -> str:
         """
         Updates scheme of given url to the one used in Gerrit base_url.
         """
@@ -55,8 +57,13 @@ class Requester:
         return url
 
     def get_request_dict(
-        self, params=None, data=None, json=None, headers=None, **kwargs
-    ):
+        self,
+        params: Optional[Union[Dict[str, Any], List[Tuple[str, Any]]]] = None,
+        data: Optional[Any] = None,
+        json: Optional[Any] = None,
+        headers: Optional[Dict[str, str]] = None,
+        **kwargs: Any,
+    ) -> Dict[str, Any]:
         """
         :param params:
         :param data:
@@ -65,10 +72,10 @@ class Requester:
         :param kwargs:
         :return:
         """
-        request_kwargs = kwargs
+        request_kwargs: Dict[str, Any] = kwargs
 
         if params:
-            if not isinstance(params, dict):
+            if not isinstance(params, (dict, list)):
                 raise ValueError(f"Params must be a dict, got {repr(params)}")
 
             request_kwargs["params"] = params
@@ -99,14 +106,14 @@ class Requester:
 
     def get(
         self,
-        url,
-        params=None,
-        headers=None,
-        allow_redirects=True,
-        stream=False,
+        url: str,
+        params: Optional[Union[Dict[str, Any], List[Tuple[str, Any]]]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
+        stream: bool = False,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> Response:
         """
         :param url:
         :param params:
@@ -131,16 +138,16 @@ class Requester:
 
     def post(
         self,
-        url,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        params: Optional[Union[Dict[str, Any], List[Tuple[str, Any]]]] = None,
+        data: Optional[Any] = None,
+        json: Optional[Any] = None,
+        files: Optional[Any] = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> Response:
         """
         :param url:
         :param params:
@@ -169,16 +176,16 @@ class Requester:
 
     def put(
         self,
-        url,
-        params=None,
-        data=None,
-        json=None,
-        files=None,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        params: Optional[Union[Dict[str, Any], List[Tuple[str, Any]]]] = None,
+        data: Optional[Any] = None,
+        json: Optional[Any] = None,
+        files: Optional[Any] = None,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> Response:
         """
         :param url:
         :param params:
@@ -207,12 +214,12 @@ class Requester:
 
     def delete(
         self,
-        url,
-        headers=None,
-        allow_redirects=True,
+        url: str,
+        headers: Optional[Dict[str, str]] = None,
+        allow_redirects: bool = True,
         raise_for_status: bool = True,
-        **kwargs,
-    ):
+        **kwargs: Any,
+    ) -> Response:
         """
         :param url:
         :param headers:
@@ -230,7 +237,7 @@ class Requester:
         return response
 
     @staticmethod
-    def confirm_status(res):  # pylint: disable=too-many-branches
+    def confirm_status(res: Response) -> None:  # pylint: disable=too-many-branches
         """
         check response status code
         :param res:

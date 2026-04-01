@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.accounts.emails import GerritAccountEmails
@@ -9,16 +10,16 @@ from gerrit.accounts.gpg_keys import GerritAccountGPGKeys
 
 
 class GerritAccount(GerritBase):
-    def __init__(self, account, gerrit: GerritClient):
+    def __init__(self, account: Any, gerrit: GerritClient) -> None:
         self.account = account
         self.gerrit = gerrit
         self.endpoint = f"/accounts/{self.account}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.account)
 
-    def get_detail(self):
+    def get_detail(self) -> Any:
         """
         fetch account info in more details, such as: registered_on
 
@@ -27,7 +28,7 @@ class GerritAccount(GerritBase):
         result = self.gerrit.get(self.endpoint + "/detail")
         return result
 
-    def get_name(self):
+    def get_name(self) -> Any:
         """
         Retrieves the full name of an account.
 
@@ -35,7 +36,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/name")
 
-    def set_name(self, input_):
+    def set_name(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the full name of an account.
         Some realms may not allow to modify the account name.
@@ -59,7 +60,7 @@ class GerritAccount(GerritBase):
             self.endpoint + "/name", json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete_name(self):
+    def delete_name(self) -> None:
         """
         Deletes the name of an account.
         Some realms may not allow to delete the account name.
@@ -69,7 +70,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/name")
 
-    def get_status(self):
+    def get_status(self) -> Any:
         """
         Retrieves the status of an account.
         If the account does not have a status an empty string is returned.
@@ -81,7 +82,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/status")
 
-    def set_status(self, status):
+    def set_status(self, status: str) -> Any:
         """
         Sets the status of an account.
 
@@ -93,7 +94,7 @@ class GerritAccount(GerritBase):
             self.endpoint + "/status", json=input_, headers=self.gerrit.default_headers
         )
 
-    def set_username(self, input_):
+    def set_username(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the username of an account.
         Some realms may not allow to modify the account username.
@@ -118,7 +119,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_username(self):
+    def get_username(self) -> Any:
         """
         Retrieves the username of an account.
 
@@ -126,7 +127,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/username")
 
-    def set_displayname(self, input_):
+    def set_displayname(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the display name of an account.
         This method is supported since v3.2.0.
@@ -150,7 +151,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_displayname(self):
+    def get_displayname(self) -> Any:
         """
         Retrieves the display name of an account.
         This method is supported since v3.2.0.
@@ -159,7 +160,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/displayname")
 
-    def get_active(self):
+    def get_active(self) -> Any:
         """
         Checks if an account is active.
 
@@ -167,7 +168,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/active")
 
-    def set_active(self):
+    def set_active(self) -> None:
         """
         Sets the account state to active.
 
@@ -175,7 +176,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/active")
 
-    def delete_active(self):
+    def delete_active(self) -> None:
         """
         Sets the account state to inactive.
         If the account was already inactive the response is '409 Conflict'.
@@ -184,7 +185,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/active")
 
-    def set_http_password(self, input_):
+    def set_http_password(self, input_: Dict[str, Any]) -> Any:
         """
         Sets/Generates the HTTP password of an account.
 
@@ -208,7 +209,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def delete_http_password(self):
+    def delete_http_password(self) -> None:
         """
         Deletes the HTTP password of an account.
 
@@ -216,7 +217,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/password.http")
 
-    def get_oauth_token(self):
+    def get_oauth_token(self) -> Any:
         """
         Returns a previously obtained OAuth access token.
         If there is no token available, or the token has already expired, '404 Not Found' is
@@ -228,18 +229,18 @@ class GerritAccount(GerritBase):
         return self.gerrit.get(self.endpoint + "/oauthtoken")
 
     @property
-    def emails(self):
+    def emails(self) -> GerritAccountEmails:
         return GerritAccountEmails(account=self.account, gerrit=self.gerrit)
 
     @property
-    def ssh_keys(self):
+    def ssh_keys(self) -> GerritAccountSSHKeys:
         return GerritAccountSSHKeys(account=self.account, gerrit=self.gerrit)
 
     @property
-    def gpg_keys(self):
+    def gpg_keys(self) -> GerritAccountGPGKeys:
         return GerritAccountGPGKeys(account=self.account, gerrit=self.gerrit)
 
-    def list_capabilities(self):
+    def list_capabilities(self) -> Any:
         """
         Returns the global capabilities that are enabled for the specified user.
 
@@ -247,7 +248,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/capabilities")
 
-    def check_capability(self, capability):
+    def check_capability(self, capability: str) -> Any:
         """
         Checks if a user has a certain global capability.
 
@@ -257,7 +258,7 @@ class GerritAccount(GerritBase):
         return self.gerrit.get(self.endpoint + f"/capabilities/{capability}")
 
     @property
-    def groups(self):
+    def groups(self) -> List[Any]:
         """
         Lists all groups that contain the specified user as a member.
 
@@ -266,7 +267,7 @@ class GerritAccount(GerritBase):
         result = self.gerrit.get(self.endpoint + "/groups")
         return [self.gerrit.groups.get(item.get("id")) for item in result]
 
-    def get_avatar(self):
+    def get_avatar(self) -> Any:
         """
         Retrieves the avatar image of the user, requires avatars-gravatar plugin.
 
@@ -274,7 +275,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/avatar")
 
-    def get_avatar_change_url(self):
+    def get_avatar_change_url(self) -> Any:
         """
         Retrieves the avatar image of the user, requires avatars-gravatar plugin.
 
@@ -282,17 +283,17 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/avatar.change.url")
 
-    def get_user_preferences(self):
+    def get_user_preferences(self) -> Any:
         """
-        Retrieves the user’s preferences.
+        Retrieves the user's preferences.
 
         :return:
         """
         return self.gerrit.get(self.endpoint + "/preferences")
 
-    def set_user_preferences(self, input_):
+    def set_user_preferences(self, input_: Dict[str, Any]) -> Any:
         """
-        Sets the user’s preferences.
+        Sets the user's preferences.
 
         .. code-block:: python
 
@@ -323,7 +324,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_diff_preferences(self):
+    def get_diff_preferences(self) -> Any:
         """
         Retrieves the diff preferences of a user.
 
@@ -331,7 +332,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/preferences.diff")
 
-    def set_diff_preferences(self, input_):
+    def set_diff_preferences(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the diff preferences of a user.
 
@@ -365,7 +366,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_edit_preferences(self):
+    def get_edit_preferences(self) -> Any:
         """
         Retrieves the edit preferences of a user.
 
@@ -373,7 +374,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/preferences.edit")
 
-    def set_edit_preferences(self, input_):
+    def set_edit_preferences(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the edit preferences of a user.
 
@@ -409,7 +410,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_watched_projects(self):
+    def get_watched_projects(self) -> Any:
         """
         Retrieves all projects a user is watching.
 
@@ -417,7 +418,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/watched.projects")
 
-    def modify_watched_projects(self, input_):
+    def modify_watched_projects(self, input_: List[Dict[str, Any]]) -> Any:
         """
         Add new projects to watch or update existing watched projects.
         Projects that are already watched by a user will be updated with the provided configuration.
@@ -445,7 +446,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def delete_watched_projects(self, input_):
+    def delete_watched_projects(self, input_: List[Dict[str, Any]]) -> None:
         """
         Projects posted to this endpoint will no longer be watched.
 
@@ -470,7 +471,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_external_ids(self):
+    def get_external_ids(self) -> Any:
         """
         Retrieves the external ids of a user account.
         Only external ids belonging to the caller may be requested.
@@ -481,7 +482,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/external.ids")
 
-    def delete_external_ids(self, input_):
+    def delete_external_ids(self, input_: List[str]) -> None:
         """
         Delete a list of external ids for a user account.
         Only external ids belonging to the caller may be deleted. Users that have Modify Account
@@ -505,15 +506,15 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def list_contributor_agreements(self):
+    def list_contributor_agreements(self) -> Any:
         """
-        Gets a list of the user’s signed contributor agreements.
+        Gets a list of the user's signed contributor agreements.
 
         :return:
         """
         return self.gerrit.get(self.endpoint + "/agreements")
 
-    def sign_contributor_agreement(self, input_):
+    def sign_contributor_agreement(self, input_: Dict[str, Any]) -> Any:
         """
         Signs a contributor agreement.
 
@@ -535,9 +536,9 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def delete_draft_comments(self, input_):
+    def delete_draft_comments(self, input_: Dict[str, Any]) -> Any:
         """
-        Deletes some or all of a user’s draft comments.
+        Deletes some or all of a user's draft comments.
 
         .. code-block:: python
 
@@ -557,7 +558,7 @@ class GerritAccount(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def index(self):
+    def index(self) -> None:
         """
         Adds or updates the account in the secondary index.
 
@@ -565,7 +566,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.post(self.endpoint + "/index")
 
-    def get_default_starred_changes(self):
+    def get_default_starred_changes(self) -> Any:
         """
         Gets the changes that were starred with the default star by the identified user account.
 
@@ -574,7 +575,7 @@ class GerritAccount(GerritBase):
         result = self.gerrit.get(self.endpoint + "/starred.changes")
         return result
 
-    def put_default_star_on_change(self, id_):
+    def put_default_star_on_change(self, id_: str) -> None:
         """
         Star a change with the default label.
 
@@ -583,7 +584,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.put(self.endpoint + f"/starred.changes/{id_}")
 
-    def remove_default_star_from_change(self, id_):
+    def remove_default_star_from_change(self, id_: str) -> None:
         """
         Remove the default star label from a change. This stops notifications.
 
@@ -592,7 +593,7 @@ class GerritAccount(GerritBase):
         """
         self.gerrit.delete(self.endpoint + f"/starred.changes/{id_}")
 
-    def get_starred_changes(self):
+    def get_starred_changes(self) -> Any:
         """
         Gets the changes that were starred with any label by the identified user account.
 
@@ -601,7 +602,7 @@ class GerritAccount(GerritBase):
         result = self.gerrit.get(self.endpoint + "/stars.changes")
         return result
 
-    def get_star_labels_from_change(self, id_):
+    def get_star_labels_from_change(self, id_: str) -> Any:
         """
         Get star labels from a change.
 
@@ -610,7 +611,7 @@ class GerritAccount(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/stars.changes/{id_}")
 
-    def update_star_labels_on_change(self, id_, input_):
+    def update_star_labels_on_change(self, id_: str, input_: Dict[str, Any]) -> Any:
         """
         Update star labels on a change.
 

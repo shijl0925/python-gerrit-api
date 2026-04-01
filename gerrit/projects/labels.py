@@ -1,22 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 
 
 class GerritProjectLabel(GerritBase):
-    def __init__(self, name: str, project: str, gerrit: GerritClient):
+    def __init__(self, name: str, project: str, gerrit: GerritClient) -> None:
         self.name = name
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/labels/{self.name}"
         super().__init__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def set(self, input_):
+    def set(self, input_: Dict[str, Any]) -> Any:
         """
         Updates the definition of a label that is defined in this project.
         The calling user must have write access to the refs/meta/config branch of the project.
@@ -42,7 +43,7 @@ class GerritProjectLabel(GerritBase):
         )
         return result
 
-    def delete(self):
+    def delete(self) -> None:
         """
         Deletes the definition of a label that is defined in this project.
         The calling user must have write access to the refs/meta/config branch of the project.
@@ -53,12 +54,12 @@ class GerritProjectLabel(GerritBase):
 
 
 class GerritProjectLabels:
-    def __init__(self, project, gerrit: GerritClient):
+    def __init__(self, project: str, gerrit: GerritClient) -> None:
         self.project = project
         self.gerrit = gerrit
         self.endpoint = f"/projects/{self.project}/labels"
 
-    def list(self):
+    def list(self) -> List[Any]:
         """
         Lists the labels that are defined in this project.
 
@@ -67,7 +68,7 @@ class GerritProjectLabels:
         result = self.gerrit.get(self.endpoint + "/")
         return result
 
-    def get(self, name):
+    def get(self, name: str) -> Any:
         """
         Retrieves the definition of a label that is defined in this project.
         The calling user must have read access to the refs/meta/config branch of the project.
@@ -80,7 +81,7 @@ class GerritProjectLabels:
         name = result.get("name")
         return GerritProjectLabel(name=name, project=self.project, gerrit=self.gerrit)
 
-    def create(self, name, input_):
+    def create(self, name: str, input_: Dict[str, Any]) -> Any:
         """
         Creates a new label definition in this project.
         The calling user must have write access to the refs/meta/config branch of the project.
@@ -111,7 +112,7 @@ class GerritProjectLabels:
         )
         return result
 
-    def delete(self, name):
+    def delete(self, name: str) -> None:
         """
         Deletes the definition of a label that is defined in this project.
         The calling user must have write access to the refs/meta/config branch of the project.

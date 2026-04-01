@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class GerritProjects:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/projects"
 
@@ -103,7 +103,7 @@ class GerritProjects:
 
         return self.gerrit.get(self.endpoint + f"/?query={query}", params=params)
 
-    def get(self, name: str):
+    def get(self, name: str) -> Any:
         """
         Retrieves a project.
 
@@ -120,7 +120,7 @@ class GerritProjects:
                 raise ProjectNotFoundError(message)
             raise GerritAPIException from error
 
-    def create(self, project_name: str, input_: Dict[str, Any]):
+    def create(self, project_name: str, input_: Dict[str, Any]) -> Any:
         """
         Creates a new project.
 
@@ -154,7 +154,7 @@ class GerritProjects:
             )
             return self.get(project_name)
 
-    def delete(self, project_name: str):
+    def delete(self, project_name: str) -> None:
         """
         Delete the project, requires delete-project plugin
 

@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
+from typing import Any, List
 from gerrit import GerritClient
 
 
 class GerritAccess:
-    def __init__(self, gerrit: GerritClient):
+    def __init__(self, gerrit: GerritClient) -> None:
         self.gerrit = gerrit
         self.endpoint = "/access"
 
-    def list(self, projects):
+    def list(self, projects: List[str]) -> Any:
         """
         Lists the access rights for projects.
         As result a map is returned that maps the project name to the ProjectAccessInfo entity.

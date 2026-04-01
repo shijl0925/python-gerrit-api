@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from typing import Dict
+from typing import Any, Dict, List, Optional, Union
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.changes.reviewers import GerritChangeReviewers
@@ -12,7 +12,7 @@ from gerrit.utils.exceptions import ChangeEditNotFoundError
 
 
 class GerritChange(GerritBase):
-    def __init__(self, id: str, gerrit: GerritClient):
+    def __init__(self, id: str, gerrit: GerritClient) -> None:
         self.id = id
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.id}"
@@ -21,10 +21,10 @@ class GerritChange(GerritBase):
         self.revisions: Dict[str, str] = {}
         self.current_revision_number = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.id
 
-    def list_actions(self):
+    def list_actions(self) -> Any:
         """
         Lists the actions that can be executed on the change by the calling user.
         The information is useful for tools to check if the action is currently
@@ -34,7 +34,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/actions")
 
-    def add_message(self, input_):
+    def add_message(self, input_: Dict[str, Any]) -> None:
         """
         Adds a message to a change without posting a review.
         This method is supported since v3.3.0.
@@ -59,7 +59,7 @@ class GerritChange(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_detail(self, options=None):
+    def get_detail(self, options: Optional[List[str]] = None) -> Any:
         """
         retrieve a change with labels, detailed labels, detailed accounts, reviewer updates, and messages.
 
@@ -72,7 +72,7 @@ class GerritChange(GerritBase):
             params = None
         return self.gerrit.get(self.endpoint + "/detail", params=params)
 
-    def get_meta_diff(self, old=None, meta=None):
+    def get_meta_diff(self, old: Optional[str] = None, meta: Optional[str] = None) -> Any:
         """
         Retrieves the difference between two historical states of a change by
         specifying the and the parameters. old=SHA-1,meta=SHA-1.
@@ -94,7 +94,7 @@ class GerritChange(GerritBase):
 
         return self.gerrit.get(self.endpoint + "/meta_diff", params=params)
 
-    def create_merge_patch_set(self, input_):
+    def create_merge_patch_set(self, input_: Dict[str, Any]) -> Any:
         """
         Update an existing change by using a MergePatchSetInput entity.
         Gerrit will create a merge commit based on the information of MergePatchSetInput and add
@@ -120,7 +120,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/merge", json=input_, headers=self.gerrit.default_headers
         )
 
-    def set_commit_message(self, input_):
+    def set_commit_message(self, input_: Dict[str, Any]) -> Any:
         """
         Creates a new patch set with a new commit message.
 
@@ -141,7 +141,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/message", json=input_, headers=self.gerrit.default_headers
         )
 
-    def list_votes(self, account):
+    def list_votes(self, account: Any) -> Any:
         """
         Lists the votes for a specific reviewer of the change.
 
@@ -150,7 +150,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes")
 
-    def delete_vote(self, account, label, input_=None):
+    def delete_vote(self, account: Any, label: str, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a single vote from a change. Note, that even when the last vote of a reviewer is
         removed the reviewer itself is still listed on the change.
@@ -181,7 +181,7 @@ class GerritChange(GerritBase):
             endpoint += "/delete"
             self.gerrit.post(endpoint, json=input_, headers=self.gerrit.default_headers)
 
-    def get_topic(self):
+    def get_topic(self) -> Any:
         """
         Retrieves the topic of a change.
 
@@ -193,7 +193,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(f"{self.endpoint}/topic")
 
-    def set_topic(self, topic):
+    def set_topic(self, topic: str) -> Any:
         """
         Sets the topic of a change.
 
@@ -205,7 +205,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/topic", json=input_, headers=self.gerrit.default_headers
         )
 
-    def delete_topic(self):
+    def delete_topic(self) -> Any:
         """
         Deletes the topic of a change.
 
@@ -213,7 +213,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.delete(f"{self.endpoint}/topic")
 
-    def get_assignee(self):
+    def get_assignee(self) -> Any:
         """
         Retrieves the account of the user assigned to a change.
 
@@ -221,7 +221,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/assignee")
 
-    def set_assignee(self, input_):
+    def set_assignee(self, input_: Dict[str, Any]) -> Any:
         """
         Sets the assignee of a change.
 
@@ -245,7 +245,7 @@ class GerritChange(GerritBase):
         )
         return result
 
-    def get_past_assignees(self):
+    def get_past_assignees(self) -> Any:
         """
         Returns a list of every user ever assigned to a change, in the order in which they were
         first assigned.
@@ -255,7 +255,7 @@ class GerritChange(GerritBase):
         result = self.gerrit.get(self.endpoint + "/past_assignees")
         return result
 
-    def delete_assignee(self):
+    def delete_assignee(self) -> Any:
         """
         Deletes the assignee of a change.
 
@@ -263,7 +263,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.delete(self.endpoint + "/assignee")
 
-    def get_pure_revert(self, commit):
+    def get_pure_revert(self, commit: str) -> Any:
         """
         Check if the given change is a pure revert of the change it references in revertOf.
 
@@ -272,7 +272,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + f"/pure_revert?o={commit}")
 
-    def abandon(self):
+    def abandon(self) -> Any:
         """
         Abandons a change.
         Abandoning a change also removes all users from the attention set.
@@ -284,7 +284,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.post(self.endpoint + "/abandon")
 
-    def restore(self):
+    def restore(self) -> Any:
         """
         Restores a change.
         If the change cannot be restored because the change state doesn't allow restoring the
@@ -295,7 +295,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.post(self.endpoint + "/restore")
 
-    def rebase(self, input_):
+    def rebase(self, input_: Dict[str, Any]) -> Any:
         """
         Rebase a change.
         If the change cannot be rebased, e.g. due to conflicts, the response is '409 Conflict'
@@ -318,7 +318,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/rebase", json=input_, headers=self.gerrit.default_headers
         )
 
-    def move(self, input_):
+    def move(self, input_: Dict[str, Any]) -> Any:
         """
         Move a change.
         If the change cannot be moved because the change state doesn't allow moving the change,
@@ -341,7 +341,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/move", json=input_, headers=self.gerrit.default_headers
         )
 
-    def revert(self, input_=None):
+    def revert(self, input_: Optional[Dict[str, Any]] = None) -> Any:
         """
         Reverts a change.
         The request body does not need to include a RevertInput entity if no review comment is
@@ -377,7 +377,7 @@ class GerritChange(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def revert_submission(self):
+    def revert_submission(self) -> Any:
         """
         Creates open revert changes for all of the changes of a certain submission.
 
@@ -392,7 +392,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.post(self.endpoint + "/revert_submission")
 
-    def submit(self, input_=None):
+    def submit(self, input_: Optional[Dict[str, Any]] = None) -> Any:
         """
         Submits  a change.
         Submitting a change also removes all users from the attention set.
@@ -423,7 +423,7 @@ class GerritChange(GerritBase):
             )
         return result
 
-    def list_submitted_together_changes(self):
+    def list_submitted_together_changes(self) -> Any:
         """
         Computes list of all changes which are submitted when Submit is called for this change,
         including the current change itself.
@@ -433,7 +433,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/submitted_together?o=NON_VISIBLE_CHANGES"
         )
 
-    def delete(self):
+    def delete(self) -> Any:
         """
         Deletes a change.
 
@@ -441,7 +441,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.delete(self.endpoint)
 
-    def get_include_in(self):
+    def get_include_in(self) -> Any:
         """
         Retrieves the branches and tags in which a change is included.
 
@@ -449,7 +449,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/in")
 
-    def index(self):
+    def index(self) -> Any:
         """
         Adds or updates the change in the secondary index.
 
@@ -457,7 +457,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.post(self.endpoint + "/index")
 
-    def list_comments(self):
+    def list_comments(self) -> Any:
         """
         Lists the published comments of all revisions of the change.
 
@@ -465,7 +465,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/comments")
 
-    def list_robot_comments(self):
+    def list_robot_comments(self) -> Any:
         """
         Lists the robot comments of all revisions of the change.
 
@@ -473,7 +473,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/robotcomments")
 
-    def list_drafts(self):
+    def list_drafts(self) -> Any:
         """
         Lists the draft comments of all revisions of the change that belong to the calling user.
 
@@ -481,7 +481,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/drafts")
 
-    def consistency_check(self):
+    def consistency_check(self) -> Any:
         """
         Performs consistency checks on the change, and returns a ChangeInfo entity with the problems
         field set to a list of ProblemInfo entities.
@@ -490,7 +490,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/check")
 
-    def fix(self, input_=None):
+    def fix(self, input_: Optional[Dict[str, Any]] = None) -> Any:
         """
         Performs consistency checks on the change as with GET /check,
         and additionally fixes any problems that can be fixed automatically. The returned field
@@ -523,7 +523,7 @@ class GerritChange(GerritBase):
             )
         return result
 
-    def set_work_in_progress(self, input_=None):
+    def set_work_in_progress(self, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Marks the change as not ready for review yet.
         Changes may only be marked not ready by the owner, project owners or site administrators.
@@ -553,7 +553,7 @@ class GerritChange(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def set_ready_for_review(self, input_):
+    def set_ready_for_review(self, input_: Dict[str, Any]) -> None:
         """
         Marks the change as ready for review (set WIP property to false).
         Changes may only be marked ready by the owner, project owners or site administrators.
@@ -577,7 +577,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/ready", json=input_, headers=self.gerrit.default_headers
         )
 
-    def mark_private(self, input_):
+    def mark_private(self, input_: Dict[str, Any]) -> None:
         """
         Marks the change to be private. Only open changes can be marked private.
         Changes may only be marked private by the owner or site administrators.
@@ -598,7 +598,7 @@ class GerritChange(GerritBase):
             self.endpoint + "/private", json=input_, headers=self.gerrit.default_headers
         )
 
-    def unmark_private(self, input_=None):
+    def unmark_private(self, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Marks the change to be non-private. Note users can only unmark own private changes.
         If the change was already not private, the response is '409 Conflict'.
@@ -626,7 +626,7 @@ class GerritChange(GerritBase):
                 headers=self.gerrit.default_headers,
             )
 
-    def ignore(self):
+    def ignore(self) -> Any:
         """
         Marks a change as ignored. The change will not be shown in the incoming reviews' dashboard,
         and email notifications will be suppressed. Ignoring a change does not cause the change’s
@@ -636,7 +636,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/ignore")
 
-    def unignore(self):
+    def unignore(self) -> Any:
         """
         Un-marks a change as ignored.
 
@@ -644,7 +644,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/unignore")
 
-    def mark_as_reviewed(self):
+    def mark_as_reviewed(self) -> Any:
         """
         Marks a change as reviewed.
 
@@ -652,7 +652,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/reviewed")
 
-    def mark_as_unreviewed(self):
+    def mark_as_unreviewed(self) -> Any:
         """
         Marks a change as unreviewed.
 
@@ -660,7 +660,7 @@ class GerritChange(GerritBase):
         """
         self.gerrit.put(self.endpoint + "/unreviewed")
 
-    def get_hashtags(self):
+    def get_hashtags(self) -> Any:
         """
         Gets the hashtags associated with a change.
 
@@ -668,7 +668,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(self.endpoint + "/hashtags")
 
-    def set_hashtags(self, input_):
+    def set_hashtags(self, input_: Dict[str, Any]) -> Any:
         """
         Adds and/or removes hashtags from a change.
 
@@ -699,7 +699,7 @@ class GerritChange(GerritBase):
     def messages(self):
         return GerritChangeMessages(change=self.id, gerrit=self.gerrit)
 
-    def check_submit_requirement(self, input_):
+    def check_submit_requirement(self, input_: Dict[str, Any]) -> Any:
         """
         Tests a submit requirement.
 
@@ -713,7 +713,7 @@ class GerritChange(GerritBase):
             headers=self.gerrit.default_headers,
         )
 
-    def get_edit(self):
+    def get_edit(self) -> Any:
         """
         Retrieves a change edit details.
         As response an EditInfo entity is returned that describes the change edit,
@@ -727,7 +727,7 @@ class GerritChange(GerritBase):
 
         return GerritChangeEdit(change=self.id, gerrit=self.gerrit)
 
-    def create_empty_edit(self):
+    def create_empty_edit(self) -> Any:
         """
         Creates empty change edit
 
@@ -765,7 +765,7 @@ class GerritChange(GerritBase):
             return self.revisions[number]
         return None
 
-    def get_revision(self, revision_id="current"):
+    def get_revision(self, revision_id: Union[str, int] = "current") -> Any:
         """
         Get one revision by revision SHA or integer number.
 
@@ -790,7 +790,7 @@ class GerritChange(GerritBase):
             gerrit=self.gerrit, change=self.id, revision=revision_id
         )
 
-    def get_attention_set(self):
+    def get_attention_set(self) -> Any:
         """
         Returns all users that are currently in the attention set.
         support this method since v3.3.0
@@ -799,7 +799,7 @@ class GerritChange(GerritBase):
         """
         return self.gerrit.get(f"{self.endpoint}/attention")
 
-    def add_to_attention_set(self, input_):
+    def add_to_attention_set(self, input_: Dict[str, Any]) -> Any:
         """
         Adds a single user to the attention set of a change.
         support this method since v3.3.0
@@ -827,7 +827,7 @@ class GerritChange(GerritBase):
         )
         return result
 
-    def remove_from_attention_set(self, id_, input_=None):
+    def remove_from_attention_set(self, id_: str, input_: Optional[Dict[str, Any]] = None) -> None:
         """
         Deletes a single user from the attention set of a change.
         support this method since v3.3.0
