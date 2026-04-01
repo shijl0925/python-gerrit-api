@@ -22,7 +22,11 @@ class GerritGroups:
         self.endpoint = "/groups"
 
     def list(
-        self, pattern_dispatcher: Optional[Dict[str, Any]] = None, options: Optional[List[str]] = None, limit: int = 25, skip: int = 0
+        self,
+        pattern_dispatcher: Optional[Dict[str, Any]] = None,
+        options: Optional[List[str]] = None,
+        limit: int = 25,
+        skip: int = 0,
     ) -> List[Any]:
         """
         Lists the groups accessible by the caller.

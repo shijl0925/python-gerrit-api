@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
 from gerrit.accounts.emails import GerritAccountEmails

@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # @Author: Jialiang Shi
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 import requests
 from gerrit import GerritClient
 from gerrit.utils.exceptions import (

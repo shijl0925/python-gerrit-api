@@ -3,7 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 from urllib.parse import quote_plus
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 import requests
 from gerrit import GerritClient
 from gerrit.utils.gerritbase import GerritBase
