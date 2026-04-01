@@ -4,7 +4,6 @@
 from typing import Any, Optional
 from base64 import b64decode
 from urllib.parse import quote_plus
-from typing import Any, Dict, List, Optional
 from gerrit import GerritClient
 from gerrit.changes.drafts import GerritChangeRevisionDrafts
 from gerrit.changes.comments import GerritChangeRevisionComments

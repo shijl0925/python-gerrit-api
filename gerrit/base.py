@@ -30,7 +30,7 @@ class GerritClient:
         ssl_verify: Union[bool, str] = True,
         cert: Optional[Union[str, Tuple[str, str]]] = None,
         cookies: Optional[Dict[str, str]] = None,
-        cookie_jar: Optional[Any] = None,
+        cookie_jar: Optional[RequestsCookieJar] = None,
         timeout: int = 60,
         max_retries: Optional[int] = None,
         session: Optional[Any] = None,
