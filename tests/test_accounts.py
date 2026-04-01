@@ -388,3 +388,181 @@ class TestGerritAccountGPGKeys:
         mock_account.gpg_keys.delete("abc123")
         mock_account.gerrit.delete.assert_called()
 
+    def test_list_gpg_keys_nonempty(self, mock_account):
+        """list() should iterate key/value pairs and include 'id' in each entry."""
+        mock_account.gerrit.get.return_value = {
+            "DEADBEEF": {"fingerprint": "DEADBEEF", "status": "OK"},
+            "CAFEBABE": {"fingerprint": "CAFEBABE", "status": "OK"},
+        }
+        keys = mock_account.gpg_keys.list()
+        assert len(keys) == 2
+        ids = {k["id"] for k in keys}
+        assert "DEADBEEF" in ids
+        assert "CAFEBABE" in ids
+
+    def test_get_gpg_key_non_404_raises(self, mock_account):
+        response_mock = MagicMock()
+        response_mock.status_code = 500
+        mock_account.gerrit.get.side_effect = requests.exceptions.HTTPError(
+            response=response_mock
+        )
+        from gerrit.utils.exceptions import GerritAPIException
+        with pytest.raises(GerritAPIException):
+            mock_account.gpg_keys.get("abc123")
+
+    def test_gpg_key_str(self, mock_account):
+        key_data = {"id": "abc123", "fingerprint": "abc123"}
+        mock_account.gerrit.get.return_value = key_data
+        from gerrit.accounts.gpg_keys import GerritAccountGPGKey
+        key = GerritAccountGPGKey(id="abc123", account=mock_account.account, gerrit=mock_account.gerrit)
+        assert str(key) == "abc123"
+
+    def test_gpg_key_delete_via_instance(self, mock_account):
+        key_data = {"id": "abc123", "fingerprint": "abc123"}
+        mock_account.gerrit.get.return_value = key_data
+        from gerrit.accounts.gpg_keys import GerritAccountGPGKey
+        key = GerritAccountGPGKey(id="abc123", account=mock_account.account, gerrit=mock_account.gerrit)
+        key.delete()
+        mock_account.gerrit.delete.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritAccountEmails – additional coverage
+# ---------------------------------------------------------------------------
+
+class TestGerritAccountEmailsExtra:
+
+    def test_email_str(self, mock_account):
+        from gerrit.accounts.emails import GerritAccountEmail
+        email = GerritAccountEmail(
+            email="test@example.com",
+            account=mock_account.account,
+            gerrit=mock_account.gerrit,
+        )
+        assert str(email) == "test@example.com"
+
+    def test_email_delete_via_instance(self, mock_account):
+        from gerrit.accounts.emails import GerritAccountEmail
+        email = GerritAccountEmail(
+            email="test@example.com",
+            account=mock_account.account,
+            gerrit=mock_account.gerrit,
+        )
+        email.delete()
+        mock_account.gerrit.delete.assert_called()
+
+    def test_email_set_preferred_via_instance(self, mock_account):
+        from gerrit.accounts.emails import GerritAccountEmail
+        email = GerritAccountEmail(
+            email="test@example.com",
+            account=mock_account.account,
+            gerrit=mock_account.gerrit,
+        )
+        email.set_preferred()
+        mock_account.gerrit.put.assert_called()
+
+    def test_create_email_without_input(self, mock_account):
+        """create() with no input_ calls put without json body."""
+        email_data = {"email": "new@example.com", "preferred": False}
+        mock_account.gerrit.get.side_effect = [
+            requests.exceptions.HTTPError(
+                response=MagicMock(status_code=404)
+            ),
+            email_data,
+            email_data,
+        ]
+        mock_account.emails.create("new@example.com")
+        mock_account.gerrit.put.assert_called()
+
+    def test_get_email_non_404_error_raises(self, mock_account):
+        response_mock = MagicMock()
+        response_mock.status_code = 500
+        mock_account.gerrit.get.side_effect = requests.exceptions.HTTPError(
+            response=response_mock
+        )
+        from gerrit.utils.exceptions import GerritAPIException
+        with pytest.raises(GerritAPIException):
+            mock_account.emails.get("test@example.com")
+
+    def test_set_preferred_email(self, mock_account):
+        email_data = {"email": "test@example.com", "preferred": False}
+        mock_account.gerrit.get.return_value = email_data
+        mock_account.emails.set_preferred("test@example.com")
+        mock_account.gerrit.put.assert_called()
+
+    def test_delete_email(self, mock_account):
+        email_data = {"email": "test@example.com", "preferred": False}
+        mock_account.gerrit.get.return_value = email_data
+        mock_account.emails.delete("test@example.com")
+        mock_account.gerrit.delete.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritAccount additional methods
+# ---------------------------------------------------------------------------
+
+class TestGerritAccountExtra:
+
+    def test_get_oauth_token(self, mock_account):
+        mock_account.gerrit.get.return_value = {"token": "abc123"}
+        result = mock_account.get_oauth_token()
+        mock_account.gerrit.get.assert_called()
+        assert result["token"] == "abc123"
+
+    def test_get_external_ids(self, mock_account):
+        mock_account.gerrit.get.return_value = []
+        result = mock_account.get_external_ids()
+        mock_account.gerrit.get.assert_called()
+
+    def test_delete_external_ids(self, mock_account):
+        mock_account.gerrit.post.return_value = None
+        mock_account.delete_external_ids(["gerrit:testuser"])
+        mock_account.gerrit.post.assert_called()
+
+    def test_list_contributor_agreements(self, mock_account):
+        mock_account.gerrit.get.return_value = []
+        result = mock_account.list_contributor_agreements()
+        mock_account.gerrit.get.assert_called()
+
+    def test_sign_contributor_agreement(self, mock_account):
+        mock_account.gerrit.put.return_value = "CLA"
+        result = mock_account.sign_contributor_agreement({"name": "CLA"})
+        mock_account.gerrit.put.assert_called()
+
+    def test_delete_draft_comments(self, mock_account):
+        mock_account.gerrit.post.return_value = []
+        result = mock_account.delete_draft_comments({})
+        mock_account.gerrit.post.assert_called()
+
+    def test_index(self, mock_account):
+        mock_account.index()
+        mock_account.gerrit.post.assert_called()
+
+    def test_get_default_starred_changes(self, mock_account):
+        mock_account.gerrit.get.return_value = []
+        result = mock_account.get_default_starred_changes()
+        mock_account.gerrit.get.assert_called()
+
+    def test_put_default_star_on_change(self, mock_account):
+        mock_account.put_default_star_on_change("I12345")
+        mock_account.gerrit.put.assert_called()
+
+    def test_remove_default_star_from_change(self, mock_account):
+        mock_account.remove_default_star_from_change("I12345")
+        mock_account.gerrit.delete.assert_called()
+
+    def test_get_starred_changes(self, mock_account):
+        mock_account.gerrit.get.return_value = []
+        result = mock_account.get_starred_changes()
+        mock_account.gerrit.get.assert_called()
+
+    def test_get_star_labels_from_change(self, mock_account):
+        mock_account.gerrit.get.return_value = []
+        result = mock_account.get_star_labels_from_change("I12345")
+        mock_account.gerrit.get.assert_called()
+
+    def test_update_star_labels_on_change(self, mock_account):
+        mock_account.gerrit.post.return_value = []
+        result = mock_account.update_star_labels_on_change("I12345", {"add": ["star"], "remove": []})
+        mock_account.gerrit.post.assert_called()
+
