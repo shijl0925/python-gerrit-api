@@ -42,6 +42,18 @@ class TestGerritAccounts:
 
         result = accounts.search(query="is:active", all_emails=True)
         assert isinstance(result, list)
+        # Verify the option param is sent as a proper list, not a filter object
+        call_args = mock_gerrit.get.call_args
+        params = call_args[1].get("params", {})
+        assert isinstance(params.get("o"), list)
+        assert "ALL_EMAILS" in params["o"]
+
+        # When no options are given, 'o' should not be in params at all
+        mock_gerrit.get.reset_mock()
+        accounts.search(query="foo")
+        call_args = mock_gerrit.get.call_args
+        params = call_args[1].get("params", {})
+        assert "o" not in params
 
     def test_get_account(self, mock_gerrit):
         mock_gerrit.get.return_value = ACCOUNT_DATA
@@ -67,11 +79,8 @@ class TestGerritAccounts:
             accounts.get(account="nobody")
 
     def test_create_account(self, mock_gerrit):
-        # First call (check existence) raises 404, second call returns created account
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        mock_gerrit.get.side_effect = [http_error, ACCOUNT_DATA, ACCOUNT_DATA]
+        # put() succeeds; accounts.get() calls gerrit.get() twice (get + poll)
+        mock_gerrit.get.side_effect = [ACCOUNT_DATA, ACCOUNT_DATA]
 
         from gerrit.accounts.accounts import GerritAccounts
         accounts = GerritAccounts(gerrit=mock_gerrit)
@@ -80,10 +89,10 @@ class TestGerritAccounts:
         mock_gerrit.put.assert_called_once()
 
     def test_create_account_already_exists(self, mock_gerrit):
-        mock_gerrit.get.return_value = ACCOUNT_DATA
-
         from gerrit.accounts.accounts import GerritAccounts
-        from gerrit.utils.exceptions import AccountAlreadyExistsError
+        from gerrit.utils.exceptions import ConflictError, AccountAlreadyExistsError
+        mock_gerrit.put.side_effect = ConflictError("409 Conflict: Account already exists")
+
         accounts = GerritAccounts(gerrit=mock_gerrit)
         with pytest.raises(AccountAlreadyExistsError):
             accounts.create("testuser", {})

@@ -10,6 +10,7 @@ from gerrit.utils.common import params_creator
 from gerrit.utils.exceptions import (
     GroupNotFoundError,
     GroupAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -83,7 +84,6 @@ class GerritGroups:
         Retrieves a group.
 
         :param id_: group id, or group_id, or group name
-        :param detailed:
         :return:
         """
         try:
@@ -118,14 +118,13 @@ class GerritGroups:
         :return:
         """
         try:
-            self.get(name)
-            message = f"Group {name} already exists"
-            logger.error(message)
-            raise GroupAlreadyExistsError(message)
-        except GroupNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{name}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
-            return self.get(name)
+        except ConflictError:
+            message = f"Group {name} already exists"
+            logger.error(message)
+            raise GroupAlreadyExistsError(message)
+        return self.get(name)

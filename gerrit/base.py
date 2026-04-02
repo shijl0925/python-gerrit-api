@@ -225,7 +225,7 @@ class GerritClient:
         result = decode_response(response)
         return result
 
-    def delete(self, endpoint: str) -> None:
+    def delete(self, endpoint: str) -> Any:
         """
         Send HTTP DELETE to the endpoint.
 
@@ -234,4 +234,5 @@ class GerritClient:
         """
         url = self.get_endpoint_url(endpoint)
         logger.debug("Sending DELETE request to %s", url)
-        self.requester.delete(url)
+        response = self.requester.delete(url)
+        return decode_response(response)

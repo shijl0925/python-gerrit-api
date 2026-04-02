@@ -74,10 +74,8 @@ class TestGerritGroups:
             groups.get(1000000000)
 
     def test_create_group(self, mock_gerrit):
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        mock_gerrit.get.side_effect = [http_error, GROUP_DATA, GROUP_DATA]
+        # put() succeeds; groups.get() calls gerrit.get() twice (get + poll)
+        mock_gerrit.get.side_effect = [GROUP_DATA, GROUP_DATA]
 
         from gerrit.groups.groups import GerritGroups
         groups = GerritGroups(gerrit=mock_gerrit)
@@ -86,10 +84,10 @@ class TestGerritGroups:
         mock_gerrit.put.assert_called_once()
 
     def test_create_group_already_exists(self, mock_gerrit):
-        mock_gerrit.get.return_value = GROUP_DATA
-
         from gerrit.groups.groups import GerritGroups
-        from gerrit.utils.exceptions import GroupAlreadyExistsError
+        from gerrit.utils.exceptions import ConflictError, GroupAlreadyExistsError
+        mock_gerrit.put.side_effect = ConflictError("409 Conflict: Group already exists")
+
         groups = GerritGroups(gerrit=mock_gerrit)
         with pytest.raises(GroupAlreadyExistsError):
             groups.create("MyGroup", {})

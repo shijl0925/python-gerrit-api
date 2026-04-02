@@ -134,6 +134,8 @@ class TestGerritChange:
         mock_change.gerrit.get.return_value = votes
         result = mock_change.list_votes(account="johndoe")
         assert result.get("Code-Review") == 1
+        call_args = mock_change.gerrit.get.call_args
+        assert "/votes/" in call_args[0][0]
 
     def test_delete_vote(self, mock_change):
         mock_change.delete_vote("johndoe", "Code-Review")
@@ -173,8 +175,11 @@ class TestGerritChange:
         assert len(result) >= 1
 
     def test_delete_assignee(self, mock_change):
-        mock_change.delete_assignee()
+        from tests.conftest import ACCOUNT_DATA
+        mock_change.gerrit.delete.return_value = ACCOUNT_DATA
+        result = mock_change.delete_assignee()
         mock_change.gerrit.delete.assert_called()
+        assert result == ACCOUNT_DATA
 
     def test_get_pure_revert(self, mock_change):
         mock_change.gerrit.get.return_value = {"is_pure_revert": True}

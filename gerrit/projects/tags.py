@@ -11,6 +11,7 @@ from gerrit.utils.gerritbase import GerritBase
 from gerrit.utils.exceptions import (
     TagNotFoundError,
     TagAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -102,18 +103,17 @@ class GerritProjectTags:
         :return:
         """
         try:
-            self.get(name)
-            message = f"Tag {name} already exists"
-            logger.error(message)
-            raise TagAlreadyExistsError(message)
-        except TagNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{quote_plus(name)}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
+        except ConflictError:
+            message = f"Tag {name} already exists"
+            logger.error(message)
+            raise TagAlreadyExistsError(message)
 
-            return self.get(name)
+        return self.get(name)
 
     def delete(self, name: str) -> None:
         """

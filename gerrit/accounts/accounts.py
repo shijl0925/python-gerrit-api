@@ -8,6 +8,7 @@ from gerrit import GerritClient
 from gerrit.utils.exceptions import (
     AccountNotFoundError,
     AccountAlreadyExistsError,
+    ConflictError,
     GerritAPIException,
 )
 
@@ -47,13 +48,15 @@ class GerritAccounts:
                            for each account will be added to the output result
         :return:
         """
-        option = filter(
-            None,
-            ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
+        option = list(
+            filter(
+                None,
+                ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
+            )
         )
-        params = {
-            k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
-        }
+        params = {k: v for k, v in (("n", limit), ("S", skip)) if v is not None}
+        if option:
+            params["o"] = option
 
         endpoint = self.endpoint + "/?"
         if suggested:
@@ -108,14 +111,13 @@ class GerritAccounts:
         :return:
         """
         try:
-            self.get(username)
-            message = f"Account {username} already exists"
-            logger.error(message)
-            raise AccountAlreadyExistsError(message)
-        except AccountNotFoundError:
             self.gerrit.put(
                 self.endpoint + f"/{username}",
                 json=input_,
                 headers=self.gerrit.default_headers,
             )
-            return self.get(username)
+        except ConflictError:
+            message = f"Account {username} already exists"
+            logger.error(message)
+            raise AccountAlreadyExistsError(message)
+        return self.get(username)

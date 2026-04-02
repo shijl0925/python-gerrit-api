@@ -60,8 +60,8 @@ class GerritChanges:
             endpoint = self.endpoint + f"/{id_}/"
             result = self.gerrit.get(endpoint)
 
-            id = result.get("id")
-            return GerritChange(id=id, gerrit=self.gerrit)
+            change_id = result.get("id")
+            return GerritChange(id=change_id, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Change {id_} does not exist"
@@ -94,11 +94,6 @@ class GerritChanges:
           https://gerrit-review.googlesource.com/Documentation/rest-api-changes.html#change-input
         :return:
         """
-        project_name = input_.get("project")
-        branch_name = input_.get("branch")
-        project = self.gerrit.projects.get(project_name)
-        project.branches.get(branch_name)
-
         result = self.gerrit.post(
             self.endpoint + "/", json=input_, headers=self.gerrit.default_headers
         )

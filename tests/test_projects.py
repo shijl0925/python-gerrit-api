@@ -120,11 +120,8 @@ class TestGerritProjects:
             projects.get(name="nonexistent")
 
     def test_create_project(self, mock_gerrit):
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        # First get → 404 (not found), then put, then get again → project data × 2
-        mock_gerrit.get.side_effect = [http_error, PROJECT_DATA, PROJECT_DATA]
+        # put() succeeds; get() is called twice (projects.get → gerrit.get + GerritProject.poll)
+        mock_gerrit.get.side_effect = [PROJECT_DATA, PROJECT_DATA]
 
         from gerrit.projects.projects import GerritProjects
         projects = GerritProjects(gerrit=mock_gerrit)
@@ -133,10 +130,10 @@ class TestGerritProjects:
         mock_gerrit.put.assert_called_once()
 
     def test_create_project_already_exists(self, mock_gerrit):
-        mock_gerrit.get.return_value = PROJECT_DATA
-
         from gerrit.projects.projects import GerritProjects
-        from gerrit.utils.exceptions import ProjectAlreadyExistsError
+        from gerrit.utils.exceptions import ConflictError, ProjectAlreadyExistsError
+        mock_gerrit.put.side_effect = ConflictError("409 Conflict: Project already exists")
+
         projects = GerritProjects(gerrit=mock_gerrit)
         with pytest.raises(ProjectAlreadyExistsError):
             projects.create("myProject", {})
@@ -311,19 +308,17 @@ class TestGerritProjectBranches:
             mock_project.branches.get(name="NONEXISTENT")
 
     def test_create_branch(self, mock_project):
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        mock_project.gerrit.get.side_effect = [http_error, BRANCH_DATA, BRANCH_DATA]
+        # put() succeeds; branches.get() calls gerrit.get() twice (get + poll)
+        mock_project.gerrit.get.side_effect = [BRANCH_DATA, BRANCH_DATA]
 
         from gerrit.projects.branches import GerritProjectBranch
         branch = mock_project.branches.create("new-branch", {"revision": "master"})
         assert isinstance(branch, GerritProjectBranch)
 
     def test_create_branch_already_exists(self, mock_project):
-        mock_project.gerrit.get.return_value = BRANCH_DATA
+        from gerrit.utils.exceptions import ConflictError, BranchAlreadyExistsError
+        mock_project.gerrit.put.side_effect = ConflictError("409 Conflict: Branch already exists")
 
-        from gerrit.utils.exceptions import BranchAlreadyExistsError
         with pytest.raises(BranchAlreadyExistsError):
             mock_project.branches.create("master", {"revision": "abc123"})
 
@@ -399,19 +394,17 @@ class TestGerritProjectTags:
             mock_project.tags.get(name="NONEXISTENT")
 
     def test_create_tag(self, mock_project):
-        response_mock = MagicMock()
-        response_mock.status_code = 404
-        http_error = requests.exceptions.HTTPError(response=response_mock)
-        mock_project.gerrit.get.side_effect = [http_error, TAG_DATA, TAG_DATA]
+        # put() succeeds; tags.get() calls gerrit.get() twice (get + poll)
+        mock_project.gerrit.get.side_effect = [TAG_DATA, TAG_DATA]
 
         from gerrit.projects.tags import GerritProjectTag
         tag = mock_project.tags.create("v2.0", {"revision": "abc123"})
         assert isinstance(tag, GerritProjectTag)
 
     def test_create_tag_already_exists(self, mock_project):
-        mock_project.gerrit.get.return_value = TAG_DATA
+        from gerrit.utils.exceptions import ConflictError, TagAlreadyExistsError
+        mock_project.gerrit.put.side_effect = ConflictError("409 Conflict: Tag already exists")
 
-        from gerrit.utils.exceptions import TagAlreadyExistsError
         with pytest.raises(TagAlreadyExistsError):
             mock_project.tags.create("v1.0", {"revision": "abc123"})
 

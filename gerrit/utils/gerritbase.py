@@ -15,7 +15,7 @@ class GerritBase:
 
     def __init__(self, pull: bool = True) -> None:
         """
-        Initialize a gerrit connection
+        Initialize and populate this resource object from the Gerrit API.
         """
         self._data: Any = None
         if pull:
@@ -34,11 +34,11 @@ class GerritBase:
         if isinstance(self._data, dict):
             for key, value in self._data.items():
                 try:
-                    if key[0] == "_":
+                    if key and key[0] == "_":
                         key = key[1:]
                     setattr(self, key, value)
                 except AttributeError:
-                    pass
+                    logger.debug("Skipping read-only attribute %r", key)
 
     def _poll(self) -> Any:
         res = self.gerrit.get(self.endpoint)  # pylint: disable=no-member

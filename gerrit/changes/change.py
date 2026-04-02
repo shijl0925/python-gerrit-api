@@ -148,7 +148,7 @@ class GerritChange(GerritBase):
         :param account: account id or username
         :return:
         """
-        return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes")
+        return self.gerrit.get(self.endpoint + f"/reviewers/{account}/votes/")
 
     def delete_vote(self, account: Any, label: str, input_: Optional[Dict[str, Any]] = None) -> None:
         """
@@ -261,7 +261,7 @@ class GerritChange(GerritBase):
 
         :return:
         """
-        self.gerrit.delete(self.endpoint + "/assignee")
+        return self.gerrit.delete(self.endpoint + "/assignee")
 
     def get_pure_revert(self, commit: str) -> Any:
         """
