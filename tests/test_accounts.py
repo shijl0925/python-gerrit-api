@@ -42,6 +42,18 @@ class TestGerritAccounts:
 
         result = accounts.search(query="is:active", all_emails=True)
         assert isinstance(result, list)
+        # Verify the option param is sent as a proper list, not a filter object
+        call_args = mock_gerrit.get.call_args
+        params = call_args[1].get("params", {})
+        assert isinstance(params.get("o"), list)
+        assert "ALL_EMAILS" in params["o"]
+
+        # When no options are given, 'o' should not be in params at all
+        mock_gerrit.get.reset_mock()
+        accounts.search(query="foo")
+        call_args = mock_gerrit.get.call_args
+        params = call_args[1].get("params", {})
+        assert "o" not in params
 
     def test_get_account(self, mock_gerrit):
         mock_gerrit.get.return_value = ACCOUNT_DATA

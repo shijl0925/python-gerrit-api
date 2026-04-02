@@ -48,13 +48,15 @@ class GerritAccounts:
                            for each account will be added to the output result
         :return:
         """
-        option = filter(
-            None,
-            ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
+        option = list(
+            filter(
+                None,
+                ["DETAILS" if detailed else None, "ALL_EMAILS" if all_emails else None],
+            )
         )
-        params = {
-            k: v for k, v in (("n", limit), ("S", skip), ("o", option)) if v is not None
-        }
+        params = {k: v for k, v in (("n", limit), ("S", skip)) if v is not None}
+        if option:
+            params["o"] = option
 
         endpoint = self.endpoint + "/?"
         if suggested:
