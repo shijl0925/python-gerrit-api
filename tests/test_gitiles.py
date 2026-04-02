@@ -120,3 +120,63 @@ class TestGitilesClient:
         url = mock_gitiles.get_endpoint_url("/gitiles/+/abc123")
         assert url == "http://localhost:8080/gitiles/+/abc123"
 
+    def test_commits_with_start(self, mock_gitiles):
+        """Test commit history with a start cursor."""
+        import json
+        mock_response = MagicMock()
+        mock_response.headers = {"content-type": "application/json"}
+        mock_response.encoding = "utf-8"
+        body = ")]}'\n" + json.dumps(COMMITS_RESPONSE)
+        mock_response.content = body.encode("utf-8")
+
+        mock_gitiles.requester.get.return_value = mock_response
+
+        result = mock_gitiles.commits(
+            "gitiles", "refs/heads/master", start="baaf2895"
+        )
+        call_args = mock_gitiles.requester.get.call_args
+        assert call_args[1]["params"]["s"] == "baaf2895"
+        assert "log" in result
+
+
+class TestGitilesClientInit:
+    """Test GitilesClient constructor options."""
+
+    def test_with_auth(self):
+        from gitiles import GitilesClient
+        client = GitilesClient(
+            base_url="http://localhost:8080",
+            username="user",
+            password="pass",
+        )
+        assert client.session.auth == ("user", "pass")
+
+    def test_ssl_verify_false(self):
+        from gitiles import GitilesClient
+        client = GitilesClient(
+            base_url="http://localhost:8080",
+            ssl_verify="/path/to/ca.pem",
+        )
+        assert client.session.verify == "/path/to/ca.pem"
+
+    def test_with_cert(self):
+        from gitiles import GitilesClient
+        client = GitilesClient(
+            base_url="http://localhost:8080",
+            cert=("/path/to/cert", "/path/to/key"),
+        )
+        assert client.session.cert == ("/path/to/cert", "/path/to/key")
+
+    def test_with_max_retries(self):
+        from gitiles import GitilesClient
+        from unittest.mock import patch, MagicMock
+        with patch("gitiles.base.HTTPAdapter") as MockAdapter:
+            mock_adapter = MagicMock()
+            MockAdapter.return_value = mock_adapter
+            client = GitilesClient(
+                base_url="http://localhost:8080",
+                max_retries=3,
+            )
+            MockAdapter.assert_called_once_with(max_retries=3)
+            assert client.session.get_adapter("http://localhost") is not None
+

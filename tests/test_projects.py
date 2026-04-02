@@ -584,3 +584,230 @@ class TestGerritProjectSubmitRequirements:
     def test_submit_requirements_property_type(self, mock_project):
         from gerrit.projects.submit_requirements import GerritProjectSubmitRequirements
         assert isinstance(mock_project.submit_requirements, GerritProjectSubmitRequirements)
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectWebHooks
+# ---------------------------------------------------------------------------
+
+WEBHOOK_DATA = {
+    "name": "my-webhook",
+    "url": "https://example.com/gerrit-events",
+    "maxTries": "3",
+    "sslVerify": "true",
+}
+
+
+class TestGerritProjectWebhooks:
+
+    def test_list_webhooks(self, mock_project):
+        mock_project.gerrit.get.return_value = [WEBHOOK_DATA]
+        from gerrit.projects.webhooks import GerritProjectWebHooks
+        webhooks = GerritProjectWebHooks(project=mock_project.id, gerrit=mock_project.gerrit)
+        result = webhooks.list()
+        assert len(result) >= 1
+
+    def test_create_webhook(self, mock_project):
+        mock_project.gerrit.put.return_value = WEBHOOK_DATA
+        from gerrit.projects.webhooks import GerritProjectWebHooks
+        webhooks = GerritProjectWebHooks(project=mock_project.id, gerrit=mock_project.gerrit)
+        result = webhooks.create("my-webhook", WEBHOOK_DATA)
+        mock_project.gerrit.put.assert_called_once()
+
+    def test_get_webhook(self, mock_project):
+        mock_project.gerrit.get.return_value = WEBHOOK_DATA
+        from gerrit.projects.webhooks import GerritProjectWebHooks, GerritProjectWebHook
+        webhooks = GerritProjectWebHooks(project=mock_project.id, gerrit=mock_project.gerrit)
+        webhook = webhooks.get("my-webhook")
+        assert isinstance(webhook, GerritProjectWebHook)
+        assert str(webhook) == "my-webhook"
+
+    def test_delete_webhook_via_manager(self, mock_project):
+        from gerrit.projects.webhooks import GerritProjectWebHooks
+        webhooks = GerritProjectWebHooks(project=mock_project.id, gerrit=mock_project.gerrit)
+        webhooks.delete("my-webhook")
+        mock_project.gerrit.delete.assert_called_once()
+
+    def test_delete_webhook_via_instance(self, mock_project):
+        mock_project.gerrit.get.return_value = WEBHOOK_DATA
+        from gerrit.projects.webhooks import GerritProjectWebHooks, GerritProjectWebHook
+        webhooks = GerritProjectWebHooks(project=mock_project.id, gerrit=mock_project.gerrit)
+        webhook = webhooks.get("my-webhook")
+        webhook.delete()
+        mock_project.gerrit.delete.assert_called()
+
+    def test_webhooks_property_on_project(self, mock_project):
+        from gerrit.projects.webhooks import GerritProjectWebHooks
+        assert isinstance(mock_project.webhooks, GerritProjectWebHooks)
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectLabels
+# ---------------------------------------------------------------------------
+
+LABEL_DATA = {
+    "name": "Code-Review",
+    "project_name": "myProject",
+    "function": "MaxWithBlock",
+    "values": {" 0": "No score", "+1": "LGTM", "+2": "Approved", "-1": "Not LGTM", "-2": "Reject"},
+    "default_value": 0,
+}
+
+
+class TestGerritProjectLabels:
+
+    def test_list_labels(self, mock_project):
+        mock_project.gerrit.get.return_value = [LABEL_DATA]
+        result = mock_project.labels.list()
+        assert len(result) >= 1
+
+    def test_get_label(self, mock_project):
+        mock_project.gerrit.get.return_value = LABEL_DATA
+        from gerrit.projects.labels import GerritProjectLabel
+        label = mock_project.labels.get("Code-Review")
+        assert isinstance(label, GerritProjectLabel)
+        assert str(label) == "Code-Review"
+
+    def test_create_label(self, mock_project):
+        mock_project.gerrit.put.return_value = LABEL_DATA
+        result = mock_project.labels.create(
+            "Code-Review",
+            {"values": {" 0": "No score", "+1": "LGTM"}, "commit_message": "Create label"},
+        )
+        mock_project.gerrit.put.assert_called_once()
+
+    def test_delete_label_via_manager(self, mock_project):
+        mock_project.labels.delete("Code-Review")
+        mock_project.gerrit.delete.assert_called_once()
+
+    def test_set_label(self, mock_project):
+        mock_project.gerrit.get.return_value = LABEL_DATA
+        from gerrit.projects.labels import GerritProjectLabel
+        label = mock_project.labels.get("Code-Review")
+        mock_project.gerrit.put.return_value = LABEL_DATA
+        result = label.set({"commit_message": "Update label"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_delete_label_via_instance(self, mock_project):
+        mock_project.gerrit.get.return_value = LABEL_DATA
+        from gerrit.projects.labels import GerritProjectLabel
+        label = mock_project.labels.get("Code-Review")
+        label.delete()
+        mock_project.gerrit.delete.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectDashboards – additional coverage
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectDashboardsExtra:
+
+    def test_create_dashboard(self, mock_project):
+        dashboard_data = {"id": "master:closed", "project": "myProject", "title": "Closed"}
+        mock_project.gerrit.put.return_value = dashboard_data
+        result = mock_project.dashboards.create(
+            "master:closed",
+            {"id": "master:closed", "commit_message": "Define default dashboard"},
+        )
+        mock_project.gerrit.put.assert_called_once()
+
+    def test_delete_dashboard_via_manager(self, mock_project):
+        mock_project.dashboards.delete("master:closed")
+        mock_project.gerrit.delete.assert_called_once()
+
+    def test_delete_dashboard_via_instance(self, mock_project):
+        dashboard_data = {"id": "master:closed", "project": "myProject", "title": "Closed"}
+        mock_project.gerrit.get.return_value = dashboard_data
+        from gerrit.projects.dashboards import GerritProjectDashboard
+        dashboard = mock_project.dashboards.get("master:closed")
+        assert str(dashboard) == "master:closed"
+        dashboard.delete()
+        mock_project.gerrit.delete.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# GerritProjectBranch – additional coverage
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectBranchExtra:
+
+    def test_branch_delete(self, mock_project):
+        from gerrit.projects.branches import GerritProjectBranch
+        branch = GerritProjectBranch(
+            name="master", project=mock_project.id, gerrit=mock_project.gerrit
+        )
+        mock_project.gerrit.get.return_value = {
+            "ref": "refs/heads/master", "revision": "abc", "can_delete": False
+        }
+        branch.delete()
+        mock_project.gerrit.delete.assert_called()
+
+    def test_branch_is_mergeable(self, mock_project):
+        from gerrit.projects.branches import GerritProjectBranch
+
+        branch = GerritProjectBranch(
+            name="master", project=mock_project.id, gerrit=mock_project.gerrit
+        )
+
+        # projects.get → mock_project (already exists)
+        mock_branch = MagicMock()
+        mock_project_obj = MagicMock()
+        mock_project_obj.branches.get.return_value = mock_branch
+        mock_project.gerrit.projects.get.return_value = mock_project_obj
+
+        mock_project.gerrit.get.return_value = {"mergeable": True}
+        result = branch.is_mergeable({"source": "stable", "strategy": "recursive"})
+        assert result["mergeable"] is True
+
+    def test_branch_get_non_404_error_raises(self, mock_project):
+        from gerrit.utils.exceptions import GerritAPIException
+        import requests
+
+        response_mock = MagicMock()
+        response_mock.status_code = 500
+        mock_project.gerrit.get.side_effect = requests.exceptions.HTTPError(
+            response=response_mock
+        )
+        with pytest.raises(GerritAPIException):
+            mock_project.branches.get("master")
+
+
+# ---------------------------------------------------------------------------
+# GerritProject additional methods
+# ---------------------------------------------------------------------------
+
+class TestGerritProjectExtra:
+
+    def test_get_statistics(self, mock_project):
+        mock_project.gerrit.get.return_value = {"number_of_loose_objects": 0}
+        result = mock_project.get_statistics()
+        mock_project.gerrit.get.assert_called()
+
+    def test_set_config(self, mock_project):
+        mock_project.gerrit.put.return_value = {}
+        result = mock_project.set_config({"description": "new desc"})
+        mock_project.gerrit.put.assert_called()
+
+    def test_create_change(self, mock_project):
+        mock_project.gerrit.post.return_value = {"id": "change1"}
+        result = mock_project.create_change({"subject": "test"})
+        mock_project.gerrit.post.assert_called()
+
+    def test_set_access_rights_for_review(self, mock_project):
+        mock_project.gerrit.put.return_value = {}
+        result = mock_project.create_access_rights_change({})
+        mock_project.gerrit.put.assert_called()
+
+    def test_check_access(self, mock_project):
+        mock_project.gerrit.get.return_value = {"status": 200}
+        result = mock_project.check_access("account=admin&ref=refs/heads/master")
+        mock_project.gerrit.get.assert_called()
+
+    def test_index_all_changes(self, mock_project):
+        mock_project.index_all_changes()
+        mock_project.gerrit.post.assert_called()
+
+    def test_ban_commits(self, mock_project):
+        mock_project.gerrit.put.return_value = {}
+        result = mock_project.ban_commits({"commits": ["abc123"]})
+        mock_project.gerrit.put.assert_called()
