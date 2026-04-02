@@ -496,3 +496,276 @@ class TestGerritChangeReviewers:
         reviewer = mock_change.reviewers.add({"reviewer": "newuser"})
         assert isinstance(reviewer, GerritChangeReviewer)
 
+
+# ---------------------------------------------------------------------------
+# GerritChanges.create_change
+# ---------------------------------------------------------------------------
+
+class TestGerritChangesCreate:
+
+    def test_create_change(self, mock_gerrit):
+        from gerrit.changes.changes import GerritChanges
+        from gerrit.changes.change import GerritChange
+
+        input_ = {"project": "myProject", "branch": "master", "subject": "New change"}
+
+        mock_project = MagicMock()
+        mock_project.branches.get.return_value = MagicMock()
+        mock_gerrit.projects.get.return_value = mock_project
+
+        change_data = {
+            "id": "myProject~master~I8473b95934b5732ac55d26311a706c9c2bde9940",
+            "project": "myProject",
+            "branch": "master",
+            "change_id": "I8473b95934b5732ac55d26311a706c9c2bde9940",
+            "subject": "New change",
+            "status": "NEW",
+            "created": "2013-02-01 09:59:32.126000000",
+            "updated": "2013-02-01 09:59:32.126000000",
+            "_number": 1235,
+            "owner": {"_account_id": 1000096},
+            "insertions": 0,
+            "deletions": 0,
+            "hashtags": [],
+        }
+        mock_gerrit.post.return_value = change_data
+
+        changes = GerritChanges(gerrit=mock_gerrit)
+        result = changes.create(input_=input_)
+        mock_gerrit.post.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# GerritChanges.get – multiple-changes fallback
+# ---------------------------------------------------------------------------
+
+class TestGerritChangesGetMultiple:
+
+    def test_get_multiple_changes_found_raises(self, mock_gerrit):
+        """When search returns >1 result, a GerritAPIException is raised."""
+        from gerrit.changes.changes import GerritChanges
+        from gerrit.utils.exceptions import GerritAPIException
+
+        response_mock = MagicMock()
+        response_mock.status_code = 404
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+
+        # search returns two results → ambiguous
+        mock_gerrit.get.side_effect = [
+            http_error,
+            [
+                {"id": "myProject~master~I00001"},
+                {"id": "myProject~master~I00002"},
+            ],
+        ]
+
+        changes = GerritChanges(gerrit=mock_gerrit)
+        with pytest.raises(GerritAPIException):
+            changes.get(id_="Iambiguous")
+
+    def test_get_non_404_error_raises(self, mock_gerrit):
+        """Non-404 HTTPError from get() propagates as GerritAPIException."""
+        from gerrit.changes.changes import GerritChanges
+        from gerrit.utils.exceptions import GerritAPIException
+
+        response_mock = MagicMock()
+        response_mock.status_code = 500
+        http_error = requests.exceptions.HTTPError(response=response_mock)
+        mock_gerrit.get.side_effect = http_error
+
+        changes = GerritChanges(gerrit=mock_gerrit)
+        with pytest.raises(GerritAPIException):
+            changes.get(id_="I12345")
+
+
+# ---------------------------------------------------------------------------
+# GerritChange additional methods
+# ---------------------------------------------------------------------------
+
+class TestGerritChangeAdditional:
+
+    def test_get_detail_no_options(self, mock_change):
+        mock_change.gerrit.get.return_value = {}
+        mock_change.get_detail()
+        mock_change.gerrit.get.assert_called()
+        call_args = mock_change.gerrit.get.call_args
+        assert call_args[1].get("params") is None
+
+    def test_get_detail_with_options(self, mock_change):
+        mock_change.gerrit.get.return_value = {}
+        mock_change.get_detail(options=["LABELS"])
+        call_args = mock_change.gerrit.get.call_args
+        assert call_args[1]["params"] == {"o": ["LABELS"]}
+
+    def test_get_meta_diff_with_old_and_meta(self, mock_change):
+        mock_change.gerrit.get.return_value = {}
+        mock_change.get_meta_diff(old="sha1", meta="sha2")
+        call_args = mock_change.gerrit.get.call_args
+        assert call_args[1]["params"]["old"] == "sha1"
+        assert call_args[1]["params"]["meta"] == "sha2"
+
+    def test_set_commit_message(self, mock_change):
+        mock_change.gerrit.put.return_value = {}
+        input_ = {"message": "Updated commit message\n\nChange-Id: I12345\n"}
+        mock_change.set_commit_message(input_)
+        mock_change.gerrit.put.assert_called()
+
+    def test_remove_from_attention_set_no_input(self, mock_change):
+        mock_change.remove_from_attention_set("kevin.shi")
+        mock_change.gerrit.delete.assert_called()
+
+    def test_remove_from_attention_set_with_input(self, mock_change):
+        mock_change.remove_from_attention_set("kevin.shi", input_={"reason": "done"})
+        mock_change.gerrit.post.assert_called()
+
+    def test_get_edit_exists(self, mock_change):
+        mock_change.gerrit.get.return_value = {"files": {}}
+        from gerrit.changes.edit import GerritChangeEdit
+        edit = mock_change.get_edit()
+        assert isinstance(edit, GerritChangeEdit)
+
+    def test_get_edit_not_found(self, mock_change):
+        mock_change.gerrit.get.return_value = ""
+        from gerrit.utils.exceptions import ChangeEditNotFoundError
+        with pytest.raises(ChangeEditNotFoundError):
+            mock_change.get_edit()
+
+    def test_check_submit_requirement(self, mock_change):
+        mock_change.gerrit.post.return_value = {"status": "SATISFIED"}
+        input_ = {"submit_requirement": {"name": "Code-Review"}}
+        result = mock_change.check_submit_requirement(input_)
+        mock_change.gerrit.post.assert_called()
+
+    def test_get_revision_current(self, mock_change):
+        from gerrit.changes.revision import GerritChangeRevision
+        revision = mock_change.get_revision()
+        assert isinstance(revision, GerritChangeRevision)
+
+    def test_get_revision_by_sha(self, mock_change):
+        from gerrit.changes.revision import GerritChangeRevision
+        revision = mock_change.get_revision(revision_id="abc123")
+        assert isinstance(revision, GerritChangeRevision)
+
+    def test_get_revision_by_positive_int(self, mock_change):
+        """When revisions cache is empty, get_revision with positive int fetches revisions."""
+        from gerrit.changes.revision import GerritChangeRevision
+
+        # Simulate __get_revisions data: number 1 maps to sha "abc"
+        mock_change.gerrit.get.return_value = [
+            {
+                "_number": 1234,
+                "current_revision": "abcdef",
+                "revisions": {
+                    "abcdef": {"_number": 1}
+                },
+            }
+        ]
+        revision = mock_change.get_revision(revision_id=1)
+        assert isinstance(revision, GerritChangeRevision)
+
+    def test_get_revision_by_int_returns_none_when_not_found(self, mock_change):
+        """Revision integer that doesn't exist in map returns None."""
+        mock_change.gerrit.get.return_value = [
+            {
+                "_number": 1234,
+                "current_revision": "abcdef",
+                "revisions": {
+                    "abcdef": {"_number": 1}
+                },
+            }
+        ]
+        result = mock_change.get_revision(revision_id=999)
+        assert result is None
+
+    def test_get_revision_by_negative_int(self, mock_change):
+        """Negative revision_id is relative to current revision."""
+        from gerrit.changes.revision import GerritChangeRevision
+
+        mock_change.gerrit.get.return_value = [
+            {
+                "_number": 1234,
+                "current_revision": "abcdef",
+                "revisions": {
+                    "aaaaaa": {"_number": 1},
+                    "abcdef": {"_number": 2},
+                },
+            }
+        ]
+        # -1 relative to revision 2 → revision 1
+        revision = mock_change.get_revision(revision_id=-1)
+        assert isinstance(revision, GerritChangeRevision)
+
+
+# ---------------------------------------------------------------------------
+# GerritChangeEdit
+# ---------------------------------------------------------------------------
+
+class TestGerritChangeEdit:
+
+    @pytest.fixture
+    def mock_edit(self, mock_change):
+        mock_change.gerrit.get.return_value = {"files": {}}
+        from gerrit.changes.edit import GerritChangeEdit
+        edit = GerritChangeEdit(change=mock_change.id, gerrit=mock_change.gerrit)
+        return edit
+
+    def test_edit_str(self, mock_edit, mock_change):
+        assert str(mock_edit) == f"change {mock_change.id} edit"
+
+    def test_get_change_file_content(self, mock_edit):
+        mock_edit.gerrit.get.return_value = "base64content"
+        result = mock_edit.get_change_file_content("README.md")
+        mock_edit.gerrit.get.assert_called()
+        assert result == "base64content"
+
+    def test_get_file_meta_data(self, mock_edit):
+        mock_edit.gerrit.get.return_value = {"name": "README.md"}
+        result = mock_edit.get_file_meta_data("README.md")
+        mock_edit.gerrit.get.assert_called()
+        assert result["name"] == "README.md"
+
+    def test_put_change_file_content(self, mock_edit):
+        mock_edit.put_change_file_content("README.md", "new content")
+        mock_edit.gerrit.put.assert_called_once()
+        call_args = mock_edit.gerrit.put.call_args
+        assert call_args[1]["data"] == "new content"
+
+    def test_restore_file_content(self, mock_edit):
+        mock_edit.restore_file_content("README.md")
+        mock_edit.gerrit.post.assert_called_once()
+        call_args = mock_edit.gerrit.post.call_args
+        assert call_args[1]["json"]["restore_path"] == "README.md"
+
+    def test_rename_file(self, mock_edit):
+        mock_edit.rename_file("old.txt", "new.txt")
+        mock_edit.gerrit.post.assert_called_once()
+        call_args = mock_edit.gerrit.post.call_args
+        assert call_args[1]["json"]["old_path"] == "old.txt"
+        assert call_args[1]["json"]["new_path"] == "new.txt"
+
+    def test_delete_file(self, mock_edit):
+        mock_edit.delete_file("README.md")
+        mock_edit.gerrit.delete.assert_called_once()
+
+    def test_change_commit_message(self, mock_edit):
+        input_ = {"message": "New message\n\nChange-Id: I123\n"}
+        mock_edit.change_commit_message(input_)
+        mock_edit.gerrit.put.assert_called_once()
+
+    def test_get_commit_message(self, mock_edit):
+        mock_edit.gerrit.get.return_value = "base64message"
+        result = mock_edit.get_commit_message()
+        assert result == "base64message"
+
+    def test_publish(self, mock_edit):
+        mock_edit.publish({"notify": "NONE"})
+        mock_edit.gerrit.post.assert_called_once()
+
+    def test_rebase(self, mock_edit):
+        mock_edit.rebase()
+        mock_edit.gerrit.post.assert_called_once()
+
+    def test_delete(self, mock_edit):
+        mock_edit.delete()
+        mock_edit.gerrit.delete.assert_called_once()
+
