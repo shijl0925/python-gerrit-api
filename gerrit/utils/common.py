@@ -58,6 +58,8 @@ def params_creator(
                 break
         else:
             k = list(pattern_types.keys())
+            if not k:
+                raise ValueError("Pattern types cannot be empty")
             supported_types = k[0] if len(k) == 1 else ", ".join(k[:-1]) + " or " + k[-1]
             raise ValueError(f"Pattern types can be either {supported_types}")
 

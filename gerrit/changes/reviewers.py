@@ -128,7 +128,12 @@ class GerritChangeReviewers:
         """
         try:
             result = self.gerrit.get(self.endpoint + f"/{account}")
-            reviewer_data = result[0] if isinstance(result, list) else result
+            if isinstance(result, list):
+                if not result:
+                    raise GerritAPIException("Unexpected reviewer response")
+                reviewer_data = result[0]
+            else:
+                reviewer_data = result
             if not isinstance(reviewer_data, dict) or "_account_id" not in reviewer_data:
                 raise GerritAPIException("Unexpected reviewer response")
             account = reviewer_data["_account_id"]

@@ -445,6 +445,13 @@ class TestGerritChangeReviewers:
         with pytest.raises(ReviewerNotFoundError):
             mock_change.reviewers.get(account="nobody")
 
+    def test_get_reviewer_with_empty_list_raises(self, mock_change):
+        mock_change.gerrit.get.return_value = []
+
+        from gerrit.utils.exceptions import GerritAPIException
+        with pytest.raises(GerritAPIException, match="Unexpected reviewer response"):
+            mock_change.reviewers.get(account="testuser")
+
     def test_reviewer_list_votes(self, mock_change):
         reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         votes_data = {"Code-Review": 2}
