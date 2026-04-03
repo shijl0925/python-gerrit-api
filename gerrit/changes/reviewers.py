@@ -16,12 +16,20 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeReviewer(GerritBase):
-    def __init__(self, account: str, change: str, gerrit: GerritClient) -> None:
+    def __init__(
+        self,
+        account: str,
+        change: str,
+        gerrit: GerritClient,
+        json: Optional[Dict[str, Any]] = None,
+    ) -> None:
         self.account = account
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers/{self.account}"
-        super().__init__()
+        super().__init__(pull=json is None)
+        if json is not None:
+            self._set_data(json)
 
     def __str__(self) -> str:
         return str(self.account)
@@ -120,10 +128,15 @@ class GerritChangeReviewers:
         """
         try:
             result = self.gerrit.get(self.endpoint + f"/{account}")
-
-            account = result[0].get("_account_id")
+            reviewer_data = result[0] if isinstance(result, list) else result
+            if not isinstance(reviewer_data, dict):
+                raise GerritAPIException("Unexpected reviewer response")
+            account = reviewer_data.get("_account_id", account)
             return GerritChangeReviewer(
-                account=account, change=self.change, gerrit=self.gerrit
+                account=account,
+                change=self.change,
+                gerrit=self.gerrit,
+                json=reviewer_data,
             )
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:

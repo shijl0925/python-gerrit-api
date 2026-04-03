@@ -58,9 +58,8 @@ def params_creator(
                 break
         else:
             k = list(pattern_types.keys())
-            raise ValueError(
-                "Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1]
-            )
+            supported_types = k[0] if len(k) == 1 else ", ".join(k[:-1]) + " or " + k[-1]
+            raise ValueError(f"Pattern types can be either {supported_types}")
 
     params = {k: v for k, v in tuples + ((p, v),) if v is not None}
 

@@ -3,6 +3,7 @@
 # @Author: Jialiang Shi
 import logging
 import netrc
+import urllib.parse as urlparse
 from typing import Any, Dict, Optional, Tuple, Union
 import requests
 from requests.adapters import HTTPAdapter
@@ -82,12 +83,12 @@ class GerritClient:
         Providing the password form .netrc file for getting Host name.
         :return: The related password from .netrc file as a string.
         """
-
+        host = urlparse.urlsplit(self._base_url).hostname or self._base_url
         netrc_client = netrc.netrc()
-        auth_tokens = netrc_client.authenticators(self._base_url)
-        if not auth_tokens:
+        auth_tokens = netrc_client.authenticators(host)
+        if not auth_tokens or len(auth_tokens) < 3 or not auth_tokens[2]:
             raise ValueError(
-                f"The '{self._base_url}' host name is not found in netrc file."
+                f"The '{host}' host name is not found in netrc file."
             )
         return auth_tokens[2]
 

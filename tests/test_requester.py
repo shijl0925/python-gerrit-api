@@ -144,6 +144,14 @@ class TestParamsCreator:
                 {"unknown": "value"},
             )
 
+    def test_invalid_dispatcher_key_with_single_pattern_type(self):
+        with pytest.raises(ValueError, match="Pattern types can be either match"):
+            params_creator(
+                (("n", 25),),
+                {"match": "m"},
+                {"unknown": "value"},
+            )
+
     def test_none_values_omitted(self):
         result = params_creator((("n", None), ("s", 0)), {"match": "m"}, None)
         assert "n" not in result
