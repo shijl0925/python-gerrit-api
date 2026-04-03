@@ -449,7 +449,7 @@ class TestGerritChangeReviewers:
         mock_change.gerrit.get.return_value = []
 
         from gerrit.utils.exceptions import GerritAPIException
-        with pytest.raises(GerritAPIException, match="Unexpected reviewer response"):
+        with pytest.raises(GerritAPIException, match="Empty reviewer response list"):
             mock_change.reviewers.get(account="testuser")
 
     def test_reviewer_list_votes(self, mock_change):

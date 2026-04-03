@@ -130,14 +130,16 @@ class GerritChangeReviewers:
             result = self.gerrit.get(self.endpoint + f"/{account}")
             if isinstance(result, list):
                 if not result:
-                    raise GerritAPIException("Unexpected reviewer response")
+                    raise GerritAPIException("Empty reviewer response list")
                 reviewer_data = result[0]
             else:
                 reviewer_data = result
             if not isinstance(reviewer_data, dict):
-                raise GerritAPIException("Unexpected reviewer response type")
+                raise GerritAPIException(
+                    f"Expected reviewer response dict, got {type(reviewer_data).__name__}"
+                )
             if "_account_id" not in reviewer_data:
-                raise GerritAPIException("Unexpected reviewer response")
+                raise GerritAPIException("Missing _account_id in reviewer response")
             account = reviewer_data["_account_id"]
             return GerritChangeReviewer(
                 account=account,

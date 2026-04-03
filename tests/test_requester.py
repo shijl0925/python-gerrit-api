@@ -145,7 +145,9 @@ class TestParamsCreator:
             )
 
     def test_invalid_dispatcher_key_with_single_pattern_type(self):
-        with pytest.raises(ValueError, match="Pattern type must be match"):
+        with pytest.raises(
+            ValueError, match="pattern_dispatcher must use pattern type match"
+        ):
             params_creator(
                 (("n", 25),),
                 {"match": "m"},
@@ -153,7 +155,7 @@ class TestParamsCreator:
             )
 
     def test_invalid_dispatcher_key_with_no_pattern_types(self):
-        with pytest.raises(ValueError, match="Pattern types cannot be empty"):
+        with pytest.raises(ValueError, match="pattern_types cannot be empty"):
             params_creator(
                 (("n", 25),),
                 {},
