@@ -120,11 +120,20 @@ class GerritChangeReviewers:
         """
         try:
             result = self.gerrit.get(self.endpoint + f"/{account}")
-
-            account = result[0].get("_account_id")
-            return GerritChangeReviewer(
-                account=account, change=self.change, gerrit=self.gerrit
-            )
+            if isinstance(result, list):
+                if not result:
+                    raise GerritAPIException("Empty reviewer response list")
+                reviewer_data = result[0]
+            else:
+                reviewer_data = result
+            if not isinstance(reviewer_data, dict):
+                raise GerritAPIException(
+                    f"Expected reviewer response dict, got {type(reviewer_data).__name__}"
+                )
+            if "_account_id" not in reviewer_data:
+                raise GerritAPIException("Missing _account_id in reviewer response")
+            account = reviewer_data["_account_id"]
+            return GerritChangeReviewer(account=account, change=self.change, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Reviewer {account} does not exist"

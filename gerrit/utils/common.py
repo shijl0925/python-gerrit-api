@@ -58,8 +58,13 @@ def params_creator(
                 break
         else:
             k = list(pattern_types.keys())
+            if not k:
+                raise ValueError("pattern_types cannot be empty")
+            if len(k) == 1:
+                raise ValueError(f"pattern_dispatcher must use pattern type {k[0]}")
+            supported_types = ", ".join(k[:-1]) + " or " + k[-1]
             raise ValueError(
-                "Pattern types can be either " + ", ".join(k[:-1]) + " or " + k[-1]
+                f"pattern_dispatcher must use one of the configured pattern types: {supported_types}"
             )
 
     params = {k: v for k, v in tuples + ((p, v),) if v is not None}

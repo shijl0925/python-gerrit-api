@@ -65,6 +65,7 @@ Refer to the example script for a full working example.
    :maxdepth: 2
 
    examples
+   design_optimizations_round2
 
 API Reference
 -------------

@@ -425,11 +425,13 @@ class TestGerritChangeReviewers:
         assert len(result) >= 0
 
     def test_get_reviewer(self, mock_change):
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
+        mock_change.gerrit.get.reset_mock()
         mock_change.gerrit.get.return_value = reviewer_data
 
         reviewer = mock_change.reviewers.get(account="testuser")
         assert str(reviewer) == "1000096"
+        assert mock_change.gerrit.get.call_count == 2
 
     def test_get_reviewer_not_found(self, mock_change):
         response_mock = MagicMock()
@@ -441,8 +443,15 @@ class TestGerritChangeReviewers:
         with pytest.raises(ReviewerNotFoundError):
             mock_change.reviewers.get(account="nobody")
 
+    def test_get_reviewer_with_empty_list_raises(self, mock_change):
+        mock_change.gerrit.get.return_value = []
+
+        from gerrit.utils.exceptions import GerritAPIException
+        with pytest.raises(GerritAPIException, match="Empty reviewer response list"):
+            mock_change.reviewers.get(account="testuser")
+
     def test_reviewer_list_votes(self, mock_change):
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         votes_data = {"Code-Review": 2}
         mock_change.gerrit.get.side_effect = [reviewer_data, reviewer_data, votes_data]
 
@@ -451,7 +460,7 @@ class TestGerritChangeReviewers:
         assert votes.get("Code-Review") == 2
 
     def test_reviewer_delete(self, mock_change):
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         mock_change.gerrit.get.return_value = reviewer_data
 
         reviewer = mock_change.reviewers.get(account="testuser")
@@ -459,7 +468,7 @@ class TestGerritChangeReviewers:
         mock_change.gerrit.delete.assert_called()
 
     def test_reviewer_delete_with_input(self, mock_change):
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         mock_change.gerrit.get.return_value = reviewer_data
 
         reviewer = mock_change.reviewers.get(account="testuser")
@@ -467,7 +476,7 @@ class TestGerritChangeReviewers:
         mock_change.gerrit.post.assert_called()
 
     def test_reviewer_delete_vote(self, mock_change):
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         mock_change.gerrit.get.return_value = reviewer_data
 
         reviewer = mock_change.reviewers.get(account="testuser")
@@ -476,7 +485,7 @@ class TestGerritChangeReviewers:
 
     def test_add_reviewer_already_exists(self, mock_change):
         """Adding a reviewer that already exists should raise ReviewerAlreadyExistsError."""
-        reviewer_data = [{"_account_id": 1000096, "name": "Test User"}]
+        reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         mock_change.gerrit.get.return_value = reviewer_data
 
         from gerrit.utils.exceptions import ReviewerAlreadyExistsError
@@ -488,8 +497,7 @@ class TestGerritChangeReviewers:
         response_mock = MagicMock()
         response_mock.status_code = 404
         http_error = requests.exceptions.HTTPError(response=response_mock)
-        reviewer_data = [{"_account_id": 1000096}]
-        # First get → 404 (not found); post succeeds; get again → reviewer_data × 2
+        reviewer_data = {"_account_id": 1000096}
         mock_change.gerrit.get.side_effect = [http_error, reviewer_data, reviewer_data]
 
         from gerrit.changes.reviewers import GerritChangeReviewer
@@ -768,4 +776,3 @@ class TestGerritChangeEdit:
     def test_delete(self, mock_edit):
         mock_edit.delete()
         mock_edit.gerrit.delete.assert_called_once()
-
