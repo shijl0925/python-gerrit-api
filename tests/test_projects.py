@@ -89,6 +89,33 @@ class TestGerritProjects:
         result = projects.list(is_all=True)
         assert len(result) > 0
 
+    def test_list_projects_is_all_keeps_limit_and_skip(self, mock_gerrit):
+        """is_all=True must not remove limit (n) or skip (S) — issue #71."""
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        projects.list(is_all=True, limit=50, skip=10)
+
+        _, kwargs = mock_gerrit.get.call_args
+        params = kwargs.get("params", {})
+        assert params.get("all") == 1
+        assert params.get("n") == 50
+        assert params.get("S") == 10
+
+    def test_list_projects_is_all_with_project_type(self, mock_gerrit):
+        """is_all=True must not remove project_type — issue #71."""
+        mock_gerrit.get.return_value = {"myProject": PROJECT_DATA}
+
+        from gerrit.projects.projects import GerritProjects
+        projects = GerritProjects(gerrit=mock_gerrit)
+        projects.list(is_all=True, project_type="code")
+
+        _, kwargs = mock_gerrit.get.call_args
+        params = kwargs.get("params", {})
+        assert params.get("all") == 1
+        assert params.get("type") == "code"
+
     def test_search_projects(self, mock_gerrit):
         mock_gerrit.get.return_value = [PROJECT_DATA]
 
