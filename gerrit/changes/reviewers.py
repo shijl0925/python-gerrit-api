@@ -134,7 +134,9 @@ class GerritChangeReviewers:
                 reviewer_data = result[0]
             else:
                 reviewer_data = result
-            if not isinstance(reviewer_data, dict) or "_account_id" not in reviewer_data:
+            if not isinstance(reviewer_data, dict):
+                raise GerritAPIException("Unexpected reviewer response type")
+            if "_account_id" not in reviewer_data:
                 raise GerritAPIException("Unexpected reviewer response")
             account = reviewer_data["_account_id"]
             return GerritChangeReviewer(

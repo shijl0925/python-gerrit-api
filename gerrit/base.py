@@ -86,11 +86,21 @@ class GerritClient:
         host = urlparse.urlsplit(self._base_url).hostname or self._base_url
         netrc_client = netrc.netrc()
         auth_tokens = netrc_client.authenticators(host)
-        if not auth_tokens or len(auth_tokens) < 3 or not auth_tokens[2]:
+        if not auth_tokens:
             raise ValueError(
                 f"The '{host}' host name is not found in netrc file."
             )
-        return auth_tokens[2]
+        try:
+            _, _, password = auth_tokens
+        except (TypeError, ValueError) as error:
+            raise ValueError(
+                f"The '{host}' host name is not found in netrc file."
+            ) from error
+        if not password:
+            raise ValueError(
+                f"The '{host}' host name is not found in netrc file."
+            )
+        return password
 
     def get_endpoint_url(self, endpoint: str) -> str:
         """
