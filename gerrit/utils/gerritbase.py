@@ -35,9 +35,10 @@ class GerritBase:
 
         if isinstance(self._data, dict):
             for key, value in self._data.items():
-                normalized_key = key
-                if isinstance(normalized_key, str) and normalized_key.startswith("_"):
-                    normalized_key = normalized_key[1:]
+                if isinstance(key, str) and key.startswith("_"):
+                    normalized_key = key[1:]
+                else:
+                    normalized_key = key
                 try:
                     setattr(self, normalized_key, value)
                 except AttributeError:
