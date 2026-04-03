@@ -269,6 +269,17 @@ class TestGetPasswordFromNetrc:
             mock_netrc.authenticators.assert_called_once_with("gerrit.example.com")
             assert password == "password123"
 
+    def test_plain_hostname_found_in_netrc(self, basic_client):
+        with patch("gerrit.base.netrc.netrc") as MockNetrc:
+            mock_netrc = MagicMock()
+            mock_netrc.authenticators.return_value = ("user", "account", "password123")
+            MockNetrc.return_value = mock_netrc
+
+            basic_client._base_url = "gerrit.example.com"
+            password = basic_client.get_password_from_netrc_file()
+            mock_netrc.authenticators.assert_called_once_with("gerrit.example.com")
+            assert password == "password123"
+
     def test_host_not_found_raises(self, basic_client):
         with patch("gerrit.base.netrc.netrc") as MockNetrc:
             mock_netrc = MagicMock()

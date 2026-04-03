@@ -61,9 +61,8 @@ def params_creator(
             if not k:
                 raise ValueError("Pattern types cannot be empty")
             if len(k) == 1:
-                supported_types = k[0]
-            else:
-                supported_types = ", ".join(k[:-1]) + " or " + k[-1]
+                raise ValueError(f"Pattern type must be {k[0]}")
+            supported_types = ", ".join(k[:-1]) + " or " + k[-1]
             raise ValueError(f"Pattern types can be either {supported_types}")
 
     params = {k: v for k, v in tuples + ((p, v),) if v is not None}
