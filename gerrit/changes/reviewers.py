@@ -16,20 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class GerritChangeReviewer(GerritBase):
-    def __init__(
-        self,
-        account: str,
-        change: str,
-        gerrit: GerritClient,
-        json: Optional[Dict[str, Any]] = None,
-    ) -> None:
+    def __init__(self, account: str, change: str, gerrit: GerritClient) -> None:
         self.account = account
         self.change = change
         self.gerrit = gerrit
         self.endpoint = f"/changes/{self.change}/reviewers/{self.account}"
-        super().__init__(pull=json is None)
-        if json is not None:
-            self._set_data(json)
+        super().__init__()
 
     def __str__(self) -> str:
         return str(self.account)
@@ -141,12 +133,7 @@ class GerritChangeReviewers:
             if "_account_id" not in reviewer_data:
                 raise GerritAPIException("Missing _account_id in reviewer response")
             account = reviewer_data["_account_id"]
-            return GerritChangeReviewer(
-                account=account,
-                change=self.change,
-                gerrit=self.gerrit,
-                json=reviewer_data,
-            )
+            return GerritChangeReviewer(account=account, change=self.change, gerrit=self.gerrit)
         except requests.exceptions.HTTPError as error:
             if error.response.status_code == 404:
                 message = f"Reviewer {account} does not exist"

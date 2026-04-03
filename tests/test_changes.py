@@ -431,9 +431,7 @@ class TestGerritChangeReviewers:
 
         reviewer = mock_change.reviewers.get(account="testuser")
         assert str(reviewer) == "1000096"
-        mock_change.gerrit.get.assert_called_once_with(
-            f"/changes/{mock_change.id}/reviewers/testuser"
-        )
+        assert mock_change.gerrit.get.call_count == 2
 
     def test_get_reviewer_not_found(self, mock_change):
         response_mock = MagicMock()
@@ -455,7 +453,7 @@ class TestGerritChangeReviewers:
     def test_reviewer_list_votes(self, mock_change):
         reviewer_data = {"_account_id": 1000096, "name": "Test User"}
         votes_data = {"Code-Review": 2}
-        mock_change.gerrit.get.side_effect = [reviewer_data, votes_data]
+        mock_change.gerrit.get.side_effect = [reviewer_data, reviewer_data, votes_data]
 
         reviewer = mock_change.reviewers.get(account="testuser")
         votes = reviewer.list_votes()
@@ -500,7 +498,7 @@ class TestGerritChangeReviewers:
         response_mock.status_code = 404
         http_error = requests.exceptions.HTTPError(response=response_mock)
         reviewer_data = {"_account_id": 1000096}
-        mock_change.gerrit.get.side_effect = [http_error, reviewer_data]
+        mock_change.gerrit.get.side_effect = [http_error, reviewer_data, reviewer_data]
 
         from gerrit.changes.reviewers import GerritChangeReviewer
         reviewer = mock_change.reviewers.add({"reviewer": "newuser"})

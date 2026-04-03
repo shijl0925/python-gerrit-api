@@ -28,21 +28,17 @@ class GerritBase:
         raise NotImplementedError
 
     def poll(self) -> None:
-        self._set_data(self._poll())
-
-    def _set_data(self, data: Any) -> None:
+        data = self._poll()
         self._data = data
 
         if isinstance(self._data, dict):
             for key, value in self._data.items():
-                if isinstance(key, str) and key.startswith("_"):
-                    normalized_key = key[1:]
-                else:
-                    normalized_key = key
                 try:
-                    setattr(self, normalized_key, value)
+                    if key and key[0] == "_":
+                        key = key[1:]
+                    setattr(self, key, value)
                 except AttributeError:
-                    logger.debug("Skipping read-only attribute %r", normalized_key)
+                    logger.debug("Skipping read-only attribute %r", key)
 
     def _poll(self) -> Any:
         res = self.gerrit.get(self.endpoint)  # pylint: disable=no-member
